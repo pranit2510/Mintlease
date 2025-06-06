@@ -131,7 +131,7 @@ const TestimonialCard: React.FC<{
 
         {/* Testimonial Text */}
         <blockquote className="text-lg lg:text-xl text-neutral-700 leading-relaxed mb-8 flex-grow">
-          "{testimonial.testimonial}"
+          &ldquo;{testimonial.testimonial}&rdquo;
         </blockquote>
 
         {/* Customer Info */}
@@ -234,7 +234,7 @@ const Testimonials: React.FC = () => {
             Customer <span className="gradient-text">Success Stories</span>
           </h2>
           <p className="text-xl text-neutral-600 max-w-3xl mx-auto mb-8">
-            Don't just take our word for it. See how we've helped thousands of customers 
+            Don&apos;t just take our word for it. See how we&apos;ve helped thousands of customers 
             save money and get their dream vehicles.
           </p>
 

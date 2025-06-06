@@ -144,7 +144,7 @@ const HowItWorks: React.FC = () => {
     {
       icon: <ShieldCheckIcon className="w-8 h-8" />,
       title: "Money-Back Guarantee",
-      description: "100% refund if we don't save you money"
+      description: "100% refund if we don&apos;t save you money"
     },
     {
       icon: <CurrencyDollarIcon className="w-8 h-8" />,

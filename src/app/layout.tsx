@@ -144,6 +144,22 @@ export default function RootLayout({
             })
           }}
         />
+        
+        {/* Dark mode script - runs before React hydration to prevent flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `
+          }}
+        />
       </head>
       <body className="antialiased overflow-x-hidden">
         {/* Skip to main content for accessibility */}
@@ -159,7 +175,7 @@ export default function RootLayout({
           {children}
         </div>
         
-        {/* Critical JavaScript loaded after content */}
+        {/* Performance monitoring script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -176,13 +192,6 @@ export default function RootLayout({
                   }
                 });
                 observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
-              }
-              
-              // Dark mode support
-              if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-              } else {
-                document.documentElement.classList.remove('dark');
               }
             `
           }}

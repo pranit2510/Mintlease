@@ -312,7 +312,7 @@ export interface SearchResult<T> {
 
 // ===== API TYPES =====
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data: T
   success: boolean
   message?: string
@@ -328,7 +328,7 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
   code: string
   message: string
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 }
 
 // ===== ANALYTICS & TRACKING TYPES =====
@@ -346,7 +346,7 @@ export interface PageView {
 export interface Event {
   name: string
   category: string
-  properties: Record<string, any>
+  properties: Record<string, unknown>
   timestamp: Date
   userId?: string
   sessionId: string

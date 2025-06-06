@@ -8,7 +8,25 @@ import { MagnifyingGlassIcon, FunnelIcon, Squares2X2Icon, ListBulletIcon } from 
 import { HeartIcon, ShareIcon } from '@heroicons/react/24/solid'
 
 // Mock vehicle data - in production this would come from an API
-const mockVehicles = [
+interface MockVehicle {
+  id: number
+  make: string
+  model: string
+  year: number
+  trim: string
+  price: number
+  msrp: number
+  savings: number
+  mileage: number
+  mpg: string
+  engine: string
+  image: string
+  features: string[]
+  location: string
+  available: boolean
+}
+
+const mockVehicles: MockVehicle[] = [
   {
     id: 1,
     make: 'BMW',
@@ -113,7 +131,7 @@ const mockVehicles = [
   }
 ]
 
-const VehicleCard: React.FC<{ vehicle: any; viewMode: 'grid' | 'list' }> = ({ vehicle, viewMode }) => {
+const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }> = ({ vehicle, viewMode }) => {
   const [isFavorited, setIsFavorited] = useState(false)
   
   if (viewMode === 'list') {

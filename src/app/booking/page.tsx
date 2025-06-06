@@ -4,7 +4,7 @@ import React from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { motion } from 'framer-motion'
-import { CheckCircleIcon, CalendarDaysIcon, CreditCardIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { CalendarDaysIcon, CreditCardIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 /**
  * Booking Page - $499 Consultation Deposit
@@ -20,7 +20,7 @@ export default function BookingPage() {
     {
       icon: <ShieldCheckIcon className="w-6 h-6" />,
       title: "100% Refundable",
-      description: "Full refund if we don't save you money or you're not satisfied"
+      description: "Full refund if we don&apos;t save you money or you&apos;re not satisfied"
     },
     {
       icon: <CalendarDaysIcon className="w-6 h-6" />,
@@ -175,7 +175,7 @@ export default function BookingPage() {
                     <div className="w-8 h-8 bg-primary-emerald text-white rounded-full flex items-center justify-center text-sm font-bold">
                       1
                     </div>
-                    <span className="text-neutral-700">We'll call you within 24 hours</span>
+                    <span className="text-neutral-700">We&apos;ll call you within 24 hours</span>
                   </div>
                   
                   <div className="flex items-center space-x-3">
