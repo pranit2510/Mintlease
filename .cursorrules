@@ -1,0 +1,180 @@
+# MINT LEASE PREMIUM AUTO BROKERAGE PLATFORM - CURSOR RULES
+# 2025 Cutting-Edge Technology Stack Implementation
+
+## CORE PRINCIPLES
+- NEVER downgrade technology choices - always use latest stable versions
+- Component-first architecture with atomic design methodology
+- Performance obsessed - 95+ Lighthouse score, <3s load times, <200KB bundle
+- Luxury-first design approach with psychological conversion triggers
+- Mobile-first responsive design with touch-optimized interactions
+
+## TECHNOLOGY STACK (NON-NEGOTIABLE)
+- Next.js 14+ with App Router (server components priority)
+- TypeScript with strict mode (never use any types)
+- Tailwind CSS with custom luxury design system
+- Framer Motion for premium animations
+- GSAP for complex timeline animations
+- Radix UI for accessible primitives
+- Zustand for state management
+- React Query for server state
+- React Hook Form with Zod validation
+- Stripe for $499 deposit payments
+
+## DESIGN SYSTEM REQUIREMENTS
+- Primary Color: Emerald Green (#047857) - trust, premium, nature
+- Accent Color: Premium Gold (#f59e0b) - luxury, exclusive
+- Typography: Inter font family exclusively
+- Glassmorphism effects with backdrop-blur
+- Luxury shadows with multiple layers
+- 2025 modern design trends (floating elements, micro-interactions)
+- Accessibility: WCAG 2.1 AA compliance
+- RTL support consideration
+
+## COMPONENT ARCHITECTURE
+- Atomic Design: atoms > molecules > organisms > templates > pages
+- Each component must have TypeScript interfaces
+- Props validation with default values
+- Loading and error states for all components
+- Hover states with smooth transitions (300ms max)
+- Mobile touch targets minimum 44x44px
+- Semantic HTML with proper ARIA labels
+
+## ANIMATION GUIDELINES
+- Framer Motion for React component animations
+- GSAP for complex timeline sequences
+- CSS transitions for simple hover effects
+- Respect prefers-reduced-motion
+- GPU-accelerated transforms only
+- Maximum 300ms for UI responsiveness
+- Skeleton loaders for data fetching states
+
+## PERFORMANCE REQUIREMENTS
+- Bundle size under 200KB initial load
+- Lighthouse Performance: 95+
+- First Contentful Paint: <1.5s
+- Largest Contentful Paint: <2.5s
+- Cumulative Layout Shift: <0.1
+- First Input Delay: <100ms
+- Lazy load all images with next/image
+- Code splitting by route and feature
+
+## AUTO BROKERAGE BUSINESS LOGIC
+- $499 refundable deposit system via Stripe
+- Vehicle inventory with real-time pricing
+- Deal calculator with financing options
+- Credit application with secure handling
+- Booking system with calendar integration
+- Customer dashboard with deal tracking
+- Admin panel for deal management
+- Real-time notifications system
+
+## PAGE STRUCTURE REQUIREMENTS
+Each page must include:
+- SEO meta tags with Open Graph
+- Structured data (JSON-LD)
+- Accessibility landmarks
+- Loading states
+- Error boundaries
+- Mobile-optimized layout
+- Conversion optimization elements
+
+## CONVERSION PSYCHOLOGY ELEMENTS
+- Trust badges (2500+ satisfied customers)
+- Social proof testimonials
+- Urgency indicators (limited time offers)
+- Authority signals (industry certifications)
+- Risk reduction ($499 refundable deposit)
+- Clear value propositions
+- Frictionless user flows
+
+## CODE QUALITY STANDARDS
+- ESLint + Prettier configuration
+- Pre-commit hooks with Husky
+- Unit tests for utilities (80% coverage)
+- Integration tests for critical flows
+- E2E tests for user journeys
+- TypeScript strict mode enabled
+- No console logs in production
+
+## SECURITY REQUIREMENTS
+- Input sanitization for all forms
+- CSRF protection implementation
+- Secure headers configuration
+- Environment variables for secrets
+- Rate limiting on API endpoints
+- Data encryption for sensitive info
+- Secure cookie handling
+
+## RESPONSIVE DESIGN BREAKPOINTS
+- Mobile: 375px - 768px (priority)
+- Tablet: 768px - 1024px
+- Desktop: 1024px - 1440px
+- Large Desktop: 1440px+
+- Touch-first interactions
+- Thumb-friendly navigation zones
+
+## FILE NAMING CONVENTIONS
+- Components: PascalCase (Button.tsx)
+- Pages: kebab-case (vehicle-showcase.tsx)
+- Utilities: camelCase (formatCurrency.ts)
+- Constants: SCREAMING_SNAKE_CASE
+- Barrel exports in index.ts files
+
+## FOLDER STRUCTURE (ENFORCED)
+```
+src/
+├── app/                 # Next.js 14 app router
+├── components/          # Reusable components
+│   ├── ui/             # Base UI components
+│   ├── forms/          # Form components
+│   ├── sections/       # Page sections
+│   └── layout/         # Layout components
+├── lib/                # Utilities & config
+├── hooks/              # Custom React hooks
+├── stores/             # Zustand stores
+├── types/              # TypeScript definitions
+├── styles/             # Global styles
+└── utils/              # Helper functions
+```
+
+## DEVELOPMENT WORKFLOW
+1. Feature branch from main
+2. Component development with Storybook
+3. Unit test implementation
+4. Integration testing
+5. Performance audit
+6. Accessibility check
+7. Code review process
+8. Merge to main
+
+## DEPLOYMENT REQUIREMENTS
+- Vercel deployment with automatic preview
+- Environment-specific configurations
+- Image optimization pipeline
+- CDN integration for assets
+- Error monitoring (Sentry)
+- Analytics integration (GA4)
+- Performance monitoring
+
+## NEVER DO
+- Use inline styles instead of Tailwind
+- Skip TypeScript interfaces
+- Ignore accessibility requirements
+- Use images without optimization
+- Implement without mobile-first approach
+- Skip loading/error states
+- Use console.log in production
+- Hardcode sensitive data
+- Ignore performance budgets
+
+## ALWAYS DO
+- Use semantic HTML elements
+- Implement proper error boundaries
+- Add proper TypeScript types
+- Test on real mobile devices
+- Optimize images with next/image
+- Use React.memo for expensive components
+- Implement proper SEO meta tags
+- Follow atomic design principles
+- Add micro-interactions for delight
+- Consider offline functionality 

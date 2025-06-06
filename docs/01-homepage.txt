@@ -1,0 +1,231 @@
+# HOMEPAGE - MINT LEASE PREMIUM AUTO BROKERAGE
+# Primary Landing Page & Conversion Hub
+
+## PAGE OVERVIEW
+The homepage serves as the primary conversion funnel entry point, designed to immediately establish trust, showcase value proposition, and guide visitors toward booking a $499 refundable deposit consultation.
+
+## DESIGN PHILOSOPHY
+- **Luxury First**: Premium emerald & gold color palette with glassmorphism effects
+- **Trust Building**: Immediate credibility through social proof and authority signals  
+- **Conversion Focused**: Every element drives toward the $499 deposit booking
+- **Mobile Optimized**: 65% of traffic expected on mobile devices
+
+## VISUAL HIERARCHY & LAYOUT
+
+### HERO SECTION (Above the Fold)
+**Design**: Full-screen hero with glassmorphism overlay
+**Background**: Animated gradient with floating elements
+**Content Structure**:
+1. **Headline**: "Save $5,000+ on Your Dream Car" (H1, 48px desktop, 32px mobile)
+2. **Subheadline**: Value proposition with urgency trigger
+3. **Trust Badges**: Row of 4 key metrics (2500+ customers, $15M saved, 5-star rating, A+ BBB)
+4. **CTA Buttons**: Primary "Book $499 Consultation" + Secondary "View Inventory"
+5. **Video Testimonial**: Floating modal trigger
+
+**Animations**:
+- GSAP timeline: Staggered entrance animations (0.1s delays)
+- Floating elements: Subtle Y-axis movement
+- Background: Subtle gradient animation
+- CTAs: Shimmer effect on hover
+
+**Psychology Triggers**:
+- Social proof numbers
+- Risk reduction ($499 refundable)
+- Authority positioning
+- Urgency language
+
+### VEHICLE SHOWCASE SECTION
+**Design**: Horizontal scrolling carousel with luxury car cards
+**Layout**: 3 cards visible desktop, 1.2 cards mobile
+**Card Structure**:
+1. **Vehicle Image**: High-quality hero shot
+2. **Savings Badge**: Prominent discount amount
+3. **Vehicle Title**: Make/Model/Year
+4. **Pricing**: MSRP vs Our Price comparison
+5. **Key Features**: 3-4 bullet points
+6. **CTA**: "Check Availability" button
+
+**Animations**:
+- Card hover: Lift effect with enhanced shadow
+- Image: Subtle zoom on hover
+- Scroll: Smooth momentum scrolling
+- Loading: Skeleton cards during fetch
+
+**Conversion Elements**:
+- Savings amounts prominently displayed
+- Limited availability indicators
+- Quick inquiry CTAs on each card
+
+### HOW IT WORKS SECTION
+**Design**: 3-step process with animated icons
+**Layout**: Horizontal on desktop, vertical stack on mobile
+**Steps**:
+1. **Book Consultation**: $499 refundable deposit explanation
+2. **Vehicle Sourcing**: Professional procurement process
+3. **Delivery**: White-glove service details
+
+**Animations**:
+- Step icons: Scale animation on scroll
+- Process flow: Connected line animation
+- Card reveals: Slide up on viewport entry
+
+**Trust Elements**:
+- Money-back guarantee prominent
+- Professional credentials
+- Service guarantees
+
+### TESTIMONIALS SECTION
+**Design**: Alternating left/right testimonial cards with photos
+**Content**: 3 detailed customer success stories
+**Elements**:
+- Customer photo + name
+- Savings amount achieved
+- Star rating display
+- Detailed testimonial text
+- Vehicle purchased
+
+**Social Proof Psychology**:
+- Real customer photos
+- Specific savings amounts
+- Detailed success stories
+- Star ratings for credibility
+
+### CALCULATOR SECTION
+**Design**: Interactive widget with glassmorphism styling
+**Functionality**: Real-time savings estimation
+**Form Fields**:
+- Vehicle type dropdown
+- Price range slider
+- Location selector
+- Email capture
+
+**Conversion Strategy**:
+- Immediate value demonstration
+- Lead capture mechanism
+- Personalized results
+- CTA to book consultation
+
+## TECHNICAL IMPLEMENTATION
+
+### PERFORMANCE TARGETS
+- **Lighthouse Score**: 95+
+- **First Contentful Paint**: <1.5s
+- **Largest Contentful Paint**: <2.5s
+- **Cumulative Layout Shift**: <0.1
+- **Bundle Size**: <150KB
+
+### SEO OPTIMIZATION
+**Title**: "Save $5,000+ on Luxury Cars | Mint Lease Premium Auto Brokerage"
+**Meta Description**: "Professional auto brokerage service. Save thousands on your dream car with our expert negotiation. $499 refundable deposit. 2500+ satisfied customers."
+**Keywords**: auto brokerage, car buying service, luxury cars, car negotiation
+**Schema Markup**: LocalBusiness, Service, Review aggregation
+
+### ACCESSIBILITY
+- **ARIA Labels**: All interactive elements
+- **Keyboard Navigation**: Full tab order
+- **Screen Reader**: Proper heading hierarchy
+- **Color Contrast**: AAA compliance
+- **Alt Text**: Descriptive image alternatives
+
+### MOBILE OPTIMIZATION
+- **Touch Targets**: Minimum 44x44px
+- **Thumb Zones**: Primary actions in reach
+- **Viewport**: Responsive breakpoints
+- **Loading**: Progressive enhancement
+- **Interactions**: Touch-first design
+
+## CONVERSION OPTIMIZATION
+
+### PSYCHOLOGICAL TRIGGERS
+1. **Social Proof**: Customer count, testimonials, ratings
+2. **Authority**: Industry certifications, press mentions
+3. **Scarcity**: Limited appointment availability
+4. **Loss Aversion**: Savings calculations, missed opportunities
+5. **Trust**: Money-back guarantee, secure payment
+6. **Urgency**: Time-sensitive offers
+
+### A/B TEST OPPORTUNITIES
+- Hero headline variations
+- CTA button copy and colors
+- Testimonial presentation
+- Calculator placement
+- Trust badge positioning
+
+### ANALYTICS TRACKING
+- **Hero CTA Clicks**: Primary conversion metric
+- **Scroll Depth**: Engagement measurement
+- **Calculator Usage**: Lead quality indicator
+- **Video Plays**: Engagement depth
+- **Form Submissions**: Lead generation tracking
+
+## USER FLOW MAPPING
+
+### PRIMARY FLOW
+1. Land on homepage
+2. Read value proposition
+3. View vehicle showcase
+4. Use savings calculator
+5. Click primary CTA
+6. Go to booking page
+
+### SECONDARY FLOWS
+- Browse inventory → Vehicle detail → Contact
+- Read testimonials → Trust building → CTA
+- Watch video → Social proof → Booking
+- Use calculator → Personalized results → Lead capture
+
+## CONTENT STRATEGY
+
+### COPYWRITING PRINCIPLES
+- **Benefit-Focused**: Lead with savings, not process
+- **Conversational**: Friendly, approachable tone
+- **Credible**: Specific numbers and proof points
+- **Urgent**: Time-sensitive language
+- **Clear**: Jargon-free explanations
+
+### VISUAL CONTENT
+- **Hero Images**: Luxury vehicles in premium settings
+- **Customer Photos**: Real testimonials with faces
+- **Process Icons**: Simple, elegant illustrations
+- **Trust Badges**: Professional certification logos
+- **Video Testimonials**: Authentic customer stories
+
+## TECHNICAL SPECIFICATIONS
+
+### COMPONENT ARCHITECTURE
+```
+HomePage/
+├── HeroSection/
+│   ├── BackgroundAnimation
+│   ├── TrustBadges
+│   ├── CTAButtons
+│   └── VideoModal
+├── VehicleShowcase/
+│   ├── CarouselContainer
+│   ├── VehicleCard
+│   └── NavigationDots
+├── HowItWorks/
+│   ├── ProcessStep
+│   ├── AnimatedIcons
+│   └── ConnectorLines
+├── TestimonialsSection/
+│   ├── TestimonialCard
+│   ├── CustomerPhoto
+│   └── StarRating
+└── SavingsCalculator/
+    ├── FormInputs
+    ├── ResultsDisplay
+    └── LeadCapture
+```
+
+### STATE MANAGEMENT
+- **Zustand Store**: Global UI state
+- **React Query**: Server state & caching
+- **Form State**: React Hook Form
+- **Animation State**: Framer Motion
+
+### API INTEGRATION
+- **Vehicle Data**: Real-time inventory
+- **Calculator**: Savings estimation API
+- **Lead Capture**: CRM integration
+- **Analytics**: GA4 event tracking 

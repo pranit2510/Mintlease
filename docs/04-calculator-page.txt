@@ -1,0 +1,272 @@
+# CALCULATOR PAGE - MINT LEASE PREMIUM AUTO BROKERAGE
+# Savings Calculator & Financing Tools Hub
+
+## PAGE OVERVIEW
+The calculator page provides interactive tools for users to estimate potential savings, calculate financing options, and understand the value proposition of professional auto brokerage services. Designed to demonstrate immediate value and capture leads through personalized results.
+
+## DESIGN PHILOSOPHY
+- **Value Demonstration**: Instant savings calculations to prove ROI
+- **Educational**: Help users understand financing and negotiation
+- **Lead Generation**: Capture contact information for personalized quotes
+- **Interactive**: Engaging tools that keep users on the page
+
+## VISUAL HIERARCHY & LAYOUT
+
+### HERO SECTION
+**Design**: Clean header with calculator navigation
+**Elements**:
+1. **Page Title**: "Calculate Your Savings & Financing"
+2. **Subtitle**: "See how much you can save with professional auto brokerage"
+3. **Calculator Tabs**: Navigation between different tools
+4. **Trust Indicator**: "Used by 2500+ customers to save millions"
+
+### CALCULATOR TABS
+**Design**: Horizontal tab navigation with active states
+**Calculator Types**:
+1. **Savings Calculator**: Estimate brokerage savings
+2. **Financing Calculator**: Monthly payment calculations
+3. **Trade-In Calculator**: Vehicle trade-in value
+4. **Lease vs Buy**: Comparison calculator
+5. **Total Cost Calculator**: 5-year ownership costs
+
+### SAVINGS CALCULATOR (Primary)
+**Design**: Interactive form with real-time results
+**Input Section**:
+1. **Vehicle Type**: Dropdown (Luxury, Sport, SUV, Sedan, etc.)
+2. **Price Range**: Slider ($20K - $200K+)
+3. **Vehicle Condition**: New, Used, Certified Pre-Owned
+4. **Location**: ZIP code for local market data
+5. **Timeline**: When planning to purchase
+
+**Results Section**:
+1. **Estimated Savings**: Large number display ($3,000 - $8,000)
+2. **Savings Breakdown**:
+   - Negotiation savings: $X,XXX
+   - Financing rate improvement: $X,XXX
+   - Trade-in optimization: $X,XXX
+   - Extended warranty savings: $XXX
+3. **ROI Display**: Return on $499 investment
+4. **Confidence Indicator**: Savings probability percentage
+
+**Visual Elements**:
+- Animated counter for savings amount
+- Progress bars for different savings categories
+- Comparison chart (DIY vs Professional)
+- Interactive slider with real-time updates
+
+### FINANCING CALCULATOR
+**Design**: Comprehensive monthly payment calculator
+**Input Fields**:
+1. **Vehicle Price**: Dollar amount input
+2. **Down Payment**: Amount or percentage
+3. **Trade-In Value**: Optional trade-in amount
+4. **Credit Score Range**: Dropdown selection
+5. **Loan Term**: Slider (24-84 months)
+6. **Interest Rate**: Auto-populated based on credit score
+
+**Results Display**:
+1. **Monthly Payment**: Large, prominent display
+2. **Total Interest**: Over life of loan
+3. **Total Cost**: Principal + interest
+4. **Payment Breakdown**: Principal vs interest chart
+5. **Comparison**: With/without brokerage rate improvement
+
+**Advanced Features**:
+- Amortization schedule table
+- Early payoff calculator
+- Rate comparison tool
+- Pre-approval guidance
+
+### TRADE-IN CALCULATOR
+**Design**: Vehicle valuation tool
+**Input Process**:
+1. **Vehicle Information**:
+   - Year, Make, Model, Trim
+   - Mileage input
+   - Condition assessment
+   - Service history
+   - Modifications/damage
+
+2. **Market Data**:
+   - Local market analysis
+   - Seasonal trends
+   - Demand indicators
+   - Comparable sales
+
+**Results Section**:
+1. **Estimated Value Range**: Low, average, high estimates
+2. **Market Comparison**: Private party vs dealer vs brokerage
+3. **Optimization Tips**: How to maximize trade-in value
+4. **Timing Recommendations**: Best time to trade
+
+### LEASE VS BUY CALCULATOR
+**Design**: Side-by-side comparison tool
+**Comparison Factors**:
+1. **Financial**:
+   - Monthly payments
+   - Down payment requirements
+   - Total 3-year cost
+   - Equity building
+   - Tax implications
+
+2. **Lifestyle**:
+   - Mileage restrictions
+   - Wear and tear considerations
+   - Modification flexibility
+   - Early termination costs
+
+**Visual Representation**:
+- Side-by-side cards
+- Pros/cons lists
+- Cost comparison charts
+- Recommendation engine
+
+## PERSONALIZATION & LEAD CAPTURE
+
+### PERSONALIZED RESULTS
+**Features**:
+- Results based on user inputs
+- Local market data integration
+- Credit score considerations
+- Personalized recommendations
+
+### LEAD CAPTURE STRATEGY
+**Progressive Profiling**:
+1. **Basic Calculator**: No email required
+2. **Detailed Results**: Email for full report
+3. **Personalized Quote**: Phone number for consultation
+4. **Market Updates**: Opt-in for newsletters
+
+**Value Exchange**:
+- Detailed savings report (PDF)
+- Market trend analysis
+- Personalized vehicle recommendations
+- Financing pre-approval assistance
+
+### FOLLOW-UP SEQUENCES
+**Email Automation**:
+1. **Immediate**: Detailed calculator results
+2. **Day 1**: Educational content about auto brokerage
+3. **Day 3**: Customer success stories
+4. **Day 7**: Limited-time consultation offer
+5. **Day 14**: Market update and new inventory
+
+## MOBILE OPTIMIZATION
+
+### RESPONSIVE DESIGN
+- **Single Column**: Stack calculator elements vertically
+- **Touch Sliders**: Large, easy-to-use input controls
+- **Simplified Inputs**: Streamlined form fields
+- **Quick Results**: Immediate feedback on inputs
+
+### MOBILE-SPECIFIC FEATURES
+- **Thumb-Friendly**: All controls within reach
+- **Auto-Fill**: Browser integration for known information
+- **Simplified Tabs**: Collapsible calculator selection
+- **Share Results**: Easy sharing via text/email
+
+## CONVERSION OPTIMIZATION
+
+### PSYCHOLOGICAL TRIGGERS
+1. **Loss Aversion**: Show money left on the table without service
+2. **Social Proof**: "Join 2500+ smart car buyers"
+3. **Authority**: Professional expertise demonstrations
+4. **Urgency**: Time-sensitive market conditions
+5. **Reciprocity**: Free valuable calculations
+
+### CTA PLACEMENT
+**Primary CTAs**:
+- "Get Personalized Quote" (after results)
+- "Book $499 Consultation" (prominent placement)
+- "Download Full Report" (email capture)
+
+**Secondary CTAs**:
+- "Calculate Different Vehicle" (engagement)
+- "Share Results" (viral growth)
+- "Learn More About Process" (education)
+
+### A/B TEST OPPORTUNITIES
+- Calculator input order
+- Results presentation format
+- CTA button copy and placement
+- Lead capture timing
+- Value proposition messaging
+
+## TECHNICAL IMPLEMENTATION
+
+### CALCULATION ENGINE
+**Client-Side Calculations**:
+- Real-time result updates
+- Input validation and formatting
+- Progressive enhancement
+- Offline capability for basic calculations
+
+**Server-Side Integration**:
+- Market data API integration
+- Credit score rate lookup
+- Vehicle valuation services
+- Local market analysis
+
+### DATA SOURCES
+**Market Data**:
+- KBB/Edmunds API integration
+- Local dealer pricing data
+- Market trend analysis
+- Seasonal adjustment factors
+
+**Financial Data**:
+- Current interest rates
+- Credit score rate matrices
+- Financing program data
+- Incentive information
+
+### ANALYTICS & TRACKING
+**Calculator Usage**:
+- Tool engagement metrics
+- Completion rates by calculator
+- Input value distributions
+- Result range analysis
+
+**Conversion Tracking**:
+- Lead capture rates
+- Calculator-to-consultation conversion
+- Email engagement metrics
+- Follow-up sequence performance
+
+## TECHNICAL SPECIFICATIONS
+
+### COMPONENT ARCHITECTURE
+```
+CalculatorPage/
+├── CalculatorTabs/
+│   ├── SavingsCalculator
+│   ├── FinancingCalculator
+│   ├── TradeInCalculator
+│   ├── LeaseVsBuyCalculator
+│   └── TotalCostCalculator
+├── ResultsDisplay/
+│   ├── SavingsBreakdown
+│   ├── PaymentSchedule
+│   ├── ComparisonCharts
+│   └── PersonalizedRecommendations
+├── LeadCapture/
+│   ├── ProgressiveForm
+│   ├── ValueProposition
+│   └── CTAButtons
+└── MarketData/
+    ├── LocalPricing
+    ├── TrendAnalysis
+    └── ComparableVehicles
+```
+
+### STATE MANAGEMENT
+- **Calculator State**: Input values and results
+- **User Profile**: Captured lead information
+- **Market Data**: Cached pricing and trend data
+- **Session State**: Progress through calculators
+
+### API INTEGRATIONS
+- **Vehicle Valuation**: Third-party pricing APIs
+- **Credit Data**: Financing rate services
+- **Market Analysis**: Local market data providers
+- **CRM Integration**: Lead management system 
