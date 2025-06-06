@@ -144,27 +144,7 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-          className="text-center py-8 border-t border-neutral-700 mb-8"
-        >
-          <h3 className="text-2xl font-bold mb-4">
-            Ready to Save on Your Next Vehicle?
-          </h3>
-          <p className="text-neutral-300 mb-6 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who have saved money with our expert auto brokerage service.
-          </p>
-          <button 
-            onClick={() => window.location.href = '/booking'}
-            className="bg-gradient-emerald text-white px-8 py-4 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300"
-          >
-            Book Your $499 Consultation
-          </button>
-        </motion.div>
+
 
         {/* Bottom Bar */}
         <div className="border-t border-neutral-700 pt-8">

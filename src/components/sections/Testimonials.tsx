@@ -92,7 +92,7 @@ const StarRating: React.FC<{ rating: number; size?: 'sm' | 'md' | 'lg' }> = ({
         <StarIcon
           key={star}
           className={`${sizeClasses[size]} ${
-            star <= rating ? 'text-gold-primary' : 'text-neutral-300'
+            star <= rating ? 'text-orange-500' : 'text-neutral-300'
           }`}
         />
       ))}
@@ -119,10 +119,15 @@ const TestimonialCard: React.FC<{
       transition={{ duration: 0.5, ease: 'easeInOut' }}
       className={`absolute inset-0 w-full ${isActive ? 'z-10' : 'z-0'}`}
     >
-      <div className="glass luxury-card p-8 lg:p-10 h-full flex flex-col">
+      <div 
+        className="bg-[#FEFCFA] rounded-[20px] p-8 lg:p-10 h-full flex flex-col"
+        style={{
+          boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
+        }}
+      >
         {/* Quote Icon */}
         <div className="mb-6">
-          <div className="w-12 h-12 text-primary-emerald/30">
+          <div className="w-12 h-12 text-emerald-600/30">
             <svg fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
               <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
             </svg>
@@ -137,7 +142,7 @@ const TestimonialCard: React.FC<{
         {/* Customer Info */}
         <div className="flex items-center space-x-4">
           {/* Avatar */}
-          <div className="w-16 h-16 rounded-full bg-gradient-emerald flex items-center justify-center text-white font-bold text-xl">
+          <div className="w-16 h-16 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-xl">
             {testimonial.name.split(' ').map(n => n[0]).join('')}
           </div>
 
@@ -148,7 +153,7 @@ const TestimonialCard: React.FC<{
                 {testimonial.name}
               </h4>
               {testimonial.verified && (
-                <div className="w-5 h-5 bg-primary-emerald rounded-full flex items-center justify-center">
+                <div className="w-5 h-5 bg-emerald-600 rounded-full flex items-center justify-center">
                   <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
@@ -161,7 +166,7 @@ const TestimonialCard: React.FC<{
 
           {/* Savings */}
           <div className="text-right">
-            <div className="text-2xl font-bold text-primary-emerald">
+            <div className="text-2xl font-bold text-emerald-600">
               ${testimonial.savings.toLocaleString()}
             </div>
             <div className="text-neutral-600 text-sm">Saved</div>
@@ -220,18 +225,29 @@ const Testimonials: React.FC = () => {
   const averageRating = testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length;
 
   return (
-    <section id="testimonials" ref={sectionRef} className="py-24 bg-white relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-24 right-24 w-64 h-64 bg-gradient-radial opacity-20" />
-        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-gradient-radial opacity-20" />
-      </div>
+    <section 
+      id="testimonials" 
+      ref={sectionRef} 
+      className="py-24 relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #FEF7ED 0%, #FEFCFA 50%, #FEF7ED 100%)',
+      }}
+    >
+      {/* Subtle background pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, #8B4513 1px, transparent 0)`,
+          backgroundSize: '32px 32px',
+        }}
+      />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <div ref={titleRef} className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-neutral-800 mb-6">
-            Customer <span className="gradient-text">Success Stories</span>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="text-neutral-800">Customer </span>
+            <span className="text-emerald-600">Success Stories</span>
           </h2>
           <p className="text-xl text-neutral-600 max-w-3xl mx-auto mb-8">
             Don&apos;t just take our word for it. See how we&apos;ve helped thousands of customers 
@@ -241,50 +257,59 @@ const Testimonials: React.FC = () => {
           {/* Trust Metrics */}
           <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12">
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary-emerald">
-                ${totalSavings.toLocaleString()}+
+              <div className="text-3xl font-bold text-emerald-600">
+                $15M+
               </div>
               <div className="text-neutral-600">Total Savings</div>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center space-x-1">
-                <span className="text-3xl font-bold text-gold-primary">{averageRating}</span>
+                <span className="text-3xl font-bold text-orange-500">{averageRating}</span>
                 <StarRating rating={Math.floor(averageRating)} size="lg" />
               </div>
               <div className="text-neutral-600">Average Rating</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary-emerald">2,500+</div>
+              <div className="text-3xl font-bold text-emerald-600">2,500+</div>
               <div className="text-neutral-600">Happy Customers</div>
             </div>
           </div>
         </div>
 
         {/* Testimonial Carousel */}
-        <div className="max-w-4xl mx-auto">
-          <div className="relative h-96 lg:h-80 overflow-hidden rounded-2xl">
-            {testimonials.map((testimonial, index) => (
-              <TestimonialCard
-                key={testimonial.id}
-                testimonial={testimonial}
-                index={index - activeIndex}
-                isActive={index === activeIndex}
-              />
-            ))}
+        <div className="max-w-6xl mx-auto relative">
+          {/* Navigation Arrows - Outside the card */}
+          <button
+            onClick={prevTestimonial}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20 hover:scale-110"
+            style={{
+              boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
+            }}
+          >
+            <ChevronLeftIcon className="w-6 h-6 text-neutral-600" />
+          </button>
+          <button
+            onClick={nextTestimonial}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20 hover:scale-110"
+            style={{
+              boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
+            }}
+          >
+            <ChevronRightIcon className="w-6 h-6 text-neutral-600" />
+          </button>
 
-            {/* Navigation Arrows */}
-            <button
-              onClick={prevTestimonial}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20"
-            >
-              <ChevronLeftIcon className="w-6 h-6 text-neutral-600" />
-            </button>
-            <button
-              onClick={nextTestimonial}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20"
-            >
-              <ChevronRightIcon className="w-6 h-6 text-neutral-600" />
-            </button>
+          {/* Testimonial Card Container */}
+          <div className="max-w-4xl mx-auto">
+            <div className="relative h-96 lg:h-80 overflow-hidden rounded-[20px]">
+              {testimonials.map((testimonial, index) => (
+                <TestimonialCard
+                  key={testimonial.id}
+                  testimonial={testimonial}
+                  index={index - activeIndex}
+                  isActive={index === activeIndex}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Testimonial Indicators */}
@@ -295,7 +320,7 @@ const Testimonials: React.FC = () => {
                 onClick={() => setActiveIndex(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-200 ${
                   index === activeIndex 
-                    ? 'bg-primary-emerald scale-125' 
+                    ? 'bg-emerald-600 scale-125' 
                     : 'bg-neutral-300 hover:bg-neutral-400'
                 }`}
               />
@@ -316,12 +341,24 @@ const Testimonials: React.FC = () => {
           <p className="text-neutral-600 mb-8 max-w-2xl mx-auto">
             Start your journey to significant savings with our professional auto brokerage service.
           </p>
-          <button 
+          <motion.button 
             onClick={() => window.location.href = '/booking'}
-            className="bg-gradient-emerald text-white px-8 py-4 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-10 py-5 rounded-full text-lg transition-all duration-300 group/btn"
+            style={{
+              background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+              boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3), 0 16px 40px -8px rgba(5, 150, 105, 0.2), 0 32px 64px -16px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.1)',
+            }}
+            whileHover={{ 
+              y: -3, 
+              scale: 1.02,
+              background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+              boxShadow: '0 12px 28px -4px rgba(5, 150, 105, 0.4), 0 20px 48px -8px rgba(5, 150, 105, 0.25), 0 40px 80px -16px rgba(0, 0, 0, 0.2), inset 0 2px 0 rgba(255, 255, 255, 0.15)',
+            }}
+            whileTap={{ scale: 0.98, y: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
             Book Your $499 Consultation
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     </section>

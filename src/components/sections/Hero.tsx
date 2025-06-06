@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
+import { motion, useAnimation, useInView, useMotionValue, useSpring, AnimatePresence, useReducedMotion, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
-import { ArrowRight, Shield, Users, DollarSign } from 'lucide-react'
+import { ArrowRight, Play, Shield, Award, Users, DollarSign, Star } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { animationVariants } from '@/lib/utils'
-import AnimatedBackground from '@/components/webgl/AnimatedBackground'
 
 /**
  * Hero Section - Interactive Luxury Auto Brokerage Landing
@@ -50,8 +49,8 @@ export const Hero: React.FC = () => {
   const accentX = useTransform(springMouseX, [-100, 100], [-5, 5])
   const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
 
-  // Interactive depth layers - removed unused variable
-  const [, setInteractiveIntensity] = useState(1)
+  // Interactive depth layers
+  const [interactiveIntensity, setInteractiveIntensity] = useState(1)
 
   // 120fps optimized typewriter effect - using motion values
   const [currentWord, setCurrentWord] = useState(0)
@@ -61,7 +60,7 @@ export const Hero: React.FC = () => {
   const [displayText, setDisplayText] = useState('')
   const cursorOpacity = useMotionValue(1)
   const textScale = useMotionValue(1)
-  const [isTyping] = useState(true)
+  const [isTyping, setIsTyping] = useState(true)
 
   // Performance optimized word array
   const words = useMemo(() => [
@@ -294,6 +293,11 @@ export const Hero: React.FC = () => {
     window.location.href = '/inventory'
   }
 
+  const handleWatchVideo = () => {
+    // TODO: Implement video modal
+    console.log('Watch video clicked')
+  }
+
   // Company names for infinite carousel
   const companyNames = [
     "Mercedes-Benz", "BMW", "Audi", "Porsche", "Lamborghini", "Ferrari", 
@@ -312,15 +316,8 @@ export const Hero: React.FC = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* WebGL Animated Background */}
-      <AnimatedBackground 
-        intensity="subtle" 
-        particleCount={1500}
-        className="absolute inset-0 z-0"
-      />
-      
       {/* 120fps Optimized Luxury Background */}
-      <div className="absolute inset-0 z-10 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Primary gradient layer - GPU accelerated */}
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
@@ -361,7 +358,7 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content Container */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <motion.div
           className="text-center space-y-10"
           initial="initial"
@@ -376,7 +373,7 @@ export const Hero: React.FC = () => {
             <motion.div className="space-y-2">
               <motion.h1 
                 ref={titleRef}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
                 style={{
                   background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
                   WebkitBackgroundClip: 'text',
@@ -402,7 +399,7 @@ export const Hero: React.FC = () => {
                     }}
                   >
                     <motion.span
-                      className="text-3xl md:text-4xl lg:text-5xl font-semibold whitespace-nowrap"
+                      className="text-4xl md:text-5xl lg:text-6xl font-semibold whitespace-nowrap"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
                         WebkitBackgroundClip: 'text',
@@ -458,32 +455,40 @@ export const Hero: React.FC = () => {
             <motion.div
               whileHover={{ 
                 scale: shouldReduceMotion ? 1 : 1.02, 
-                y: shouldReduceMotion ? 0 : -1 
+                y: shouldReduceMotion ? 0 : -3 
               }}
               whileTap={{ 
-                scale: shouldReduceMotion ? 1 : 0.98 
+                scale: shouldReduceMotion ? 1 : 0.98,
+                y: 0
               }}
               transition={{ 
                 type: "spring",
                 stiffness: 400,
-                damping: 30,
-                mass: 0.1,
-                duration: shouldReduceMotion ? 0 : 0.15
+                damping: 25,
+                mass: 0.1
               }}
               style={{
                 willChange: 'transform',
+                boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3), 0 16px 40px -8px rgba(5, 150, 105, 0.2), 0 32px 64px -16px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.1)',
+                borderRadius: '9999px'
               }}
             >
-              <Button
-                size="xl"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg border-0 rounded-full px-10 py-5 text-lg font-medium transition-all duration-300 group"
+              <motion.button
+                className="bg-emerald-600 text-white border-0 rounded-full px-10 py-5 text-lg font-medium transition-all duration-300 group relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                }}
+                whileHover={{
+                  background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                }}
+                transition={{ duration: 0.3 }}
                 onClick={handleScrollToDeals}
               >
-                <span className="flex items-center">
+                <span className="flex items-center relative z-10">
                   Start Your Journey
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
                 </span>
-              </Button>
+              </motion.button>
             </motion.div>
           </motion.div>
 
@@ -530,8 +535,23 @@ export const Hero: React.FC = () => {
             >
               <DollarSign className="w-3.5 h-3.5 text-amber-600/60" />
               <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-semibold text-neutral-800">$50K+</span>
-                <span className="text-xs text-neutral-500">Avg. Saved</span>
+                <span className="text-base sm:text-lg font-semibold text-neutral-800">$15M+</span>
+                <span className="text-xs text-neutral-500">Total Saved</span>
+              </div>
+            </motion.div>
+
+            {/* Separator */}
+            <div className="hidden sm:block w-px h-4 bg-neutral-300/50"></div>
+
+            {/* Rating */}
+            <motion.div
+              variants={animationVariants.saasCardEntrance}
+              className="flex items-center gap-1.5"
+            >
+              <Star className="w-3.5 h-3.5 text-orange-500/60" />
+              <div className="flex items-baseline gap-1">
+                <span className="text-base sm:text-lg font-semibold text-neutral-800">5.0</span>
+                <span className="text-xs text-neutral-500">Rating</span>
               </div>
             </motion.div>
           </motion.div>
@@ -589,8 +609,8 @@ export const Hero: React.FC = () => {
               </div>
               
               {/* Subtle gradient fade edges - matches page background */}
-              <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-neutral-50 to-transparent pointer-events-none"></div>
-              <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-neutral-50 to-transparent pointer-events-none"></div>
+              <div className="absolute left-0 top-0 w-20 h-full pointer-events-none" style={{ background: 'linear-gradient(to right, #FEF7ED, transparent)' }}></div>
+              <div className="absolute right-0 top-0 w-20 h-full pointer-events-none" style={{ background: 'linear-gradient(to left, #FEF7ED, transparent)' }}></div>
             </div>
           </motion.div>
         </motion.div>

@@ -23,11 +23,11 @@ body {
   --gold-light: #fef3c7;              /* Subtle backgrounds */
   
   /* Modern Neutrals - 2025 Palette */
-  --neutral-50: #fafafa !important;
-  --neutral-100: #f5f5f5 !important;
-  --neutral-200: #e5e5e5 !important;
-  --neutral-300: #d4d4d4;             /* Subtle text */
-  --neutral-400: #a3a3a3;             /* Placeholder text */
+  --neutral-50: #FEF7ED !important;
+  --neutral-100: #FDF4E7 !important;
+  --neutral-200: #FCF0E1 !important;
+  --neutral-300: #E7D5C7;             /* Subtle text - warm tone */
+  --neutral-400: #C9B29B;             /* Placeholder text - warm tone */
   --neutral-500: #737373;             /* Secondary text */
   --neutral-600: #525252;             /* Body text */
   --neutral-700: #404040;             /* Emphasized text */
@@ -108,9 +108,9 @@ body {
 /* ===== FORCE LIGHT MODE - OVERRIDE DARK MODE ===== */
 :root {
   /* Force light theme colors */
-  --neutral-50: #fafafa !important;
-  --neutral-100: #f5f5f5 !important;
-  --neutral-200: #e5e5e5 !important;
+  --neutral-50: #FEF7ED !important;
+  --neutral-100: #FDF4E7 !important;
+  --neutral-200: #FCF0E1 !important;
   --neutral-800: #262626 !important;
   --neutral-900: #171717 !important;
   --glass-bg: rgba(255, 255, 255, 0.1) !important;
@@ -122,9 +122,9 @@ body {
 @media (prefers-color-scheme: dark) {
   :root {
     /* Keep light theme even in dark mode preference */
-    --neutral-50: #fafafa;
-    --neutral-100: #f5f5f5;
-    --neutral-200: #e5e5e5;
+    --neutral-50: #FEF7ED;
+    --neutral-100: #FDF4E7;
+    --neutral-200: #FCF0E1;
     --neutral-800: #262626;
     --neutral-900: #171717;
     --glass-bg: rgba(255, 255, 255, 0.1);
@@ -145,7 +145,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background-color: #fafafa !important;
+  background-color: #FEF7ED !important;
 }
 
 body {
@@ -153,7 +153,7 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--neutral-800);
-  background-color: #fafafa !important;
+  background-color: #FEF7ED !important;
   overflow-x: hidden;
 }
 

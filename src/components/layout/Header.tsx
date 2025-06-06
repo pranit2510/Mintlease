@@ -1,58 +1,172 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { motion, useMotionValue, useSpring, useTransform, useMotionValueEvent, useReducedMotion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring, useTransform, useMotionValueEvent, useVelocity } from 'framer-motion'
+import { Menu, X, Phone, Mail, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { cn } from '@/lib/utils'
 
 /**
- * Floating Luxury Header Component with Glassmorphism
- * Features: Floating design, rounded edges, scroll animations, mobile responsive
+ * Ultra-Smooth 120fps Floating Header with Directional Transitions
+ * Features: Advanced scroll direction detection, 120fps optimized springs, directional easing
  */
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const shouldReduceMotion = useReducedMotion()
+  const lastScrollTime = useRef(0)
   
-  // 120fps optimized scroll tracking with motion values
+  // Advanced 120fps scroll tracking with velocity and direction
   const scrollY = useMotionValue(0)
+  const scrollVelocity = useVelocity(scrollY)
   const scrollProgress = useMotionValue(0)
+  const scrollDirection = useMotionValue(0) // 1 for down, -1 for up
+  const lastScrollY = useMotionValue(0)
+  const isScrollingUp = useMotionValue(false)
   
-  // Ultra-smooth spring configurations for 120fps
-  const springConfig = {
-    stiffness: shouldReduceMotion ? 100 : 600,
-    damping: shouldReduceMotion ? 40 : 25,
-    mass: shouldReduceMotion ? 1 : 0.1,
-    restSpeed: shouldReduceMotion ? 1 : 0.01,
-    restDelta: shouldReduceMotion ? 0.5 : 0.001
+  // 120fps Ultra-Premium Spring Configurations
+  const ultraSmoothConfig = {
+    stiffness: shouldReduceMotion ? 120 : 400,
+    damping: shouldReduceMotion ? 35 : 28,
+    mass: shouldReduceMotion ? 0.8 : 0.15,
+    restSpeed: shouldReduceMotion ? 0.5 : 0.01,
+    restDelta: shouldReduceMotion ? 0.2 : 0.001,
+    velocity: 0
   }
 
-  // Smooth transforms for all navbar properties
-  const navbarScale = useSpring(useTransform(scrollProgress, [0, 1], [1, 0.98]), springConfig)
-  const navbarY = useSpring(useTransform(scrollProgress, [0, 1], [0, -2]), springConfig)
-  const borderRadius = useSpring(useTransform(scrollProgress, [0, 1], [0, 12]), springConfig)
-  const navbarPadding = useSpring(useTransform(scrollProgress, [0, 1], [0, 16]), springConfig)
-  
-  // Background and shadow animations
-  const backgroundOpacity = useSpring(useTransform(scrollProgress, [0, 1], [0, 0.95]), springConfig)
-  const shadowIntensity = useSpring(useTransform(scrollProgress, [0, 1], [0, 1]), springConfig)
-  const borderOpacity = useSpring(useTransform(scrollProgress, [0, 1], [0, 0.4]), springConfig)
-  
-  // Mobile menu positioning
-  const mobileMenuTop = useTransform(scrollProgress, [0, 1], [120, 96])
+  // Specialized config for "return to floating" transitions (scrolling up)
+  const floatingReturnConfig = {
+    stiffness: shouldReduceMotion ? 100 : 350,
+    damping: shouldReduceMotion ? 40 : 32,
+    mass: shouldReduceMotion ? 1 : 0.12,
+    restSpeed: shouldReduceMotion ? 0.8 : 0.005,
+    restDelta: shouldReduceMotion ? 0.3 : 0.0005,
+    velocity: 0
+  }
 
-  // Handle scroll with motion values for 120fps performance
+  // Visual elements config for silky smooth transitions
+  const visualUltraConfig = {
+    stiffness: shouldReduceMotion ? 80 : 280,
+    damping: shouldReduceMotion ? 38 : 30,
+    mass: shouldReduceMotion ? 1.2 : 0.18,
+    restSpeed: shouldReduceMotion ? 1 : 0.008,
+    restDelta: shouldReduceMotion ? 0.4 : 0.0008,
+    velocity: 0
+  }
+
+  // Dynamic spring config based on scroll direction
+  const getDynamicConfig = useCallback((isUp: boolean) => {
+    return isUp ? floatingReturnConfig : ultraSmoothConfig
+  }, [floatingReturnConfig, ultraSmoothConfig])
+
+  // Advanced directional easing functions for 120fps
+  const easeOutCubicUp = useCallback((t: number): number => {
+    // Faster ease-out for returning to floating state
+    return 1 - Math.pow(1 - t, 2.5)
+  }, [])
+
+  const easeInOutCubicDown = useCallback((t: number): number => {
+    // Smoother ease-in-out for scrolling down
+    return t < 0.5 ? 2 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+  }, [])
+
+  // Ultra-smooth transforms with enhanced directional spring configs
+  const navbarScale = useSpring(
+    useTransform(scrollProgress, [0, 0.15, 0.4, 1], [1, 0.995, 0.99, 0.98]), 
+    ultraSmoothConfig
+  )
+  
+  const navbarY = useSpring(
+    useTransform(scrollProgress, [0, 0.1, 0.3, 1], [0, -0.5, -1.5, -3]), 
+    ultraSmoothConfig
+  )
+  
+  const borderRadius = useSpring(
+    useTransform(scrollProgress, [0, 0.08, 0.25, 0.6, 1], [0, 2, 6, 10, 12]), 
+    visualUltraConfig
+  )
+  
+  const navbarPadding = useSpring(
+    useTransform(scrollProgress, [0, 0.05, 0.2, 0.5, 1], [0, 2, 8, 14, 16]), 
+    visualUltraConfig
+  )
+  
+  // Enhanced background transitions with velocity-aware easing
+  const backgroundOpacity = useSpring(
+    useTransform(scrollProgress, [0, 0.05, 0.15, 0.4, 1], [0, 0.1, 0.3, 0.7, 0.95]), 
+    visualUltraConfig
+  )
+  
+  const shadowIntensity = useSpring(
+    useTransform(scrollProgress, [0, 0.08, 0.2, 0.5, 1], [0, 0.1, 0.3, 0.7, 1]), 
+    visualUltraConfig
+  )
+  
+  const borderOpacity = useSpring(
+    useTransform(scrollProgress, [0, 0.1, 0.3, 0.7, 1], [0, 0.05, 0.15, 0.3, 0.4]), 
+    visualUltraConfig
+  )
+
+  // Derived state for conditional rendering
+  const isScrolled = useTransform(scrollProgress, (value) => value > 0.08)
+
+  // Advanced 120fps scroll handling with velocity and direction awareness
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const progress = Math.min(Math.max((latest - 10) / 30, 0), 1)
-    scrollProgress.set(progress)
+    const currentTime = performance.now()
+    const lastY = lastScrollY.get()
+    const direction = latest > lastY ? 1 : -1
+    const isUp = direction === -1
+    
+    // Update direction tracking
+    scrollDirection.set(direction)
+    isScrollingUp.set(isUp)
+    lastScrollY.set(latest)
+    
+    // Extended scroll range with velocity-aware thresholds
+    const startThreshold = 3
+    const endThreshold = isUp ? 100 : 120 // Shorter range when scrolling up for faster response
+    const rawProgress = Math.min(Math.max((latest - startThreshold) / (endThreshold - startThreshold), 0), 1)
+    
+    // Apply directional easing for 120fps smoothness
+    let easedProgress: number
+    if (shouldReduceMotion) {
+      easedProgress = rawProgress
+    } else {
+      // Different easing curves based on scroll direction
+      easedProgress = isUp ? easeOutCubicUp(rawProgress) : easeInOutCubicDown(rawProgress)
+    }
+    
+    // Smooth progress updates with velocity consideration
+    const velocity = scrollVelocity.get()
+    const velocityFactor = Math.min(Math.abs(velocity) / 1000, 1)
+    const finalProgress = easedProgress * (1 - velocityFactor * 0.1) // Slight damping at high velocity
+    
+    scrollProgress.set(finalProgress)
+    lastScrollTime.current = currentTime
   })
 
+  // Optimized scroll listener with 120fps targeting
   useEffect(() => {
+    let rafId: number
+    
     const handleScroll = () => {
-      scrollY.set(window.scrollY)
+      // Use RAF for 120fps-capable updates
+      if (rafId) cancelAnimationFrame(rafId)
+      
+      rafId = requestAnimationFrame(() => {
+        scrollY.set(window.scrollY)
+      })
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    // High-frequency passive listener
+    window.addEventListener('scroll', handleScroll, { 
+      passive: true,
+      capture: false 
+    })
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [scrollY])
 
   // Navigation items
@@ -104,81 +218,63 @@ export const Header: React.FC = () => {
         }}
       >
         <motion.div
-          className="relative overflow-hidden backdrop-blur-xl border border-white/10"
+          className="relative overflow-hidden backdrop-blur-xl"
           style={{
             borderRadius: borderRadius,
             background: useTransform(
               backgroundOpacity,
               [0, 1],
               [
-                'rgba(255, 255, 255, 0)',
-                'linear-gradient(135deg, rgba(4, 120, 87, 0.08) 0%, rgba(16, 185, 129, 0.05) 50%, rgba(4, 120, 87, 0.08) 100%)'
+                'rgba(254, 247, 237, 0)',
+                '#FAF7F3'
               ]
             ),
-            borderColor: useTransform(
-              borderOpacity,
-              [0, 1],
-              ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.15)']
-            ),
-            boxShadow: useTransform(
-              shadowIntensity,
-              [0, 1],
-              [
-                '0 0 0 0 rgba(0, 0, 0, 0)',
-                '0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 4px 8px -2px rgba(0, 0, 0, 0.10), 0 8px 16px -4px rgba(4, 120, 87, 0.12), 0 16px 32px -8px rgba(4, 120, 87, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.15)'
-              ]
+            borderColor: 'rgba(255, 255, 255, 0)',
+            boxShadow: '0 0 0 0 rgba(0, 0, 0, 0)',
+            borderBottom: useTransform(
+              scrollProgress,
+              [0, 0.1],
+              ['1px solid transparent', '1px solid #F0EDE8']
             ),
             willChange: 'transform, background, border-color, box-shadow, border-radius',
             transform: 'translateZ(0)', // 3D acceleration
             backfaceVisibility: 'hidden',
           }}
         >
-          {/* Premium Depth Layer - Bottom */}
+          {/* Enhanced Premium Depth Layer - Bottom */}
           <motion.div
             className="absolute inset-0"
             style={{
-              opacity: useTransform(scrollProgress, [0, 1], [0, 0.4]),
-              background: 'radial-gradient(ellipse at top, rgba(16, 185, 129, 0.03) 0%, transparent 70%)',
+              opacity: useSpring(useTransform(scrollProgress, [0, 0.1, 0.3, 1], [0, 0.1, 0.25, 0.4]), visualUltraConfig),
+              background: 'radial-gradient(ellipse at top, rgba(156, 163, 175, 0.04) 0%, transparent 70%)',
               borderRadius: borderRadius,
               willChange: 'opacity',
             }}
           />
           
-          {/* Premium Depth Layer - Middle */}
+          {/* Enhanced Premium Depth Layer - Middle */}
           <motion.div
             className="absolute inset-0"
             style={{
-              opacity: useTransform(scrollProgress, [0, 1], [0, 0.6]),
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(4, 120, 87, 0.06) 100%)',
+              opacity: useSpring(useTransform(scrollProgress, [0, 0.1, 0.4, 1], [0, 0.15, 0.4, 0.6]), visualUltraConfig),
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(107, 114, 128, 0.06) 100%)',
               borderRadius: borderRadius,
               willChange: 'opacity',
             }}
           />
           
-          {/* Premium Inner Glow */}
+          {/* Enhanced Premium Inner Glow */}
           <motion.div
             className="absolute inset-0.5"
             style={{
-              opacity: useTransform(scrollProgress, [0, 1], [0, 0.8]),
+              opacity: useSpring(useTransform(scrollProgress, [0, 0.15, 0.5, 1], [0, 0.2, 0.6, 0.8]), visualUltraConfig),
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 50%)',
               borderRadius: useTransform(borderRadius, (value) => Math.max(0, value - 2)),
               willChange: 'opacity',
             }}
           />
           
-          {/* Sleek Border Highlight */}
-          <motion.div
-            className="absolute inset-0"
-            style={{
-              opacity: useTransform(scrollProgress, [0, 1], [0, 1]),
-              borderRadius: borderRadius,
-              padding: '1px',
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%)',
-              mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-              maskComposite: 'xor',
-              willChange: 'opacity',
-            }}
-          />
+
           
           <div className="px-6 lg:px-8 mx-auto max-w-7xl">
             <div className="flex items-center justify-between h-16">
@@ -199,47 +295,110 @@ export const Header: React.FC = () => {
                 }}
               >
                 <motion.div 
-                  className="w-10 h-10 bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center relative overflow-hidden shadow-lg"
+                  className="w-20 h-12 flex items-center justify-center relative"
                   style={{
-                    rotate: useTransform(scrollProgress, [0, 1], [0, 360]),
                     willChange: 'transform',
                     transformStyle: 'preserve-3d',
-                    boxShadow: useTransform(
-                      scrollProgress,
-                      [0, 1],
-                      [
-                        '0 4px 8px rgba(4, 120, 87, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-                        '0 6px 12px rgba(4, 120, 87, 0.3), 0 2px 4px rgba(4, 120, 87, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.1)'
-                      ]
-                    ),
                   }}
                   whileHover={{
-                    scale: shouldReduceMotion ? 1 : 1.08,
-                    rotateY: shouldReduceMotion ? 0 : 15,
-                    rotateX: shouldReduceMotion ? 0 : 8,
+                    scale: shouldReduceMotion ? 1 : 1.05,
                     y: shouldReduceMotion ? 0 : -1,
                   }}
                   transition={{ type: "spring", stiffness: 500, damping: 25, mass: 0.1 }}
                 >
-                  {/* Premium Inner Highlight */}
-                  <motion.div
-                    className="absolute inset-0.5 bg-gradient-to-br from-white/25 via-white/10 to-transparent rounded-lg"
+                  {/* Mint Lease Logo - Elegant Car Silhouette */}
+                  <svg 
+                    viewBox="0 0 160 60" 
+                    className="w-full h-full" 
                     style={{
-                      opacity: useTransform(scrollProgress, [0, 1], [0.8, 1]),
-                      willChange: 'opacity',
+                      filter: 'drop-shadow(0 1px 2px rgba(139, 157, 184, 0.15))',
                     }}
-                  />
-                  
-                  {/* 3D Depth Effect */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"
-                    style={{
-                      opacity: useTransform(scrollProgress, [0, 1], [0.3, 0.5]),
-                      willChange: 'opacity',
-                    }}
-                  />
-                  
-                  <span className="text-white font-bold text-xl relative z-10 drop-shadow-sm">M</span>
+                  >
+                    {/* Main car silhouette - sleek coupe profile */}
+                    <path 
+                      d="M20 35 C25 30 35 28 50 28 L110 28 C125 28 135 30 140 35 L140 38 L20 38 Z" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    
+                    {/* Roof line - elegant curve */}
+                    <path 
+                      d="M35 35 C40 25 55 22 80 22 C105 22 120 25 125 35" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    
+                    {/* Windshield */}
+                    <path 
+                      d="M45 35 C48 30 52 28 58 28" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    
+                    {/* Rear window */}
+                    <path 
+                      d="M102 28 C108 30 112 35 115 35" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    
+                    {/* Front wheel arc */}
+                    <path 
+                      d="M40 38 C40 42 44 45 48 45 C52 45 56 42 56 38" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    
+                    {/* Rear wheel arc */}
+                    <path 
+                      d="M104 38 C104 42 108 45 112 45 C116 45 120 42 120 38" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    
+                    {/* Side character line */}
+                    <path 
+                      d="M25 32 L135 32" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      opacity="0.7"
+                    />
+                    
+                    {/* Front bumper detail */}
+                    <path 
+                      d="M18 36 L22 36" 
+                      fill="none" 
+                      stroke="#8B9DB8" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    
+                    {/* Elegant red accent - rear detail */}
+                    <path 
+                      d="M138 30 L144 32 L138 34" 
+                      fill="#EF4444" 
+                      stroke="none"
+                    />
+                    
+                    {/* Small front detail */}
+                    <circle cx="22" cy="33" r="1.5" fill="#8B9DB8" opacity="0.8" />
+                  </svg>
                 </motion.div>
                 <div>
                   <h1 className="text-xl heading-luxury text-3d-luxury">Mint Lease</h1>
@@ -250,68 +409,197 @@ export const Header: React.FC = () => {
               {/* Desktop Navigation */}
               <nav className="hidden lg:flex items-center gap-8">
                 {navItems.map((item, index) => (
-                  <motion.button
+                  <motion.div
                     key={item.label}
-                    onClick={() => handleNavClick(item.href)}
-                    className="text-neutral-600 dark:text-neutral-400 font-medium relative group px-4 py-2.5 rounded-lg transition-all duration-200"
-                    whileHover={{ 
-                      scale: shouldReduceMotion ? 1 : 1.02,
-                      y: shouldReduceMotion ? 0 : -1,
-                      backgroundColor: "rgba(4, 120, 87, 0.06)",
-                      boxShadow: shouldReduceMotion ? "none" : "0 4px 12px rgba(4, 120, 87, 0.1)"
-                    }}
-                    whileTap={{ 
-                      scale: shouldReduceMotion ? 1 : 0.98,
-                      y: 0,
-                      backgroundColor: "rgba(4, 120, 87, 0.12)"
-                    }}
-                    transition={{ 
-                      type: "spring", 
-                      stiffness: shouldReduceMotion ? 100 : 500, 
-                      damping: shouldReduceMotion ? 40 : 30,
-                      mass: 0.1,
-                      duration: shouldReduceMotion ? 0.15 : undefined
-                    }}
-                    style={{
-                      willChange: 'transform',
-                      transitionDelay: `${index * 0.1}s`
-                    }}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    className="relative"
+                    whileHover="hover"
+                    whileTap="tap"
+                    initial="initial"
+                    animate="animate"
                   >
-                    <motion.span 
-                      className="text-neutral-600 dark:text-neutral-400 relative z-10"
-                      whileHover={{ 
-                        color: "rgb(4, 120, 87)",
-                        fontWeight: 500
+                    {/* Background layer - BEHIND text */}
+                    <motion.div
+                      className="absolute inset-0 bg-emerald-50 rounded-lg"
+                      variants={{
+                        initial: { opacity: 0, scale: 0.9 },
+                        hover: { 
+                          opacity: 1, 
+                          scale: 1,
+                        }
                       }}
-                      transition={{ duration: 0.15 }}
+                      transition={{ 
+                        duration: 0.2,
+                        ease: "easeOut"
+                      }}
+                      style={{
+                        boxShadow: '0 2px 8px rgba(4, 120, 87, 0.12)',
+                        zIndex: 1,
+                      }}
+                    />
+                    
+                    {/* Button with text - ABOVE background */}
+                    <motion.button
+                      onClick={() => handleNavClick(item.href)}
+                      className="relative text-neutral-600 dark:text-neutral-400 font-medium px-4 py-2.5 rounded-lg w-full h-full z-10"
+                      variants={{
+                        initial: { opacity: 0, y: -10 },
+                        animate: { opacity: 1, y: 0 },
+                        hover: { 
+                          scale: shouldReduceMotion ? 1 : 1.02,
+                          y: shouldReduceMotion ? 0 : -1,
+                          color: "rgb(4, 120, 87)",
+                        },
+                        tap: { 
+                          scale: shouldReduceMotion ? 1 : 0.98,
+                          y: 0,
+                        }
+                      }}
+                      transition={{ 
+                        duration: 0.2,
+                        ease: "easeOut"
+                      }}
+                      style={{
+                        willChange: 'transform, color',
+                        zIndex: 10,
+                      }}
                     >
                       {item.label}
-                    </motion.span>
+                    </motion.button>
                     
-                    {/* Background highlight */}
+                    {/* Ultra-Smooth 120fps Luxury Border Animation */}
                     <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-emerald-50/50 to-emerald-100/50 rounded-lg opacity-0"
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                    
-                    {/* Animated underline */}
-                    <motion.div
-                      className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full origin-left"
-                      initial={{ scaleX: 0, opacity: 0 }}
-                      whileHover={{ scaleX: 1, opacity: 1 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                    />
-                    
-                    {/* Subtle glow effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-emerald-500/10 rounded-lg blur-sm opacity-0"
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </motion.button>
+                      className="absolute inset-0 rounded-lg overflow-hidden"
+                      style={{ 
+                        zIndex: 20,
+                        willChange: 'transform',
+                        transform: 'translate3d(0,0,0)', // Force GPU layer
+                      }}
+                    >
+                      {/* Top border - Silk-smooth entrance */}
+                      <motion.div
+                        className="absolute top-0 left-0 h-[2px] w-full"
+                        style={{
+                          background: 'linear-gradient(90deg, rgba(4, 120, 87, 0.8) 0%, rgba(16, 185, 129, 0.9) 100%)',
+                          transformOrigin: "left",
+                          willChange: 'transform',
+                          transform: 'translate3d(0,0,0)',
+                        }}
+                        variants={{
+                          initial: { 
+                            scaleX: 0,
+                            opacity: 0
+                          },
+                          hover: { 
+                            scaleX: 1,
+                            opacity: 1
+                          }
+                        }}
+                        transition={{ 
+                          type: "spring",
+                          stiffness: shouldReduceMotion ? 150 : 320,
+                          damping: shouldReduceMotion ? 40 : 35,
+                          mass: shouldReduceMotion ? 1 : 0.08,
+                          velocity: shouldReduceMotion ? 0 : 2,
+                          restSpeed: 0.001,
+                          restDelta: 0.0001,
+                          delay: 0
+                        }}
+                      />
+                      
+                      {/* Right border - Flowing cascade */}
+                      <motion.div
+                        className="absolute top-0 right-0 w-[2px] h-full"
+                        style={{
+                          background: 'linear-gradient(180deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.85) 100%)',
+                          transformOrigin: "top",
+                          willChange: 'transform',
+                          transform: 'translate3d(0,0,0)',
+                        }}
+                        variants={{
+                          initial: { 
+                            scaleY: 0,
+                            opacity: 0
+                          },
+                          hover: { 
+                            scaleY: 1,
+                            opacity: 1
+                          }
+                        }}
+                        transition={{ 
+                          type: "spring",
+                          stiffness: shouldReduceMotion ? 150 : 310,
+                          damping: shouldReduceMotion ? 40 : 36,
+                          mass: shouldReduceMotion ? 1 : 0.07,
+                          velocity: shouldReduceMotion ? 0 : 1.8,
+                          restSpeed: 0.001,
+                          restDelta: 0.0001,
+                          delay: 0.06
+                        }}
+                      />
+                      
+                      {/* Bottom border - Elegant continuation */}
+                      <motion.div
+                        className="absolute bottom-0 right-0 h-[2px] w-full"
+                        style={{
+                          background: 'linear-gradient(270deg, rgba(5, 150, 105, 0.85) 0%, rgba(4, 120, 87, 0.8) 100%)',
+                          transformOrigin: "right",
+                          willChange: 'transform',
+                          transform: 'translate3d(0,0,0)',
+                        }}
+                        variants={{
+                          initial: { 
+                            scaleX: 0,
+                            opacity: 0
+                          },
+                          hover: { 
+                            scaleX: 1,
+                            opacity: 1
+                          }
+                        }}
+                        transition={{ 
+                          type: "spring",
+                          stiffness: shouldReduceMotion ? 150 : 300,
+                          damping: shouldReduceMotion ? 40 : 37,
+                          mass: shouldReduceMotion ? 1 : 0.06,
+                          velocity: shouldReduceMotion ? 0 : 1.6,
+                          restSpeed: 0.001,
+                          restDelta: 0.0001,
+                          delay: 0.12
+                        }}
+                      />
+                      
+                      {/* Left border - Perfect completion */}
+                      <motion.div
+                        className="absolute bottom-0 left-0 w-[2px] h-full"
+                        style={{
+                          background: 'linear-gradient(0deg, rgba(4, 120, 87, 0.8) 0%, rgba(16, 185, 129, 0.9) 100%)',
+                          transformOrigin: "bottom",
+                          willChange: 'transform',
+                          transform: 'translate3d(0,0,0)',
+                        }}
+                        variants={{
+                          initial: { 
+                            scaleY: 0,
+                            opacity: 0
+                          },
+                          hover: { 
+                            scaleY: 1,
+                            opacity: 1
+                          }
+                        }}
+                        transition={{ 
+                          type: "spring",
+                          stiffness: shouldReduceMotion ? 150 : 290,
+                          damping: shouldReduceMotion ? 40 : 38,
+                          mass: shouldReduceMotion ? 1 : 0.05,
+                          velocity: shouldReduceMotion ? 0 : 1.4,
+                          restSpeed: 0.001,
+                          restDelta: 0.0001,
+                          delay: 0.18
+                        }}
+                      />
+                    </motion.div>
+                  </motion.div>
                 ))}
               </nav>
 
@@ -333,90 +621,86 @@ export const Header: React.FC = () => {
                     y: 0
                   }}
                 >
-                  <Button className="hidden md:block relative overflow-hidden group emerald-3d bg-gradient-to-r from-primary-emerald to-primary-emerald-dark transition-all duration-200 transform-style-preserve-3d">
-                    {/* Shimmer effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                      initial={{ x: '-100%' }}
-                      whileHover={{ x: '100%' }}
-                      transition={{ duration: 0.6, ease: "easeInOut" }}
-                    />
-                    
-                    {/* Background glow on hover */}
-                    <motion.div
-                      className="absolute inset-0 bg-white/10 rounded-lg opacity-0"
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                    
-                    {/* Button text */}
-                    <motion.span 
-                      className="relative z-10 font-medium"
-                      whileHover={{ 
-                        letterSpacing: "0.02em" 
+                  <motion.div
+                    whileHover={{ 
+                      scale: 1.02,
+                      y: -2
+                    }}
+                    whileTap={{ 
+                      scale: 0.98,
+                      y: 0
+                    }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 400, 
+                      damping: 25 
+                    }}
+                    style={{
+                      boxShadow: '0 4px 12px -2px rgba(5, 150, 105, 0.25), 0 8px 24px -4px rgba(5, 150, 105, 0.15), 0 16px 32px -8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                      borderRadius: '9999px'
+                    }}
+                    className="hidden md:block"
+                  >
+                    <motion.button
+                      className="bg-emerald-600 text-white border-0 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden"
+                      style={{
+                        background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                       }}
-                      transition={{ duration: 0.15 }}
+                      whileHover={{
+                        background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                      }}
+                      transition={{ duration: 0.3 }}
                     >
-                      Get Pre-Approved
-                    </motion.span>
-                    
-                    {/* Subtle border glow */}
-                    <motion.div
-                      className="absolute inset-0 rounded-lg border border-white/20 opacity-0"
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  </Button>
+                      <span className="flex items-center relative z-10">
+                        Get Pre-Approved
+                      </span>
+                    </motion.button>
+                  </motion.div>
                 </motion.div>
                 
                 {/* Mobile Menu Button */}
                 <motion.button
-                  className="lg:hidden p-2.5 rounded-lg border transition-all duration-200 bg-emerald-50/80 dark:bg-emerald-900/80 border-emerald-200/60 dark:border-emerald-700/60 backdrop-blur-sm relative overflow-hidden"
+                  className="lg:hidden p-2.5 rounded-lg border bg-emerald-50/80 dark:bg-emerald-900/80 border-emerald-200/60 dark:border-emerald-700/60 backdrop-blur-sm relative overflow-hidden"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   whileTap={{ 
                     scale: 0.95,
-                    backgroundColor: "rgba(4, 120, 87, 0.1)"
                   }}
                   whileHover={{ 
                     scale: 1.02,
                     y: -1,
-                    backgroundColor: "rgba(4, 120, 87, 0.06)",
-                    boxShadow: "0 4px 12px rgba(4, 120, 87, 0.15)"
+                    backgroundColor: "rgba(4, 120, 87, 0.1)",
                   }}
                   transition={{
-                    type: "spring",
-                    stiffness: 500,
-                    damping: 30
+                    duration: 0.2,
+                    ease: "easeOut",
+                    type: "tween"
+                  }}
+                  style={{
+                    willChange: 'transform, background-color',
                   }}
                 >
-                  {/* Background glow */}
-                  <motion.div
-                    className="absolute inset-0 bg-emerald-100/50 rounded-lg opacity-0"
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                  />
                   <AnimatePresence mode="wait">
                     {isMobileMenuOpen ? (
                       <motion.div
                         key="close"
-                        initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
-                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                        exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
                       >
-                        <X className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
+                        <X className="w-5 h-5 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
                     ) : (
                       <motion.div
                         key="menu"
-                        initial={{ rotate: 90, opacity: 0, scale: 0.8 }}
-                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                        exit={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                        initial={{ rotate: 90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: -90, opacity: 0 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
                       >
-                        <Menu className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
+                        <Menu className="w-5 h-5 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -440,11 +724,11 @@ export const Header: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(false)}
             />
 
-            {/* Mobile Menu */}
+            {/* Enhanced Mobile Menu */}
             <motion.div
               className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl"
               style={{
-                top: mobileMenuTop,
+                top: useSpring(useTransform(scrollProgress, [0, 0.2, 0.6, 1], [120, 110, 100, 96]), visualUltraConfig),
                 left: navbarPadding,
                 right: navbarPadding,
                 willChange: 'top, left, right',
@@ -459,7 +743,8 @@ export const Header: React.FC = () => {
                   <motion.button
                     key={item.label}
                     onClick={() => handleNavClick(item.href)}
-                    className="block w-full text-left text-lg font-medium text-neutral-600 dark:text-neutral-400 transition-all duration-200 py-4 px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group"
+                    className="block w-full text-left text-lg font-medium transition-all duration-200 py-4 px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group"
+                    style={{ color: '#64748B' }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -497,24 +782,41 @@ export const Header: React.FC = () => {
                   whileTap={{ scale: 0.99 }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 >
-                  <Button fullWidth size="lg" className="shadow-md bg-gradient-to-r from-primary-emerald to-primary-emerald-dark hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 relative overflow-hidden group">
-                    {/* Shimmer effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                      initial={{ x: '-100%' }}
-                      whileHover={{ x: '100%' }}
-                      transition={{ duration: 0.6, ease: "easeInOut" }}
-                    />
-                    
-                    {/* Button text with subtle animation */}
-                    <motion.span 
-                      className="relative z-10"
-                      whileHover={{ letterSpacing: "0.01em" }}
-                      transition={{ duration: 0.15 }}
+                  <motion.div
+                    whileHover={{ 
+                      scale: 1.02,
+                      y: -2
+                    }}
+                    whileTap={{ 
+                      scale: 0.98,
+                      y: 0
+                    }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 400, 
+                      damping: 25 
+                    }}
+                    style={{
+                      boxShadow: '0 6px 16px -3px rgba(5, 150, 105, 0.3), 0 12px 32px -6px rgba(5, 150, 105, 0.2), 0 24px 48px -12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                      borderRadius: '9999px'
+                    }}
+                    className="w-full"
+                  >
+                    <motion.button
+                      className="w-full bg-emerald-600 text-white border-0 rounded-full px-10 py-5 text-lg font-medium transition-all duration-300 group relative overflow-hidden"
+                      style={{
+                        background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                      }}
+                      whileHover={{
+                        background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                      }}
+                      transition={{ duration: 0.3 }}
                     >
-                      Get Pre-Approved
-                    </motion.span>
-                  </Button>
+                      <span className="flex items-center justify-center relative z-10">
+                        Get Pre-Approved
+                      </span>
+                    </motion.button>
+                  </motion.div>
                 </motion.div>
               </div>
             </motion.div>

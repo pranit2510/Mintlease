@@ -197,7 +197,7 @@ export default function BookingPage() {
               {/* Trust Badges */}
               <div className="text-center p-6 glass rounded-xl">
                 <div className="text-sm text-neutral-600 mb-2">Trusted by 2,500+ customers</div>
-                <div className="text-2xl font-bold text-primary-emerald">$15M+</div>
+                <div className="text-2xl font-bold text-emerald-600">$15M+</div>
                 <div className="text-sm text-neutral-600">Total Customer Savings</div>
               </div>
             </motion.div>
