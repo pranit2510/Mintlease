@@ -1,15 +1,15 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import { motion, useAnimation, useInView } from 'framer-motion'
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
+import { motion, useAnimation, useInView, useMotionValue, useSpring, AnimatePresence, useReducedMotion, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ArrowRight, Play, Shield, Award, Users, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { animationVariants } from '@/lib/utils'
 
 /**
- * Hero Section - Luxury Auto Brokerage Landing
- * Features: Glassmorphism, Gradient background, Typewriter effect, Enhanced animations
+ * Hero Section - Interactive Luxury Auto Brokerage Landing
+ * Features: Mouse-responsive parallax, Interactive particles, Dynamic depth
  */
 export const Hero: React.FC = () => {
   const containerRef = useRef<HTMLElement>(null)
@@ -20,66 +20,188 @@ export const Hero: React.FC = () => {
 
   const controls = useAnimation()
   const isInView = useInView(containerRef, { once: true, amount: 0.3 })
+  const shouldReduceMotion = useReducedMotion()
 
-  // Typewriter effect state
+  // Interactive mouse tracking - 120fps optimized
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const [isHovering, setIsHovering] = useState(false)
+
+  // Ultra-smooth spring animations for 120fps
+  const springMouseX = useSpring(mouseX, { 
+    stiffness: shouldReduceMotion ? 100 : 400, 
+    damping: shouldReduceMotion ? 40 : 25, 
+    mass: 0.1,
+    restSpeed: 0.1,
+    restDelta: 0.01
+  })
+  const springMouseY = useSpring(mouseY, { 
+    stiffness: shouldReduceMotion ? 100 : 400, 
+    damping: shouldReduceMotion ? 40 : 25, 
+    mass: 0.1,
+    restSpeed: 0.1,
+    restDelta: 0.01
+  })
+
+  // Smooth transform values for parallax
+  const backgroundX = useTransform(springMouseX, [-100, 100], [-20, 20])
+  const backgroundY = useTransform(springMouseY, [-100, 100], [-10, 10])
+  const accentX = useTransform(springMouseX, [-100, 100], [-5, 5])
+  const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
+
+  // Interactive depth layers
+  const [interactiveIntensity, setInteractiveIntensity] = useState(1)
+
+  // 120fps optimized typewriter effect - using motion values
   const [currentWord, setCurrentWord] = useState(0)
   const [currentChar, setCurrentChar] = useState(0)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [displayText, setDisplayText] = useState('')
-  const [showCursor, setShowCursor] = useState(true)
+  const cursorOpacity = useMotionValue(1)
+  const textScale = useMotionValue(1)
+  const [isTyping, setIsTyping] = useState(true)
 
-  const words = [
-    "Spotted",
-    "Approved", 
-    "Signed",
-    "Delivered"
-  ]
+  // Performance optimized word array
+  const words = useMemo(() => [
+    "Spotted.",
+    "Approved.", 
+    "Signed.",
+    "Delivered."
+  ], [])
 
-    // Typewriter effect
-  useEffect(() => {
-    const word = words[currentWord]
+  // Smooth cursor animation with motion values
+  const cursorSpring = useSpring(cursorOpacity, {
+    stiffness: 300,
+    damping: 30,
+    mass: 0.1
+  })
+
+  // Refs for cleanup
+  const typewriterTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const cursorTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Mouse movement handler for interactive effects
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!containerRef.current) return
     
-    const typewriterTimer = setTimeout(() => {
+    const rect = containerRef.current.getBoundingClientRect()
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    
+    const x = (e.clientX - rect.left - centerX) / centerX
+    const y = (e.clientY - rect.top - centerY) / centerY
+    
+    mouseX.set(x * 100)
+    mouseY.set(y * 100)
+    
+    // Adjust interactive intensity based on distance from center
+    const distance = Math.sqrt(x * x + y * y)
+    setInteractiveIntensity(Math.min(1 + distance * 0.5, 2))
+  }, [mouseX, mouseY])
+
+  // Enhanced hover effects
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true)
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovering(false)
+    mouseX.set(0)
+    mouseY.set(0)
+    setInteractiveIntensity(1)
+  }, [mouseX, mouseY])
+
+    // 120fps optimized typewriter effect with frame-based timing
+  useEffect(() => {
+    if (!isTyping || shouldReduceMotion) return
+
+    const word = words[currentWord]
+    if (!word) return // Safety check
+    
+    const performTypewriterAction = () => {
       if (isPaused) {
         setIsPaused(false)
         setIsDeleting(true)
+        // Subtle scale animation when transitioning
+        textScale.set(0.98)
+        setTimeout(() => textScale.set(1), 100)
         return
       }
 
       if (!isDeleting) {
-        // Typing
+        // Typing phase - optimized character addition
         if (currentChar < word.length) {
           setDisplayText(word.substring(0, currentChar + 1))
           setCurrentChar(prev => prev + 1)
+          // Subtle character appearance effect
+          textScale.set(1.02)
+          setTimeout(() => textScale.set(1), 50)
         } else {
           // Pause at end of word
           setIsPaused(true)
         }
       } else {
-        // Deleting
+        // Deleting phase - optimized character removal
         if (currentChar > 0) {
           setDisplayText(word.substring(0, currentChar - 1))
           setCurrentChar(prev => prev - 1)
         } else {
-          // Move to next word
+          // Move to next word with wraparound
           setIsDeleting(false)
           setCurrentWord(prev => (prev + 1) % words.length)
         }
       }
-    }, isPaused ? 1200 : isDeleting ? 60 : 90)
+    }
 
-    return () => clearTimeout(typewriterTimer)
-  }, [currentChar, currentWord, isDeleting, isPaused])
+    // Frame-rate optimized timing for 120fps
+    const getOptimalDelay = () => {
+      if (isPaused) return 2000 // Comfortable reading pause
+      if (isDeleting) return 42  // ~24fps for deletion (120/24 = 5 frames)
+      return 100 + Math.random() * 20 // Natural typing variation
+    }
 
-  // Cursor blinking effect - elegant and subtle
+    typewriterTimeoutRef.current = setTimeout(performTypewriterAction, getOptimalDelay())
+
+    return () => {
+      if (typewriterTimeoutRef.current) {
+        clearTimeout(typewriterTimeoutRef.current)
+        typewriterTimeoutRef.current = null
+      }
+    }
+  }, [currentChar, currentWord, isDeleting, isPaused, words, isTyping, textScale, shouldReduceMotion])
+
+  // Cleanup on unmount
   useEffect(() => {
-    const cursorTimer = setInterval(() => {
-      setShowCursor(prev => !prev)
-    }, 600)
-
-    return () => clearInterval(cursorTimer)
+    return () => {
+      if (typewriterTimeoutRef.current) {
+        clearTimeout(typewriterTimeoutRef.current)
+      }
+      if (cursorTimeoutRef.current) {
+        clearTimeout(cursorTimeoutRef.current)
+      }
+    }
   }, [])
+
+  // 120fps optimized cursor blinking effect
+  useEffect(() => {
+    if (!isTyping || shouldReduceMotion) return
+
+    const blinkCursor = () => {
+      cursorOpacity.set(cursorOpacity.get() > 0.5 ? 0 : 1)
+      cursorTimeoutRef.current = setTimeout(blinkCursor, 530) // Consistent timing
+    }
+
+    // Start cursor blinking
+    cursorTimeoutRef.current = setTimeout(blinkCursor, 530)
+
+    return () => {
+      if (cursorTimeoutRef.current) {
+        clearTimeout(cursorTimeoutRef.current)
+        cursorTimeoutRef.current = null
+      }
+    }
+  }, [isTyping, cursorOpacity, shouldReduceMotion])
 
   useEffect(() => {
     if (isInView) {
@@ -176,606 +298,328 @@ export const Hero: React.FC = () => {
     console.log('Watch video clicked')
   }
 
+  // Company names for infinite carousel
+  const companyNames = [
+    "Mercedes-Benz", "BMW", "Audi", "Porsche", "Lamborghini", "Ferrari", 
+    "Bentley", "Rolls-Royce", "Maserati", "Lexus", "Tesla", "Range Rover",
+    "Jaguar", "McLaren", "Aston Martin", "Bugatti"
+  ]
+
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-50 via-neutral-100 to-neutral-200"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ 
+        backgroundColor: '#FEF7ED'
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* Animated Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Primary gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-emerald/10 via-neutral-50 to-gold-primary/10" />
+      {/* 120fps Optimized Luxury Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Primary gradient layer - GPU accelerated */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
+          style={{
+            x: backgroundX,
+            y: backgroundY,
+            willChange: 'transform',
+            transform: 'translate3d(0,0,0)', // Force GPU layer
+          }}
+        />
         
-        {/* Radial Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-radial opacity-60" />
+        {/* Subtle accent glow - Optimized */}
+        <motion.div 
+          className="absolute top-0 right-0 w-[60%] h-[60%] bg-gradient-radial from-amber-50/25 to-transparent blur-3xl"
+          style={{
+            x: accentX,
+            y: accentY,
+            opacity: useTransform(
+              useMotionValue(isHovering ? 1 : 0.7), 
+              [0, 1], 
+              [0.2, 0.3]
+            ),
+            willChange: 'transform, opacity',
+            transform: 'translate3d(0,0,0)', // Force GPU layer
+          }}
+        />
         
-        {/* Enhanced Mesh Gradient Effect */}
-        <div className="absolute inset-0 opacity-30">
+        {/* Minimal ambient light - Simplified */}
+        <motion.div 
+          className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-gradient-radial from-orange-100/15 to-transparent blur-3xl"
+          style={{
+            x: useTransform(springMouseX, [-100, 100], [-3, 3]),
+            y: useTransform(springMouseY, [-100, 100], [-5, 5]),
+            willChange: 'transform',
+            transform: 'translate3d(0,0,0)', // Force GPU layer
+          }}
+        />
+      </div>
+
+      {/* Hero Content Container */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16">
+        <motion.div
+          className="text-center space-y-10"
+          initial="initial"
+          animate={controls}
+          variants={animationVariants.luxuryStagger}
+        >
+          {/* Simplified Hero Title with Integrated Typewriter */}
           <motion.div 
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-emerald/20 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.2, 0.4, 0.2],
+            className="space-y-8"
+            variants={animationVariants.premiumSlideUp}
+          >
+            <motion.div className="space-y-2">
+              <motion.h1 
+                ref={titleRef}
+                className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                style={{
+                  background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                Get Your Dream Car
+              </motion.h1>
+              
+              {/* Integrated Typewriter Effect */}
+              <motion.div 
+                className="relative flex items-center justify-center py-6 min-h-[6rem] md:min-h-[7rem] lg:min-h-[8rem]"
+                variants={animationVariants.premiumSlideUp}
+              >
+                <div className="relative inline-flex items-center justify-center">
+                  {/* Enhanced container with 120fps text animation */}
+                  <motion.div 
+                    className="relative flex items-center justify-center px-6 py-2"
+                    style={{
+                      scale: textScale,
+                      willChange: 'transform',
+                    }}
+                  >
+                    <motion.span
+                      className="text-3xl md:text-4xl lg:text-5xl font-semibold whitespace-nowrap"
+                      style={{
+                        background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        letterSpacing: '-0.01em',
+                        lineHeight: '1.4',
+                        paddingTop: '0.25rem',
+                        paddingBottom: '0.25rem',
+                        willChange: 'transform',
+                      }}
+                      animate={{
+                        scale: displayText ? 1 : 0.95,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                        mass: 0.1,
+                      }}
+                    >
+                      {displayText || '\u00A0'}
+                      {/* Inline cursor positioned right after text - GPU accelerated */}
+                      <motion.span
+                        className="inline-block w-1 h-[0.8em] bg-emerald-600 rounded-sm ml-1 align-middle"
+                        style={{
+                          verticalAlign: 'middle',
+                          opacity: cursorSpring,
+                          willChange: 'opacity, transform',
+                          transform: 'translate3d(0,0,0)', // Force GPU layer
+                        }}
+                      />
+                    </motion.span>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </motion.div>
+            
+            <motion.p 
+              ref={subtitleRef}
+              className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed"
+            >
+              Save thousands with our expert negotiation and white-glove delivery service.
+            </motion.p>
+          </motion.div>
+
+          {/* Single Primary CTA - 120fps Optimized */}
+          <motion.div 
+            ref={ctaRef}
+            className="flex justify-center"
+            variants={animationVariants.premiumSlideUp}
+          >
+            <motion.div
+              whileHover={{ 
+                scale: shouldReduceMotion ? 1 : 1.02, 
+                y: shouldReduceMotion ? 0 : -1 
+              }}
+              whileTap={{ 
+                scale: shouldReduceMotion ? 1 : 0.98 
+              }}
+              transition={{ 
+                type: "spring",
+                stiffness: 400,
+                damping: 30,
+                mass: 0.1,
+                duration: shouldReduceMotion ? 0 : 0.15
+              }}
+              style={{
+                willChange: 'transform',
+              }}
+            >
+              <Button
+                size="xl"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg border-0 rounded-full px-10 py-5 text-lg font-medium transition-all duration-300 group"
+                onClick={handleScrollToDeals}
+              >
+                <span className="flex items-center">
+                  Start Your Journey
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                </span>
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          {/* Subtle Trust Indicators */}
+          <motion.div 
+            ref={statsRef}
+            className="flex flex-wrap items-center justify-center gap-x-6 sm:gap-x-10 gap-y-4 mt-8 px-4"
+            variants={animationVariants.premiumStagger}
+          >
+            {/* Deposit */}
+            <motion.div
+              variants={animationVariants.saasCardEntrance}
+              className="flex items-center gap-1.5"
+            >
+              <Shield className="w-3.5 h-3.5 text-emerald-600/60" />
+              <div className="flex items-baseline gap-1">
+                <span className="text-base sm:text-lg font-semibold text-neutral-800">$499</span>
+                <span className="text-xs text-neutral-500">Refundable</span>
+              </div>
+            </motion.div>
+
+            {/* Separator */}
+            <div className="hidden sm:block w-px h-4 bg-neutral-300/50"></div>
+
+            {/* Customers */}
+            <motion.div
+              variants={animationVariants.saasCardEntrance}
+              className="flex items-center gap-1.5"
+            >
+              <Users className="w-3.5 h-3.5 text-emerald-600/60" />
+              <div className="flex items-baseline gap-1">
+                <span className="text-base sm:text-lg font-semibold text-neutral-800">2,500+</span>
+                <span className="text-xs text-neutral-500">Customers</span>
+              </div>
+            </motion.div>
+
+            {/* Separator */}
+            <div className="hidden sm:block w-px h-4 bg-neutral-300/50"></div>
+
+            {/* Savings */}
+            <motion.div
+              variants={animationVariants.saasCardEntrance}
+              className="flex items-center gap-1.5"
+            >
+              <DollarSign className="w-3.5 h-3.5 text-amber-600/60" />
+              <div className="flex items-baseline gap-1">
+                <span className="text-base sm:text-lg font-semibold text-neutral-800">$50K+</span>
+                <span className="text-xs text-neutral-500">Avg. Saved</span>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Subtle Brand Carousel */}
+          <motion.div
+            className="mt-20 w-full relative"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.0, duration: 1.0 }}
+          >
+            {/* Minimal Header */}
+            <motion.div 
+              className="text-center mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2.2, duration: 0.8 }}
+            >
+              <p className="text-sm text-neutral-400 tracking-widest font-medium">
+                TRUSTED BY LUXURY BRANDS
+              </p>
+            </motion.div>
+
+            {/* Floating Carousel */}
+            <div className="relative py-6 overflow-hidden">
+              <div className="relative overflow-hidden">
+                <motion.div
+                  className="flex space-x-12 items-center"
+                  animate={{
+                    x: [0, -1920],
+                  }}
+                  transition={{
+                    x: {
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      duration: 45,
+                      ease: "linear",
+                    },
+                  }}
+                >
+                  {[...companyNames, ...companyNames].map((company, index) => (
+                    <div
+                      key={`${company}-${index}`}
+                      className="flex-shrink-0"
+                      style={{ minWidth: '140px' }}
+                    >
+                      <div className="text-center">
+                        <span className="text-base font-medium text-neutral-500 tracking-wide hover:text-neutral-700 transition-colors duration-300">
+                          {company}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+              
+              {/* Subtle gradient fade edges - matches page background */}
+              <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-neutral-50 to-transparent pointer-events-none"></div>
+              <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-neutral-50 to-transparent pointer-events-none"></div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Minimal Scroll Indicator */}
+      <motion.div
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2"
+        animate={{ 
+          y: [0, 4, 0],
+          opacity: [0.3, 0.6, 0.3]
+        }}
+        transition={{ 
+          duration: 2, 
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        <div className="w-5 h-8 border border-neutral-400 rounded-full flex justify-center">
+          <motion.div
+            className="w-1 h-2 bg-neutral-400 rounded-full mt-1.5"
+            animate={{ 
+              y: [0, 8, 0],
+              opacity: [0.6, 0.2, 0.6]
             }}
-            transition={{
-              duration: 4,
+            transition={{ 
+              duration: 1.5, 
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
-          <motion.div 
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold-primary/20 rounded-full blur-3xl"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.3, 0.1, 0.3],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1
-            }}
-          />
-          <motion.div 
-            className="absolute top-1/2 left-1/2 w-96 h-96 bg-primary-emerald-light/15 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.15, 0.35, 0.15],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2
-            }}
-          />
         </div>
-      </div>
-
-      {/* Enhanced Floating Background Elements */}
-      <div className="absolute inset-0 z-10">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-64 h-64 rounded-full bg-gradient-emerald opacity-5 blur-3xl"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: [0, 150, -100, 0],
-              y: [0, -80, 60, 0],
-              scale: [1, 1.4, 0.8, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 12 + i * 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.5
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-20 container mx-auto px-4 text-center max-w-6xl">
-        <motion.div
-          initial="initial"
-          animate={controls}
-          variants={animationVariants.luxuryStagger}
-          className="space-y-8"
-        >
-          {/* Premium Badge */}
-          <motion.div
-            variants={animationVariants.gentleReveal}
-            whileHover={{ 
-              scale: 1.02,
-              y: -2,
-              boxShadow: "0 8px 25px rgba(4, 120, 87, 0.15)"
-            }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-50/90 via-white/80 to-emerald-50/90 px-8 py-4 rounded-full text-sm font-medium text-neutral-700 backdrop-blur-lg border border-emerald-200/40 relative overflow-hidden group cursor-pointer"
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          >
-            {/* Subtle background shimmer */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-100/30 to-transparent"
-              initial={{ x: '-100%' }}
-              whileHover={{ x: '100%' }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-            />
-            
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-              whileHover={{ scale: 1.1 }}
-            >
-              <Award className="w-4 h-4 text-gold-primary relative z-10" />
-            </motion.div>
-            <span className="relative z-10">#1 Luxury Auto Brokerage in NYC</span>
-            
-            {/* Subtle border glow */}
-            <motion.div
-              className="absolute inset-0 rounded-full border border-emerald-300/50 opacity-0"
-              whileHover={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.div>
-
-          {/* Enhanced Main Heading with Typewriter Effect */}
-          <div className="space-y-8 mb-12">
-            <h1 
-              ref={titleRef}
-              className="text-5xl md:text-7xl lg:text-8xl heading-luxury leading-tight mb-8"
-            >
-              <span className="block">
-                <span className="text-neutral-800 text-shadow-subtle">Your dream car</span>
-              </span>
-              <span className="block">
-                <span 
-                  className="text-3d-luxury relative inline-block min-w-[200px] md:min-w-[300px] lg:min-w-[400px]"
-                  style={{ 
-                    minHeight: '1.2em',
-                    display: 'inline-block',
-                    textAlign: 'left'
-                  }}
-                >
-                  {displayText}
-                  <motion.span
-                    className="text-primary-emerald"
-                    animate={{ opacity: showCursor ? 1 : 0 }}
-                    transition={{ duration: 0.1 }}
-                  >
-                    |
-                  </motion.span>
-                </span>
-              </span>
-            </h1>
-            
-            <div className="px-4 md:px-8 lg:px-12">
-              <motion.p 
-                ref={subtitleRef}
-                className="text-base md:text-lg text-saas text-neutral-600 max-w-2xl mx-auto leading-relaxed relative py-4 px-5 md:px-6 bg-gradient-to-r from-neutral-50/60 via-white/80 to-neutral-50/60 backdrop-blur-sm rounded-xl border border-neutral-200/40 shadow-sm"
-                whileHover={{ 
-                  scale: 1.002,
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.03)",
-                  borderColor: "rgba(4, 120, 87, 0.12)"
-                }}
-                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              >
-                <motion.span
-                  className="inline-block"
-                  whileHover={{ y: -0.2 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Skip the dealership hassle.
-                </motion.span>{" "}
-                <motion.span
-                  className="inline-block text-neutral-700 font-medium text-shadow-luxury-subtle"
-                  whileHover={{ 
-                    y: -0.2,
-                    color: "rgb(4, 120, 87)"
-                  }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                >
-                  We find, negotiate, and deliver luxury vehicles
-                </motion.span>
-                <br />
-                <motion.span
-                  className="inline-block"
-                  whileHover={{ y: -0.2 }}
-                  transition={{ duration: 0.2, delay: 0.2 }}
-                >
-                  directly to your door with our premium concierge service.
-                </motion.span>
-              </motion.p>
-            </div>
-          </div>
-
-          {/* Enhanced CTA Buttons with 3D Depth */}
-          <motion.div 
-            ref={ctaRef}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
-            <motion.div
-              whileHover={{ 
-                scale: 1.02,
-                y: -4,
-                rotateX: 2,
-                rotateY: 1,
-              }}
-              whileTap={{ 
-                scale: 0.98,
-                y: 0,
-                rotateX: 0,
-                rotateY: 0,
-              }}
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              style={{
-                transformStyle: 'preserve-3d',
-                perspective: '1000px',
-              }}
-            >
-              <Button 
-                size="xl" 
-                onClick={handleScrollToDeals}
-                className="group relative overflow-hidden emerald-3d bg-gradient-to-r from-primary-emerald to-primary-emerald-dark hover:from-primary-emerald-dark hover:to-primary-emerald transform-style-preserve-3d"
-              >
-                {/* Enhanced 3D shimmer effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  style={{ transform: 'translateZ(1px)' }}
-                />
-                
-                {/* 3D Background glow */}
-                <motion.div
-                  className="absolute inset-0 bg-white/10 opacity-0"
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  style={{ transform: 'translateZ(-1px)' }}
-                />
-                
-                <motion.span 
-                  className="relative z-10 font-medium"
-                  whileHover={{ letterSpacing: "0.01em" }}
-                  transition={{ duration: 0.15 }}
-                  style={{ transform: 'translateZ(2px)' }}
-                >
-                  Browse Inventory
-                </motion.span>
-                
-                <motion.div
-                  whileHover={{ x: 4, scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  className="relative z-10"
-                  style={{ transform: 'translateZ(2px)' }}
-                >
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </motion.div>
-
-                {/* 3D Border highlight */}
-                <motion.div
-                  className="absolute inset-0 rounded-xl border-2 border-transparent opacity-0"
-                  whileHover={{ 
-                    opacity: 1,
-                    borderColor: 'rgba(16, 185, 129, 0.4)'
-                  }}
-                  transition={{ duration: 0.3 }}
-                  style={{ transform: 'translateZ(1px)' }}
-                />
-              </Button>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ 
-                scale: 1.02,
-                y: -4,
-                rotateX: 2,
-                rotateY: 1,
-              }}
-              whileTap={{ 
-                scale: 0.98,
-                y: 0,
-                rotateX: 0,
-                rotateY: 0,
-              }}
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              style={{
-                transformStyle: 'preserve-3d',
-                perspective: '1000px',
-              }}
-            >
-              <Button 
-                variant="luxury" 
-                size="xl"
-                onClick={handleWatchVideo}
-                className="group relative overflow-hidden card-3d bg-gradient-to-r from-neutral-100 to-white border border-emerald-200/40 text-emerald-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-emerald-100 hover:border-emerald-300/50 transform-style-preserve-3d"
-              >
-                {/* Enhanced 3D background animation */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-emerald-50/30 to-transparent opacity-0"
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ transform: 'translateZ(-1px)' }}
-                />
-                
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-                  whileHover={{ scale: 1.1 }}
-                  className="relative z-10"
-                  style={{ transform: 'translateZ(2px)' }}
-                >
-                  <Play className="w-5 h-5" />
-                </motion.div>
-                
-                <motion.span 
-                  className="ml-3 relative z-10 font-medium"
-                  style={{ transform: 'translateZ(2px)' }}
-                  whileHover={{ letterSpacing: "0.005em" }}
-                  transition={{ duration: 0.15 }}
-                >
-                  Watch How It Works
-                </motion.span>
-              </Button>
-            </motion.div>
-          </motion.div>
-
-          {/* Enhanced Trust Badges / Stats */}
-          <motion.div 
-            ref={statsRef}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16"
-            variants={animationVariants.premiumStagger}
-          >
-            <motion.div
-              variants={animationVariants.saasCardEntrance}
-              className="card-3d bg-gradient-depth p-8 text-center relative overflow-hidden group rounded-xl border border-emerald-100/50 backdrop-blur-sm cursor-pointer transform-style-preserve-3d"
-              whileHover={{ 
-                y: -6,
-                rotateX: 3,
-                rotateY: 2,
-                scale: 1.01,
-              }}
-              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-              style={{
-                transformStyle: 'preserve-3d',
-                perspective: '1000px',
-              }}
-            >
-              {/* Enhanced 3D background gradient */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-emerald-50/15 to-transparent opacity-0 group-hover:opacity-100"
-                transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-                style={{ transform: 'translateZ(-1px)' }}
-              />
-
-              {/* Enhanced Hover Overlay with 3D depth */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-emerald-600/95 to-emerald-700/95 backdrop-blur-sm rounded-xl flex flex-col justify-center items-center text-white p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"
-                style={{ transform: 'translateZ(2px)' }}
-              >
-                <motion.div
-                  className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 ease-out"
-                  style={{ transform: 'translateZ(1px)' }}
-                >
-                  <Shield className="w-8 h-8 text-white mb-4 mx-auto" />
-                  <h4 className="text-lg font-semibold mb-3">Risk-Free Start</h4>
-                  <p className="text-emerald-100 text-sm leading-relaxed">
-                    Begin your journey with confidence. If we can't find your perfect vehicle within 30 days, 
-                    get your deposit back—no questions asked.
-                  </p>
-                </motion.div>
-              </motion.div>
-              
-              <div className="relative z-10 group-hover:opacity-0 transition-opacity duration-300" style={{ transform: 'translateZ(2px)' }}>
-                <div className="flex items-center justify-center mb-6">
-                  <div className="p-3 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-full shadow-3d-sm">
-                    <Shield className="w-6 h-6 text-emerald-700" />
-                  </div>
-                </div>
-                
-                <div className="text-3xl font-bold text-neutral-900 mb-3 text-shadow-3d-sm">
-                  $499
-                </div>
-                
-                <div className="text-neutral-600 font-medium">
-                  Fully Refundable Deposit
-                </div>
-              </div>
-
-              {/* 3D Border highlight */}
-              <motion.div
-                className="absolute inset-0 rounded-xl border-2 border-transparent opacity-0"
-                whileHover={{ 
-                  opacity: 1,
-                  borderColor: 'rgba(4, 120, 87, 0.2)'
-                }}
-                transition={{ duration: 0.3 }}
-                style={{ transform: 'translateZ(1px)' }}
-              />
-            </motion.div>
-
-            <motion.div
-              variants={animationVariants.saasCardEntrance}
-              className="card-3d bg-gradient-depth p-8 text-center relative overflow-hidden group rounded-xl border border-emerald-100/50 backdrop-blur-sm cursor-pointer transform-style-preserve-3d"
-              whileHover={{ 
-                y: -6,
-                rotateX: 3,
-                rotateY: 2,
-                scale: 1.01,
-              }}
-              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-              style={{
-                transformStyle: 'preserve-3d',
-                perspective: '1000px',
-              }}
-            >
-              {/* Enhanced 3D background gradient */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-emerald-50/15 to-transparent opacity-0 group-hover:opacity-100"
-                transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-                style={{ transform: 'translateZ(-1px)' }}
-              />
-
-              {/* Enhanced Hover Overlay with 3D depth */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-emerald-600/95 to-emerald-700/95 backdrop-blur-sm rounded-xl flex flex-col justify-center items-center text-white p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"
-                style={{ transform: 'translateZ(2px)' }}
-              >
-                <motion.div
-                  className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 ease-out"
-                  style={{ transform: 'translateZ(1px)' }}
-                >
-                  <Users className="w-8 h-8 text-white mb-4 mx-auto" />
-                  <h4 className="text-lg font-semibold mb-3">Proven Track Record</h4>
-                  <p className="text-emerald-100 text-sm leading-relaxed">
-                    Join thousands of satisfied clients who've trusted us with their luxury vehicle acquisitions. 
-                    95% customer satisfaction rate with over 2,500 successful deliveries.
-                  </p>
-                </motion.div>
-              </motion.div>
-              
-              <div className="relative z-10 group-hover:opacity-0 transition-opacity duration-300" style={{ transform: 'translateZ(2px)' }}>
-                <div className="flex items-center justify-center mb-6">
-                  <div className="p-3 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-full shadow-3d-sm">
-                    <Users className="w-6 h-6 text-emerald-700" />
-                  </div>
-                </div>
-                
-                <div className="text-3xl font-bold text-neutral-900 mb-3 text-shadow-3d-sm">
-                  2,500+
-                </div>
-                
-                <div className="text-neutral-600 font-medium">
-                  Happy Customers
-                </div>
-              </div>
-
-              {/* 3D Border highlight */}
-              <motion.div
-                className="absolute inset-0 rounded-xl border-2 border-transparent opacity-0"
-                whileHover={{ 
-                  opacity: 1,
-                  borderColor: 'rgba(4, 120, 87, 0.2)'
-                }}
-                transition={{ duration: 0.3 }}
-                style={{ transform: 'translateZ(1px)' }}
-              />
-            </motion.div>
-
-            <motion.div
-              variants={animationVariants.saasCardEntrance}
-              className="card-3d bg-gradient-depth p-8 text-center relative overflow-hidden group rounded-xl border border-amber-100/50 backdrop-blur-sm cursor-pointer transform-style-preserve-3d"
-              whileHover={{ 
-                y: -6,
-                rotateX: 3,
-                rotateY: 2,
-                scale: 1.01,
-              }}
-              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-              style={{
-                transformStyle: 'preserve-3d',
-                perspective: '1000px',
-              }}
-            >
-              {/* Enhanced 3D background gradient */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-amber-50/15 to-transparent opacity-0 group-hover:opacity-100"
-                transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-                style={{ transform: 'translateZ(-1px)' }}
-              />
-
-              {/* Enhanced Hover Overlay with 3D depth - Gold theme */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-amber-600/95 to-amber-700/95 backdrop-blur-sm rounded-xl flex flex-col justify-center items-center text-white p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"
-                style={{ transform: 'translateZ(2px)' }}
-              >
-                <motion.div
-                  className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 ease-out"
-                  style={{ transform: 'translateZ(1px)' }}
-                >
-                  <DollarSign className="w-8 h-8 text-white mb-4 mx-auto" />
-                  <h4 className="text-lg font-semibold mb-3">Maximum Savings</h4>
-                  <p className="text-amber-100 text-sm leading-relaxed">
-                    Our expert negotiation team has saved clients an average of $50,000+ on luxury vehicle purchases. 
-                    Premium service without the premium price tag.
-                  </p>
-                </motion.div>
-              </motion.div>
-              
-              <div className="relative z-10 group-hover:opacity-0 transition-opacity duration-300" style={{ transform: 'translateZ(2px)' }}>
-                <div className="flex items-center justify-center mb-6">
-                  <div className="p-3 bg-gradient-to-br from-amber-100 to-amber-200 rounded-full shadow-3d-sm">
-                    <DollarSign className="w-6 h-6 text-amber-700" />
-                  </div>
-                </div>
-                
-                <div className="text-3xl font-bold text-neutral-900 mb-3 text-shadow-3d-gold">
-                  $50K+
-                </div>
-                
-                <div className="text-neutral-600 font-medium">
-                  Average Savings
-                </div>
-              </div>
-
-              {/* 3D Border highlight - Gold theme */}
-              <motion.div
-                className="absolute inset-0 rounded-xl border-2 border-transparent opacity-0"
-                whileHover={{ 
-                  opacity: 1,
-                  borderColor: 'rgba(245, 158, 11, 0.2)'
-                }}
-                transition={{ duration: 0.3 }}
-                style={{ transform: 'translateZ(1px)' }}
-              />
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Premium Scroll Indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
-        animate={{ 
-          y: [0, 6, 0],
-          opacity: [0.6, 1, 0.6]
-        }}
-        transition={{ 
-          duration: 2.5, 
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        whileHover={{ scale: 1.1, y: -2 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <motion.div 
-          className="flex flex-col items-center text-neutral-500 group"
-          whileHover={{ color: "rgb(4, 120, 87)" }}
-        >
-          <motion.span 
-            className="text-xs mb-3 font-medium tracking-wide"
-            whileHover={{ letterSpacing: "0.1em" }}
-            transition={{ duration: 0.2 }}
-          >
-            Discover More
-          </motion.span>
-          
-          <motion.div
-            className="relative"
-            whileHover={{ 
-              boxShadow: "0 0 20px rgba(4, 120, 87, 0.3)"
-            }}
-          >
-            <motion.div
-              className="w-6 h-10 border-2 border-neutral-300 rounded-full flex justify-center bg-gradient-to-b from-white/80 to-emerald-50/50 backdrop-blur-sm"
-              whileHover={{ 
-                borderColor: "rgb(4, 120, 87)",
-                backgroundColor: "rgba(4, 120, 87, 0.05)"
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.div
-                className="w-1.5 h-3 bg-gradient-to-b from-neutral-400 to-emerald-500 rounded-full mt-2"
-                animate={{ 
-                  y: [0, 12, 0],
-                  opacity: [1, 0.3, 1],
-                  scaleY: [1, 0.8, 1]
-                }}
-                transition={{ 
-                  duration: 1.8, 
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                whileHover={{ backgroundColor: "rgb(4, 120, 87)" }}
-              />
-            </motion.div>
-          </motion.div>
-        </motion.div>
       </motion.div>
     </section>
   )

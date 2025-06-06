@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
 import { Menu, X, Phone, Mail, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
@@ -11,16 +11,46 @@ import { cn } from '@/lib/utils'
  * Features: Floating design, rounded edges, scroll animations, mobile responsive
  */
 export const Header: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [scrollY, setScrollY] = useState(0)
+  const shouldReduceMotion = useReducedMotion()
+  
+  // 120fps optimized scroll tracking with motion values
+  const scrollY = useMotionValue(0)
+  const scrollProgress = useMotionValue(0)
+  
+  // Ultra-smooth spring configurations for 120fps
+  const springConfig = {
+    stiffness: shouldReduceMotion ? 100 : 600,
+    damping: shouldReduceMotion ? 40 : 25,
+    mass: shouldReduceMotion ? 1 : 0.1,
+    restSpeed: shouldReduceMotion ? 1 : 0.01,
+    restDelta: shouldReduceMotion ? 0.5 : 0.001
+  }
 
-  // Handle scroll effect for floating navbar
+  // Smooth transforms for all navbar properties
+  const navbarScale = useSpring(useTransform(scrollProgress, [0, 1], [1, 0.98]), springConfig)
+  const navbarY = useSpring(useTransform(scrollProgress, [0, 1], [0, -2]), springConfig)
+  const navbarOpacity = useSpring(useTransform(scrollProgress, [0, 1], [1, 1]), springConfig)
+  const borderRadius = useSpring(useTransform(scrollProgress, [0, 1], [0, 12]), springConfig)
+  const navbarPadding = useSpring(useTransform(scrollProgress, [0, 1], [0, 16]), springConfig)
+  
+  // Background and shadow animations
+  const backgroundOpacity = useSpring(useTransform(scrollProgress, [0, 1], [0, 0.95]), springConfig)
+  const shadowIntensity = useSpring(useTransform(scrollProgress, [0, 1], [0, 1]), springConfig)
+  const borderOpacity = useSpring(useTransform(scrollProgress, [0, 1], [0, 0.4]), springConfig)
+
+  // Derived state for conditional rendering
+  const isScrolled = useTransform(scrollProgress, (value) => value > 0.5)
+
+  // Handle scroll with motion values for 120fps performance
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const progress = Math.min(Math.max((latest - 10) / 30, 0), 1)
+    scrollProgress.set(progress)
+  })
+
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      setScrollY(scrollPosition)
-      setIsScrolled(scrollPosition > 20)
+      scrollY.set(window.scrollY)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -52,152 +82,166 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      {/* Top Contact Bar - Only visible when not scrolled */}
-      <motion.div 
-        className="bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 text-white py-2 px-4 text-sm fixed top-0 left-0 right-0 z-40"
-        initial={{ y: 0 }}
-        animate={{ 
-          y: isScrolled ? -48 : 0,
-          opacity: isScrolled ? 0 : 1 
-        }}
-        transition={{ 
-          duration: 0.5, 
-          ease: [0.4, 0.0, 0.2, 1] 
-        }}
-      >
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4" />
-              <span>(555) MINT-LEASE</span>
-            </div>
-            <div className="hidden md:flex items-center gap-2">
-              <Mail className="w-4 h-4" />
-              <span>hello@mintlease.com</span>
-            </div>
-            <div className="hidden lg:flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              <span>NYC Metro Area</span>
-            </div>
-          </div>
-          <div className="text-xs">
-            🚗 Free Delivery • $499 Deposit • 5-Star Service
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Floating Scroll Progress Indicator */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-emerald via-primary-emerald-light to-gold-primary z-60"
-        initial={{ scaleX: 0 }}
-        animate={{ 
-          scaleX: Math.min(scrollY / 1000, 1),
-          opacity: isScrolled ? 1 : 0
-        }}
-        style={{ transformOrigin: 'left' }}
-        transition={{ duration: 0.2 }}
-      />
-
-      {/* Main Floating Navigation Header */}
+      {/* 120fps Optimized Dynamic Navigation Header */}
       <motion.header
-        className={cn(
-          'fixed z-50 transition-all duration-500 ease-out',
-          {
-            // Floating state - when scrolled
-            'top-4 left-4 right-4 md:left-8 md:right-8 lg:left-12 lg:right-12': isScrolled,
-            // Floating state at top - positioned after contact bar but with floating design
-            'top-14 left-4 right-4 md:left-8 md:right-8 lg:left-12 lg:right-12': !isScrolled,
-          }
-        )}
+        className="fixed z-50"
         initial={{ y: -100, opacity: 0 }}
         animate={{ 
           y: 0, 
           opacity: 1,
-          scale: isScrolled ? 0.98 : 1,
         }}
         transition={{ 
-          duration: 0.6, 
-          ease: [0.4, 0.0, 0.2, 1],
-          scale: { duration: 0.4 }
+          type: "spring",
+          stiffness: 400,
+          damping: 30,
+          mass: 0.1,
         }}
         style={{
-          transform: `translateY(${Math.max(0, scrollY * 0.1)}px)`,
+          top: navbarPadding,
+          left: navbarPadding,
+          right: navbarPadding,
+          scale: navbarScale,
+          y: navbarY,
+          willChange: 'transform, top, left, right',
         }}
       >
         <motion.div
-          className="transition-all duration-700 ease-out backdrop-blur-md border relative overflow-hidden bg-gradient-to-br from-emerald-50/95 via-white/85 to-emerald-100/95 dark:from-emerald-950/95 dark:via-neutral-800/85 dark:to-emerald-900/95 rounded-xl shadow-3d-lg border-emerald-200/40 dark:border-emerald-700/40 transform-style-preserve-3d"
-          animate={{
-            boxShadow: isScrolled 
-              ? '0 8px 16px -4px rgba(4, 120, 87, 0.25), 0 20px 40px -8px rgba(4, 120, 87, 0.15), 0 40px 64px -16px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(4, 120, 87, 0.1)' 
-              : '0 4px 6px -1px rgba(4, 120, 87, 0.1), 0 8px 16px -4px rgba(4, 120, 87, 0.15), 0 16px 24px -8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(4, 120, 87, 0.05)',
-            y: isScrolled ? -2 : 0,
+          className="relative overflow-hidden backdrop-blur-xl border border-white/10"
+          style={{
+            borderRadius: borderRadius,
+            background: useTransform(
+              backgroundOpacity,
+              [0, 1],
+              [
+                'rgba(255, 255, 255, 0)',
+                'linear-gradient(135deg, rgba(4, 120, 87, 0.08) 0%, rgba(16, 185, 129, 0.05) 50%, rgba(4, 120, 87, 0.08) 100%)'
+              ]
+            ),
+            borderColor: useTransform(
+              borderOpacity,
+              [0, 1],
+              ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.15)']
+            ),
+            boxShadow: useTransform(
+              shadowIntensity,
+              [0, 1],
+              [
+                '0 0 0 0 rgba(0, 0, 0, 0)',
+                '0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 4px 8px -2px rgba(0, 0, 0, 0.10), 0 8px 16px -4px rgba(4, 120, 87, 0.12), 0 16px 32px -8px rgba(4, 120, 87, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.15)'
+              ]
+            ),
+            willChange: 'transform, background, border-color, box-shadow, border-radius',
+            transform: 'translateZ(0)', // 3D acceleration
+            backfaceVisibility: 'hidden',
           }}
-          transition={{ duration: 0.6, ease: [0.4, 0.0, 0.2, 1] }}
-          layout
         >
-          {/* Rich Green Background Enhancement */}
+          {/* Premium Depth Layer - Bottom */}
           <motion.div
-            className="absolute inset-0 opacity-30"
-            animate={{
-              background: isScrolled
-                ? 'radial-gradient(circle at 30% 30%, rgba(4, 120, 87, 0.12) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 80%)'
-                : 'radial-gradient(circle at 70% 70%, rgba(4, 120, 87, 0.08) 0%, rgba(16, 185, 129, 0.04) 60%, transparent 90%)',
+            className="absolute inset-0"
+            style={{
+              opacity: useTransform(scrollProgress, [0, 1], [0, 0.4]),
+              background: 'radial-gradient(ellipse at top, rgba(16, 185, 129, 0.03) 0%, transparent 70%)',
+              borderRadius: borderRadius,
+              willChange: 'opacity',
             }}
-            transition={{ duration: 0.8 }}
           />
           
-          {/* Rich Green Border Enhancement */}
+          {/* Premium Depth Layer - Middle */}
           <motion.div
-            className="absolute inset-0 rounded-xl"
+            className="absolute inset-0"
             style={{
-              background: isScrolled
-                ? 'linear-gradient(135deg, rgba(4, 120, 87, 0.15), rgba(16, 185, 129, 0.08), rgba(4, 120, 87, 0.15))'
-                : 'linear-gradient(135deg, rgba(4, 120, 87, 0.08), rgba(16, 185, 129, 0.04), rgba(4, 120, 87, 0.08))',
+              opacity: useTransform(scrollProgress, [0, 1], [0, 0.6]),
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(4, 120, 87, 0.06) 100%)',
+              borderRadius: borderRadius,
+              willChange: 'opacity',
+            }}
+          />
+          
+          {/* Premium Inner Glow */}
+          <motion.div
+            className="absolute inset-0.5"
+            style={{
+              opacity: useTransform(scrollProgress, [0, 1], [0, 0.8]),
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 50%)',
+              borderRadius: useTransform(borderRadius, (value) => Math.max(0, value - 2)),
+              willChange: 'opacity',
+            }}
+          />
+          
+          {/* Sleek Border Highlight */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              opacity: useTransform(scrollProgress, [0, 1], [0, 1]),
+              borderRadius: borderRadius,
               padding: '1px',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%)',
               mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
               maskComposite: 'xor',
+              willChange: 'opacity',
             }}
-            animate={{
-              opacity: isScrolled ? 0.8 : 0.4,
-            }}
-            transition={{ duration: 0.5 }}
           />
           
-          <div className="px-6 lg:px-8 mx-auto transition-all duration-500 relative z-10 max-w-7xl">
+          <div className="px-6 lg:px-8 mx-auto max-w-7xl">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <motion.div
                 className="flex items-center gap-3"
                 whileHover={{ 
-                  scale: 1.05,
-                  y: -1,
-                  rotateY: 5,
+                  scale: shouldReduceMotion ? 1 : 1.02,
+                  y: shouldReduceMotion ? 0 : -2,
+                  rotateY: shouldReduceMotion ? 0 : 3,
+                  rotateX: shouldReduceMotion ? 0 : 1,
                 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                transition={{ type: "spring", stiffness: 500, damping: 25, mass: 0.1 }}
                 style={{
                   transformStyle: 'preserve-3d',
-                  perspective: '1000px',
+                  perspective: '1200px',
+                  willChange: 'transform',
                 }}
               >
                 <motion.div 
-                  className="w-10 h-10 emerald-3d bg-gradient-to-br from-primary-emerald to-primary-emerald-dark rounded-lg flex items-center justify-center relative overflow-hidden transform-style-preserve-3d"
-                  animate={{
-                    rotate: isScrolled ? 180 : 0,
+                  className="w-10 h-10 bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center relative overflow-hidden shadow-lg"
+                  style={{
+                    rotate: useTransform(scrollProgress, [0, 1], [0, 360]),
+                    willChange: 'transform',
+                    transformStyle: 'preserve-3d',
+                    boxShadow: useTransform(
+                      scrollProgress,
+                      [0, 1],
+                      [
+                        '0 4px 8px rgba(4, 120, 87, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                        '0 6px 12px rgba(4, 120, 87, 0.3), 0 2px 4px rgba(4, 120, 87, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.1)'
+                      ]
+                    ),
                   }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
                   whileHover={{
-                    scale: 1.05,
-                    rotateY: 10,
-                    rotateX: 5,
+                    scale: shouldReduceMotion ? 1 : 1.08,
+                    rotateY: shouldReduceMotion ? 0 : 15,
+                    rotateX: shouldReduceMotion ? 0 : 8,
+                    y: shouldReduceMotion ? 0 : -1,
                   }}
+                  transition={{ type: "spring", stiffness: 500, damping: 25, mass: 0.1 }}
                 >
+                  {/* Premium Inner Highlight */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-lg"
-                    animate={{
-                      opacity: isScrolled ? 0.8 : 0.6,
+                    className="absolute inset-0.5 bg-gradient-to-br from-white/25 via-white/10 to-transparent rounded-lg"
+                    style={{
+                      opacity: useTransform(scrollProgress, [0, 1], [0.8, 1]),
+                      willChange: 'opacity',
                     }}
                   />
-                  <span className="text-white font-bold text-xl relative z-10">M</span>
+                  
+                  {/* 3D Depth Effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"
+                    style={{
+                      opacity: useTransform(scrollProgress, [0, 1], [0.3, 0.5]),
+                      willChange: 'opacity',
+                    }}
+                  />
+                  
+                  <span className="text-white font-bold text-xl relative z-10 drop-shadow-sm">M</span>
                 </motion.div>
                 <div>
                   <h1 className="text-xl heading-luxury text-3d-luxury">Mint Lease</h1>
@@ -213,25 +257,29 @@ export const Header: React.FC = () => {
                     onClick={() => handleNavClick(item.href)}
                     className="text-neutral-600 dark:text-neutral-400 font-medium relative group px-4 py-2.5 rounded-lg transition-all duration-200"
                     whileHover={{ 
-                      scale: 1.02,
-                      y: -1,
+                      scale: shouldReduceMotion ? 1 : 1.02,
+                      y: shouldReduceMotion ? 0 : -1,
                       backgroundColor: "rgba(4, 120, 87, 0.06)",
-                      boxShadow: "0 4px 12px rgba(4, 120, 87, 0.1)"
+                      boxShadow: shouldReduceMotion ? "none" : "0 4px 12px rgba(4, 120, 87, 0.1)"
                     }}
                     whileTap={{ 
-                      scale: 0.98,
+                      scale: shouldReduceMotion ? 1 : 0.98,
                       y: 0,
                       backgroundColor: "rgba(4, 120, 87, 0.12)"
                     }}
                     transition={{ 
                       type: "spring", 
-                      stiffness: 500, 
-                      damping: 30,
-                      mass: 0.8
+                      stiffness: shouldReduceMotion ? 100 : 500, 
+                      damping: shouldReduceMotion ? 40 : 30,
+                      mass: 0.1,
+                      duration: shouldReduceMotion ? 0.15 : undefined
+                    }}
+                    style={{
+                      willChange: 'transform',
+                      transitionDelay: `${index * 0.1}s`
                     }}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    style={{ transitionDelay: `${index * 0.1}s` }}
                   >
                     <motion.span 
                       className="text-neutral-600 dark:text-neutral-400 relative z-10"
@@ -396,13 +444,13 @@ export const Header: React.FC = () => {
 
             {/* Mobile Menu */}
             <motion.div
-              className={cn(
-                'fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl',
-                {
-                  'top-24 left-4 right-4 md:left-8 md:right-8 lg:left-12 lg:right-12': isScrolled,
-                  'top-30 left-4 right-4 md:left-8 md:right-8 lg:left-12 lg:right-12': !isScrolled,
-                }
-              )}
+              className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl"
+              style={{
+                top: useTransform(scrollProgress, [0, 1], [120, 96]), // top-30 to top-24
+                left: navbarPadding,
+                right: navbarPadding,
+                willChange: 'top, left, right',
+              }}
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
