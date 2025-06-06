@@ -105,7 +105,36 @@ export const animationVariants = {
     transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1] }
   },
 
-  // Slide animations
+  // Subtle premium entrance animations
+  luxuryFadeIn: {
+    initial: { opacity: 0, y: 8, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -8, scale: 0.98 },
+    transition: { duration: 0.8, ease: [0.23, 1, 0.32, 1] }
+  },
+
+  premiumSlideUp: {
+    initial: { opacity: 0, y: 12, scale: 0.99 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -8, scale: 0.99 },
+    transition: { duration: 0.7, ease: [0.215, 0.61, 0.355, 1] }
+  },
+
+  saasCardEntrance: {
+    initial: { opacity: 0, y: 6, scale: 0.995 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -4, scale: 0.995 },
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+  },
+
+  gentleReveal: {
+    initial: { opacity: 0, y: 4, scale: 0.998 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -4, scale: 0.998 },
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] }
+  },
+
+  // Legacy slide animations (keeping for backward compatibility)
   slideUp: {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -142,13 +171,33 @@ export const animationVariants = {
     transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1] }
   },
 
-  // Stagger container
+  // Enhanced stagger containers for premium feel
   staggerContainer: {
     initial: {},
     animate: {
       transition: {
         staggerChildren: 0.1,
         delayChildren: 0.1
+      }
+    }
+  },
+
+  premiumStagger: {
+    initial: {},
+    animate: {
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2
+      }
+    }
+  },
+
+  luxuryStagger: {
+    initial: {},
+    animate: {
+      transition: {
+        staggerChildren: 0.12,
+        delayChildren: 0.3
       }
     }
   },
@@ -163,11 +212,26 @@ export const animationVariants = {
     }
   },
 
+  // Subtle card hover for premium feel
+  premiumCardHover: {
+    hover: {
+      y: -3,
+      scale: 1.005,
+      transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }
+    }
+  },
+
   // Button animations
   buttonPress: {
     whileTap: { scale: 0.95 },
     whileHover: { scale: 1.05 },
     transition: { type: "spring", stiffness: 400, damping: 17 }
+  },
+
+  premiumButton: {
+    whileTap: { scale: 0.98 },
+    whileHover: { scale: 1.02, y: -1 },
+    transition: { type: "spring", stiffness: 400, damping: 25 }
   }
 }
 

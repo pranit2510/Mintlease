@@ -38,6 +38,9 @@ const config: Config = {
         'gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
         'gradient-emerald': 'linear-gradient(135deg, #10b981 0%, #047857 50%, #065f46 100%)',
         'gradient-radial': 'radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
+        'gradient-3d': 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.8) 50%, rgba(220,220,220,0.9) 100%)',
+        'gradient-3d-invert': 'linear-gradient(145deg, rgba(220,220,220,0.9) 0%, rgba(240,240,240,0.8) 50%, rgba(255,255,255,0.9) 100%)',
+        'gradient-depth': 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.9) 30%, rgba(245,245,245,0.8) 70%, rgba(240,240,240,0.95) 100%)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -62,6 +65,71 @@ const config: Config = {
         'glow': '0 0 20px rgba(16, 185, 129, 0.3)',
         'glow-gold': '0 0 20px rgba(245, 158, 11, 0.4)',
         'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        '3d-sm': `
+          0 2px 4px -1px rgba(0, 0, 0, 0.15),
+          0 4px 8px -2px rgba(0, 0, 0, 0.1),
+          0 1px 3px rgba(0, 0, 0, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1)
+        `,
+        '3d': `
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 8px 16px -4px rgba(0, 0, 0, 0.15),
+          0 16px 24px -8px rgba(0, 0, 0, 0.1),
+          0 2px 4px rgba(0, 0, 0, 0.05),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.05)
+        `,
+        '3d-lg': `
+          0 8px 16px -4px rgba(0, 0, 0, 0.15),
+          0 20px 40px -8px rgba(0, 0, 0, 0.2),
+          0 40px 64px -16px rgba(0, 0, 0, 0.15),
+          0 4px 8px rgba(0, 0, 0, 0.08),
+          inset 0 2px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.05)
+        `,
+        '3d-xl': `
+          0 16px 32px -8px rgba(0, 0, 0, 0.2),
+          0 32px 64px -16px rgba(0, 0, 0, 0.25),
+          0 64px 128px -32px rgba(0, 0, 0, 0.2),
+          0 8px 16px rgba(0, 0, 0, 0.1),
+          inset 0 3px 0 rgba(255, 255, 255, 0.25),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.08)
+        `,
+        '3d-emerald': `
+          0 8px 16px -4px rgba(4, 120, 87, 0.25),
+          0 20px 40px -8px rgba(4, 120, 87, 0.15),
+          0 40px 64px -16px rgba(0, 0, 0, 0.1),
+          0 4px 8px rgba(4, 120, 87, 0.1),
+          inset 0 2px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -1px 0 rgba(4, 120, 87, 0.1)
+        `,
+        '3d-gold': `
+          0 8px 16px -4px rgba(245, 158, 11, 0.25),
+          0 20px 40px -8px rgba(245, 158, 11, 0.15),
+          0 40px 64px -16px rgba(0, 0, 0, 0.1),
+          0 4px 8px rgba(245, 158, 11, 0.1),
+          inset 0 2px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -1px 0 rgba(245, 158, 11, 0.1)
+        `,
+        '3d-inset': `
+          inset 0 2px 8px rgba(0, 0, 0, 0.15),
+          inset 0 4px 16px rgba(0, 0, 0, 0.1),
+          inset 0 1px 4px rgba(0, 0, 0, 0.1)
+        `,
+        '3d-hover': `
+          0 12px 24px -8px rgba(0, 0, 0, 0.2),
+          0 24px 48px -12px rgba(0, 0, 0, 0.25),
+          0 48px 80px -24px rgba(0, 0, 0, 0.2),
+          0 6px 12px rgba(0, 0, 0, 0.1),
+          inset 0 2px 0 rgba(255, 255, 255, 0.25),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.05)
+        `,
+        '3d-soft': `
+          0 2px 8px rgba(0, 0, 0, 0.08),
+          0 8px 24px rgba(0, 0, 0, 0.12),
+          0 16px 32px rgba(0, 0, 0, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1)
+        `,
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
@@ -70,6 +138,9 @@ const config: Config = {
         'slide-up': 'slideUp 0.5s ease-out',
         'scale-in': 'scaleIn 0.3s ease-out',
         'shimmer': 'shimmer 2s linear infinite',
+        '3d-float': 'float3d 4s ease-in-out infinite',
+        '3d-pulse': 'pulse3d 3s ease-in-out infinite',
+        'depth-glow': 'depthGlow 2s ease-in-out infinite alternate',
       },
       keyframes: {
         float: {
@@ -96,11 +167,41 @@ const config: Config = {
           'from': { backgroundPosition: '0 0' },
           'to': { backgroundPosition: '-200% 0' },
         },
+        float3d: {
+          '0%, 100%': { 
+            transform: 'translateY(0px) translateZ(0px)',
+            boxShadow: '0 8px 16px -4px rgba(0, 0, 0, 0.15), 0 20px 40px -8px rgba(0, 0, 0, 0.2)'
+          },
+          '50%': { 
+            transform: 'translateY(-12px) translateZ(20px)',
+            boxShadow: '0 20px 32px -8px rgba(0, 0, 0, 0.2), 0 40px 64px -16px rgba(0, 0, 0, 0.25)'
+          },
+        },
+        pulse3d: {
+          '0%, 100%': { 
+            transform: 'scale(1)',
+            boxShadow: '0 8px 16px -4px rgba(0, 0, 0, 0.15)'
+          },
+          '50%': { 
+            transform: 'scale(1.02)',
+            boxShadow: '0 12px 24px -6px rgba(0, 0, 0, 0.2)'
+          },
+        },
+        depthGlow: {
+          'from': { 
+            boxShadow: '0 8px 16px -4px rgba(4, 120, 87, 0.15), 0 20px 40px -8px rgba(4, 120, 87, 0.1)' 
+          },
+          'to': { 
+            boxShadow: '0 16px 32px -8px rgba(4, 120, 87, 0.25), 0 32px 64px -16px rgba(4, 120, 87, 0.15)' 
+          },
+        },
       },
       transitionTimingFunction: {
         'luxury': 'cubic-bezier(0.4, 0.0, 0.2, 1)',
         'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
         'smooth': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        '3d': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        '3d-smooth': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
       },
       backdropBlur: {
         'xs': '2px',
@@ -113,6 +214,14 @@ const config: Config = {
         'xs': '475px',
         '3xl': '1680px',
         '4xl': '2048px',
+      },
+      transformStyle: {
+        '3d': 'preserve-3d',
+      },
+      perspective: {
+        '1000': '1000px',
+        '1500': '1500px',
+        '2000': '2000px',
       },
     },
   },

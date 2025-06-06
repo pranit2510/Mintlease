@@ -33,7 +33,7 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, index }) => {
   return (
     <motion.div
       className="group luxury-card p-6 h-full cursor-pointer"
-      variants={animationVariants.slideUp}
+      variants={animationVariants.saasCardEntrance}
       whileHover="hover"
       custom={index}
     >
@@ -192,7 +192,7 @@ export const VehicleShowcase: React.FC = () => {
           </motion.div>
           
           <motion.h2
-            variants={animationVariants.slideUp}
+            variants={animationVariants.luxuryFadeIn}
             className="text-4xl md:text-6xl font-black text-neutral-900 mb-6"
           >
             <span className="gradient-text">Premium Vehicles</span>
@@ -201,7 +201,7 @@ export const VehicleShowcase: React.FC = () => {
           </motion.h2>
           
           <motion.p
-            variants={animationVariants.slideUp}
+            variants={animationVariants.premiumSlideUp}
             className="text-xl text-neutral-600 max-w-3xl mx-auto"
           >
             Hand-selected luxury vehicles at unbeatable prices. Each comes with our 
