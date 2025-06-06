@@ -78,7 +78,7 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, index }) => {
         {/* Pricing */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold gradient-text">
+            <span className="text-2xl heading-luxury text-3d-luxury">
               {formatCurrency(vehicle.monthlyPayment)}/mo
             </span>
             <span className="text-sm text-neutral-500">lease</span>
@@ -193,16 +193,16 @@ export const VehicleShowcase: React.FC = () => {
           
           <motion.h2
             variants={animationVariants.luxuryFadeIn}
-            className="text-4xl md:text-6xl font-black text-neutral-900 mb-6"
+            className="text-4xl md:text-6xl heading-luxury text-neutral-900 mb-6"
           >
-            <span className="gradient-text">Premium Vehicles</span>
+            <span className="text-3d-luxury">Premium Vehicles</span>
             <br />
-            Ready for Delivery
+            <span className="text-shadow-subtle">Ready for Delivery</span>
           </motion.h2>
           
           <motion.p
             variants={animationVariants.premiumSlideUp}
-            className="text-xl text-neutral-600 max-w-3xl mx-auto"
+            className="text-xl text-saas text-neutral-600 max-w-3xl mx-auto"
           >
             Hand-selected luxury vehicles at unbeatable prices. Each comes with our 
             comprehensive warranty and white-glove delivery service.

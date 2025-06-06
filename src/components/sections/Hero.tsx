@@ -307,11 +307,20 @@ export const Hero: React.FC = () => {
           <div className="space-y-8 mb-12">
             <h1 
               ref={titleRef}
-              className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight mb-8"
+              className="text-5xl md:text-7xl lg:text-8xl heading-luxury leading-tight mb-8"
             >
               <span className="block">
-                <span className="text-neutral-800">Your dream car </span>
-                <span className="gradient-text relative">
+                <span className="text-neutral-800 text-shadow-subtle">Your dream car</span>
+              </span>
+              <span className="block">
+                <span 
+                  className="text-3d-luxury relative inline-block min-w-[200px] md:min-w-[300px] lg:min-w-[400px]"
+                  style={{ 
+                    minHeight: '1.2em',
+                    display: 'inline-block',
+                    textAlign: 'left'
+                  }}
+                >
                   {displayText}
                   <motion.span
                     className="text-primary-emerald"
@@ -327,25 +336,25 @@ export const Hero: React.FC = () => {
             <div className="px-4 md:px-8 lg:px-12">
               <motion.p 
                 ref={subtitleRef}
-                className="text-base md:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed relative py-4 px-5 md:px-6 bg-gradient-to-r from-neutral-50/60 via-white/80 to-neutral-50/60 backdrop-blur-sm rounded-xl border border-neutral-200/40 shadow-sm"
+                className="text-base md:text-lg text-saas text-neutral-600 max-w-2xl mx-auto leading-relaxed relative py-4 px-5 md:px-6 bg-gradient-to-r from-neutral-50/60 via-white/80 to-neutral-50/60 backdrop-blur-sm rounded-xl border border-neutral-200/40 shadow-sm"
                 whileHover={{ 
-                  scale: 1.003,
-                  boxShadow: "0 6px 20px rgba(0, 0, 0, 0.04)",
-                  borderColor: "rgba(4, 120, 87, 0.15)"
+                  scale: 1.002,
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.03)",
+                  borderColor: "rgba(4, 120, 87, 0.12)"
                 }}
-                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
               >
                 <motion.span
                   className="inline-block"
-                  whileHover={{ y: -0.3 }}
+                  whileHover={{ y: -0.2 }}
                   transition={{ duration: 0.2 }}
                 >
                   Skip the dealership hassle.
                 </motion.span>{" "}
                 <motion.span
-                  className="inline-block text-neutral-700 font-medium"
+                  className="inline-block text-neutral-700 font-medium text-shadow-luxury-subtle"
                   whileHover={{ 
-                    y: -0.3,
+                    y: -0.2,
                     color: "rgb(4, 120, 87)"
                   }}
                   transition={{ duration: 0.3, delay: 0.1 }}
@@ -355,7 +364,7 @@ export const Hero: React.FC = () => {
                 <br />
                 <motion.span
                   className="inline-block"
-                  whileHover={{ y: -0.3 }}
+                  whileHover={{ y: -0.2 }}
                   transition={{ duration: 0.2, delay: 0.2 }}
                 >
                   directly to your door with our premium concierge service.
@@ -549,7 +558,7 @@ export const Hero: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="text-3xl font-bold text-neutral-900 mb-3">
+                <div className="text-3xl font-bold text-neutral-900 mb-3 text-shadow-3d-sm">
                   $499
                 </div>
                 
@@ -617,7 +626,7 @@ export const Hero: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="text-3xl font-bold text-neutral-900 mb-3">
+                <div className="text-3xl font-bold text-neutral-900 mb-3 text-shadow-3d-sm">
                   2,500+
                 </div>
                 
@@ -685,7 +694,7 @@ export const Hero: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="text-3xl font-bold text-neutral-900 mb-3">
+                <div className="text-3xl font-bold text-neutral-900 mb-3 text-shadow-3d-gold">
                   $50K+
                 </div>
                 

@@ -200,7 +200,7 @@ export const Header: React.FC = () => {
                   <span className="text-white font-bold text-xl relative z-10">M</span>
                 </motion.div>
                 <div>
-                  <h1 className="text-xl font-bold text-neutral-900 dark:text-white">Mint Lease</h1>
+                  <h1 className="text-xl heading-luxury text-3d-luxury">Mint Lease</h1>
                   <p className="text-xs text-neutral-600 dark:text-neutral-400 -mt-1">Premium Auto Brokerage</p>
                 </div>
               </motion.div>

@@ -1,5 +1,19 @@
 import type { Metadata } from "next";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: 'swap',
+});
+
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  weight: ['400', '600', '700'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "Mint Lease - Premium Auto Brokerage | Luxury Cars Delivered",
@@ -161,7 +175,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased overflow-x-hidden">
+      <body className={`antialiased overflow-x-hidden ${inter.variable} ${sourceSerif.variable} font-sans`}>
         {/* Skip to main content for accessibility */}
         <a 
           href="#main-content" 

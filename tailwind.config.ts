@@ -45,6 +45,7 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Inter', 'system-ui', 'sans-serif'],
+        luxury: ['Source Serif Pro', 'Georgia', 'serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       spacing: {
@@ -223,11 +224,44 @@ const config: Config = {
         '1500': '1500px',
         '2000': '2000px',
       },
+      textShadow: {
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.08)',
+        'DEFAULT': '0 2px 4px rgba(0, 0, 0, 0.12)',
+        'lg': '0 4px 8px rgba(0, 0, 0, 0.15)',
+        'subtle': '0 1px 3px rgba(0, 0, 0, 0.04)',
+        'premium': '0 2px 8px rgba(0, 0, 0, 0.06)',
+        'luxury-subtle': '0 1px 2px rgba(4, 120, 87, 0.08), 0 2px 4px rgba(0, 0, 0, 0.03)',
+        'gold-subtle': '0 1px 2px rgba(245, 158, 11, 0.08), 0 2px 4px rgba(0, 0, 0, 0.03)',
+        'depth-minimal': '0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.04)',
+        'refined': '0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04)',
+        'elegant': '0 2px 6px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04)',
+        'none': 'none',
+      },
     },
   },
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
+    function({ addUtilities }: any) {
+      const textShadowUtilities: Record<string, any> = {}
+      
+      // Generate refined text-shadow utilities
+      const shadows = {
+        'text-shadow-sm': { textShadow: '0 1px 2px rgba(0, 0, 0, 0.08)' },
+        'text-shadow': { textShadow: '0 2px 4px rgba(0, 0, 0, 0.12)' },
+        'text-shadow-lg': { textShadow: '0 4px 8px rgba(0, 0, 0, 0.15)' },
+        'text-shadow-none': { textShadow: 'none' },
+        'text-shadow-subtle': { textShadow: '0 1px 3px rgba(0, 0, 0, 0.04)' },
+        'text-shadow-premium': { textShadow: '0 2px 8px rgba(0, 0, 0, 0.06)' },
+        'text-shadow-luxury-subtle': { textShadow: '0 1px 2px rgba(4, 120, 87, 0.08), 0 2px 4px rgba(0, 0, 0, 0.03)' },
+        'text-shadow-gold-subtle': { textShadow: '0 1px 2px rgba(245, 158, 11, 0.08), 0 2px 4px rgba(0, 0, 0, 0.03)' },
+        'text-shadow-depth-minimal': { textShadow: '0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.04)' },
+        'text-shadow-refined': { textShadow: '0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04)' },
+        'text-shadow-elegant': { textShadow: '0 2px 6px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04)' },
+      }
+      
+      addUtilities(shadows)
+    },
   ],
 };
 
