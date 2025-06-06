@@ -5,6 +5,8 @@ import { motion } from 'framer-motion'
 import { Heart, Eye, ArrowRight, Zap, Shield, Star } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { formatCurrency, animationVariants } from '@/lib/utils'
+import WebGLEnhancer from '@/components/webgl/WebGLEnhancer'
+import Car3DViewer from '@/components/webgl/Car3DViewer'
 
 /**
  * Vehicle Showcase Section - Premium Inventory Display
@@ -32,38 +34,64 @@ interface VehicleCardProps {
 const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, index }) => {
   return (
     <motion.div
-      className="group luxury-card p-6 h-full cursor-pointer"
+      className="group luxury-card p-6 h-full cursor-pointer relative"
       variants={animationVariants.saasCardEntrance}
       whileHover="hover"
       custom={index}
     >
-      {/* Vehicle Image */}
+      {/* WebGL Enhancement for individual cards */}
+      <WebGLEnhancer 
+        variant="subtle" 
+        className="absolute inset-0 pointer-events-none -z-10 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+        enableParticles={false}
+        enableOrbs={true}
+        enableWireframe={false}
+      />
+      
+      {/* Vehicle 3D Viewer */}
       <div className="relative mb-6 rounded-xl overflow-hidden">
-        <div className="aspect-[4/3] bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-          <div className="text-6xl opacity-20">🚗</div>
-        </div>
+        <Car3DViewer 
+          className="h-64 w-full"
+          autoRotate={true}
+          carColor={index === 0 ? "#1a365d" : index === 1 ? "#2d3748" : "#047857"}
+        />
         
         {/* Badge */}
         {vehicle.badge && (
-          <div className="absolute top-3 left-3 px-3 py-1 bg-gold-primary text-neutral-900 text-xs font-bold rounded-full">
+          <div className="absolute top-3 left-3 px-3 py-1 bg-gold-primary text-neutral-900 text-xs font-bold rounded-full backdrop-blur-sm border border-white/20">
             {vehicle.badge}
           </div>
         )}
         
         {/* Action Buttons */}
         <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-2 glass rounded-full">
+          <motion.button 
+            className="p-2 glass rounded-full backdrop-blur-md border border-white/20"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
             <Heart className="w-4 h-4 text-neutral-700" />
-          </button>
-          <button className="p-2 glass rounded-full">
+          </motion.button>
+          <motion.button 
+            className="p-2 glass rounded-full backdrop-blur-md border border-white/20"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
             <Eye className="w-4 h-4 text-neutral-700" />
-          </button>
+          </motion.button>
         </div>
         
         {/* Savings Badge */}
-        <div className="absolute bottom-3 left-3 px-3 py-1 bg-primary-emerald text-white text-sm font-bold rounded-full">
+        <div className="absolute bottom-3 left-3 px-3 py-1 bg-primary-emerald text-white text-sm font-bold rounded-full backdrop-blur-sm border border-white/20">
           Save {formatCurrency(vehicle.savings)}
         </div>
+        
+        {/* Interactive overlay */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 0 }}
+        />
       </div>
 
       {/* Vehicle Info */}
@@ -173,8 +201,17 @@ export const VehicleShowcase: React.FC = () => {
   ]
 
   return (
-    <section id="current-deals" className="py-20 bg-gradient-to-br from-neutral-50 to-neutral-100">
-      <div className="container mx-auto px-4">
+    <section id="current-deals" className="py-20 bg-gradient-to-br from-neutral-50 to-neutral-100 relative">
+      {/* WebGL Background Enhancement */}
+      <WebGLEnhancer 
+        variant="medium" 
+        className="absolute inset-0 pointer-events-none"
+        enableParticles={true}
+        enableOrbs={true}
+        enableWireframe={true}
+      />
+      
+      <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div
           className="text-center mb-16"

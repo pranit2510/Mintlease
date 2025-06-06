@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring, useTransform, useMotionValueEvent } from 'framer-motion'
-import { Menu, X, Phone, Mail, MapPin } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { motion, useMotionValue, useSpring, useTransform, useMotionValueEvent, useReducedMotion, AnimatePresence } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { cn } from '@/lib/utils'
 
 /**
  * Floating Luxury Header Component with Glassmorphism
@@ -30,7 +29,6 @@ export const Header: React.FC = () => {
   // Smooth transforms for all navbar properties
   const navbarScale = useSpring(useTransform(scrollProgress, [0, 1], [1, 0.98]), springConfig)
   const navbarY = useSpring(useTransform(scrollProgress, [0, 1], [0, -2]), springConfig)
-  const navbarOpacity = useSpring(useTransform(scrollProgress, [0, 1], [1, 1]), springConfig)
   const borderRadius = useSpring(useTransform(scrollProgress, [0, 1], [0, 12]), springConfig)
   const navbarPadding = useSpring(useTransform(scrollProgress, [0, 1], [0, 16]), springConfig)
   
@@ -38,9 +36,9 @@ export const Header: React.FC = () => {
   const backgroundOpacity = useSpring(useTransform(scrollProgress, [0, 1], [0, 0.95]), springConfig)
   const shadowIntensity = useSpring(useTransform(scrollProgress, [0, 1], [0, 1]), springConfig)
   const borderOpacity = useSpring(useTransform(scrollProgress, [0, 1], [0, 0.4]), springConfig)
-
-  // Derived state for conditional rendering
-  const isScrolled = useTransform(scrollProgress, (value) => value > 0.5)
+  
+  // Mobile menu positioning
+  const mobileMenuTop = useTransform(scrollProgress, [0, 1], [120, 96])
 
   // Handle scroll with motion values for 120fps performance
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -55,7 +53,7 @@ export const Header: React.FC = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [scrollY])
 
   // Navigation items
   const navItems = [
@@ -446,7 +444,7 @@ export const Header: React.FC = () => {
             <motion.div
               className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl"
               style={{
-                top: useTransform(scrollProgress, [0, 1], [120, 96]), // top-30 to top-24
+                top: mobileMenuTop,
                 left: navbarPadding,
                 right: navbarPadding,
                 willChange: 'top, left, right',

@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import { motion, useAnimation, useInView, useMotionValue, useSpring, AnimatePresence, useReducedMotion, useTransform } from 'framer-motion'
+import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
-import { ArrowRight, Play, Shield, Award, Users, DollarSign } from 'lucide-react'
+import { ArrowRight, Shield, Users, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { animationVariants } from '@/lib/utils'
+import AnimatedBackground from '@/components/webgl/AnimatedBackground'
 
 /**
  * Hero Section - Interactive Luxury Auto Brokerage Landing
@@ -49,8 +50,8 @@ export const Hero: React.FC = () => {
   const accentX = useTransform(springMouseX, [-100, 100], [-5, 5])
   const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
 
-  // Interactive depth layers
-  const [interactiveIntensity, setInteractiveIntensity] = useState(1)
+  // Interactive depth layers - removed unused variable
+  const [, setInteractiveIntensity] = useState(1)
 
   // 120fps optimized typewriter effect - using motion values
   const [currentWord, setCurrentWord] = useState(0)
@@ -60,7 +61,7 @@ export const Hero: React.FC = () => {
   const [displayText, setDisplayText] = useState('')
   const cursorOpacity = useMotionValue(1)
   const textScale = useMotionValue(1)
-  const [isTyping, setIsTyping] = useState(true)
+  const [isTyping] = useState(true)
 
   // Performance optimized word array
   const words = useMemo(() => [
@@ -293,11 +294,6 @@ export const Hero: React.FC = () => {
     window.location.href = '/inventory'
   }
 
-  const handleWatchVideo = () => {
-    // TODO: Implement video modal
-    console.log('Watch video clicked')
-  }
-
   // Company names for infinite carousel
   const companyNames = [
     "Mercedes-Benz", "BMW", "Audi", "Porsche", "Lamborghini", "Ferrari", 
@@ -316,8 +312,15 @@ export const Hero: React.FC = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* WebGL Animated Background */}
+      <AnimatedBackground 
+        intensity="subtle" 
+        particleCount={1500}
+        className="absolute inset-0 z-0"
+      />
+      
       {/* 120fps Optimized Luxury Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 z-10 overflow-hidden">
         {/* Primary gradient layer - GPU accelerated */}
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
@@ -358,7 +361,7 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <motion.div
           className="text-center space-y-10"
           initial="initial"
