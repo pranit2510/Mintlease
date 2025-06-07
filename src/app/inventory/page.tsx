@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { motion } from 'framer-motion'
@@ -131,20 +131,133 @@ const mockVehicles: MockVehicle[] = [
   }
 ]
 
-const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }> = ({ vehicle, viewMode }) => {
+// Ultra-smooth 120fps button animation variants
+const viewDetailsVariants = {
+  default: {
+    backgroundColor: '#059669',
+    color: '#ffffff',
+    border: '2px solid #059669',
+    boxShadow: '0 6px 16px -3px rgba(5, 150, 105, 0.3), 0 12px 32px -6px rgba(5, 150, 105, 0.2), 0 24px 48px -12px rgba(0, 0, 0, 0.15), inset 0 1.5px 0 rgba(255, 255, 255, 0.1)',
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    filter: 'brightness(1) saturate(1)',
+    transition: {
+      type: "spring",
+      stiffness: 600,
+      damping: 40,
+      mass: 0.5,
+      restDelta: 0.001,
+      restSpeed: 0.001
+    }
+  },
+  hover: {
+    background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+    boxShadow: '0 12px 32px -3px rgba(5, 150, 105, 0.5), 0 24px 48px -6px rgba(5, 150, 105, 0.3), 0 40px 80px -12px rgba(0, 0, 0, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.2)',
+    y: -4,
+    scale: 1.03,
+    rotateX: -2,
+    filter: 'brightness(1.1) saturate(1.2)',
+    transition: {
+      type: "spring",
+      stiffness: 800,
+      damping: 35,
+      mass: 0.3,
+      restDelta: 0.001,
+      restSpeed: 0.001,
+      duration: 0.15
+    }
+  }
+}
+
+// Smooth consultation button animation
+const consultationButtonVariants = {
+  default: {
+    backgroundColor: 'transparent',
+    borderColor: '#059669',
+    color: '#059669',
+    scale: 1,
+    y: 0,
+    rotateX: 0,
+    filter: 'brightness(1)',
+    transition: {
+      type: "spring",
+      stiffness: 600,
+      damping: 40,
+      mass: 0.5,
+      restDelta: 0.001,
+      restSpeed: 0.001
+    }
+  },
+  hover: {
+    backgroundColor: '#dc2626',
+    borderColor: '#dc2626',
+    color: '#ffffff',
+    scale: 1.04,
+    y: -3,
+    rotateX: -2,
+    filter: 'brightness(1.1)',
+    boxShadow: '0 8px 24px -3px rgba(220, 38, 38, 0.4), 0 16px 32px -6px rgba(220, 38, 38, 0.25)',
+    transition: {
+      type: "spring",
+      stiffness: 800,
+      damping: 35,
+      mass: 0.3,
+      restDelta: 0.001,
+      restSpeed: 0.001,
+      duration: 0.12
+    }
+  }
+}
+
+const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }> = React.memo(({ vehicle, viewMode }) => {
   const [isFavorited, setIsFavorited] = useState(false)
+  
+  // Memoized handlers for better performance
+  const handleFavoriteToggle = useCallback(() => {
+    setIsFavorited(prev => !prev)
+  }, [])
+  
+  const handleViewDetails = useCallback(() => {
+    window.location.href = '/inventory'
+  }, [])
+  
+  const handleBookConsultation = useCallback(() => {
+    window.location.href = '/booking'
+  }, [])
   
   if (viewMode === 'list') {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -2 }}
-        className="glass luxury-card p-8 hover:shadow-luxury transition-all duration-300 group"
-      >
+          <motion.div
+      layoutId={`vehicle-${vehicle.id}-list`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ 
+        y: -6, 
+        scale: 1.01,
+        rotateX: -1,
+        boxShadow: '0 12px 40px rgba(139, 69, 19, 0.12), 0 24px 80px rgba(139, 69, 19, 0.06)',
+        transition: {
+          type: "spring",
+          stiffness: 600,
+          damping: 30,
+          mass: 0.4,
+          restDelta: 0.001,
+          restSpeed: 0.001
+        }
+      }}
+      className="p-8 rounded-[20px] group will-change-transform backface-hidden"
+      style={{
+        background: '#FEFCFA',
+        boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
+        transformStyle: 'preserve-3d',
+        WebkitFontSmoothing: 'antialiased',
+        WebkitBackfaceVisibility: 'hidden'
+      }}
+    >
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Vehicle Image */}
-          <div className="w-full lg:w-96 h-56 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-xl overflow-hidden relative group-hover:shadow-lg transition-all duration-300">
+          <div className="w-full lg:w-96 h-56 bg-gradient-to-br from-neutral-200 to-neutral-300 rounded-[16px] overflow-hidden relative group-hover:shadow-lg transition-all duration-300 m-4 mb-3">
             <div className="absolute inset-0 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-6xl mb-2 opacity-30">🚗</div>
@@ -155,16 +268,13 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
             </div>
             
             {/* Savings Badge */}
-            <motion.div 
-              className="absolute top-4 left-4 bg-gradient-to-r from-gold-primary to-gold-secondary text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg"
-              whileHover={{ scale: 1.05 }}
-            >
+            <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg">
               Save ${vehicle.savings.toLocaleString()}
-            </motion.div>
+            </div>
             
             {/* Favorite Button */}
             <motion.button
-              onClick={() => setIsFavorited(!isFavorited)}
+              onClick={handleFavoriteToggle}
               className="absolute top-4 right-4 w-10 h-10 rounded-full glass-strong flex items-center justify-center hover:scale-110 transition-all duration-200"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -182,7 +292,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
                 </h3>
                 <p className="text-lg text-neutral-600 mb-1">{vehicle.trim}</p>
                 <p className="text-sm text-neutral-500 flex items-center">
-                  <span className="w-2 h-2 bg-primary-emerald rounded-full mr-2"></span>
+                  <span className="w-2 h-2 bg-emerald-600 rounded-full mr-2"></span>
                   {vehicle.location}
                 </p>
               </div>
@@ -222,7 +332,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
                 {vehicle.features.map((feature: string, index: number) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-primary-emerald/10 text-primary-emerald text-sm rounded-full font-medium"
+                    className="px-2.5 py-1.5 bg-neutral-100 text-neutral-600 text-xs font-medium rounded-[6px]"
                   >
                     {feature}
                   </span>
@@ -232,18 +342,54 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <button 
-                onClick={() => window.location.href = '/inventory'}
-                className="flex-1 bg-gradient-emerald text-white px-8 py-4 rounded-xl font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300"
+              <motion.button 
+                onClick={handleViewDetails}
+                className="flex-1 font-semibold px-8 py-4 rounded-[14px] text-lg will-change-transform backface-hidden"
+                style={{ 
+                  transformStyle: 'preserve-3d',
+                  WebkitFontSmoothing: 'antialiased',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}
+                variants={viewDetailsVariants}
+                initial="default"
+                whileHover="hover"
+                whileTap={{ 
+                  scale: 0.97, 
+                  y: -1,
+                  transition: { 
+                    type: "spring", 
+                    stiffness: 1000, 
+                    damping: 50,
+                    duration: 0.1
+                  }
+                }}
               >
                 View Details
-              </button>
-              <button 
-                onClick={() => window.location.href = '/booking'}
-                className="flex-1 border-2 border-primary-emerald text-primary-emerald px-8 py-4 rounded-xl font-semibold hover:bg-primary-emerald hover:text-white transition-all duration-300"
+              </motion.button>
+              <motion.button 
+                onClick={handleBookConsultation}
+                className="flex-1 border-2 px-8 py-4 rounded-[14px] text-lg font-semibold will-change-transform backface-hidden"
+                style={{ 
+                  transformStyle: 'preserve-3d',
+                  WebkitFontSmoothing: 'antialiased',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}
+                variants={consultationButtonVariants}
+                initial="default"
+                whileHover="hover"
+                whileTap={{ 
+                  scale: 0.97, 
+                  y: -1,
+                  transition: { 
+                    type: "spring", 
+                    stiffness: 1000, 
+                    damping: 50,
+                    duration: 0.1
+                  }
+                }}
               >
                 Book Consultation
-              </button>
+              </motion.button>
               <button className="w-14 h-14 border border-neutral-300 rounded-xl flex items-center justify-center hover:bg-neutral-50 hover:border-primary-emerald transition-all duration-200 group">
                 <ShareIcon className="w-5 h-5 text-neutral-600 group-hover:text-primary-emerald" />
               </button>
@@ -257,13 +403,35 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
   // Grid view
   return (
     <motion.div
+      layoutId={`vehicle-${vehicle.id}-grid`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, scale: 1.02 }}
-      className="glass luxury-card overflow-hidden hover:shadow-luxury transition-all duration-300 group"
+      whileHover={{ 
+        y: -8, 
+        scale: 1.03,
+        rotateX: -2,
+        rotateY: 1,
+        boxShadow: '0 16px 48px rgba(139, 69, 19, 0.15), 0 32px 96px rgba(139, 69, 19, 0.08)',
+        transition: {
+          type: "spring",
+          stiffness: 700,
+          damping: 35,
+          mass: 0.3,
+          restDelta: 0.001,
+          restSpeed: 0.001
+        }
+      }}
+      className="overflow-hidden rounded-[20px] group will-change-transform backface-hidden"
+      style={{
+        background: '#FEFCFA',
+        boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
+        transformStyle: 'preserve-3d',
+        WebkitFontSmoothing: 'antialiased',
+        WebkitBackfaceVisibility: 'hidden'
+      }}
     >
       {/* Vehicle Image */}
-      <div className="relative h-56 bg-gradient-to-br from-neutral-100 to-neutral-200 overflow-hidden">
+      <div className="relative h-56 bg-gradient-to-br from-neutral-200 to-neutral-300 overflow-hidden rounded-[16px] m-4 mb-3">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
           <div className="text-center">
             <div className="text-5xl mb-2 opacity-30">🚗</div>
@@ -274,16 +442,13 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
         </div>
         
         {/* Savings Badge */}
-        <motion.div 
-          className="absolute top-3 left-3 bg-gradient-to-r from-gold-primary to-gold-secondary text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"
-          whileHover={{ scale: 1.05 }}
-        >
+        <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg">
           Save ${vehicle.savings.toLocaleString()}
-        </motion.div>
+        </div>
         
         {/* Favorite Button */}
         <motion.button
-          onClick={() => setIsFavorited(!isFavorited)}
+          onClick={handleFavoriteToggle}
           className="absolute top-3 right-3 w-8 h-8 rounded-full glass-strong flex items-center justify-center"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
@@ -292,7 +457,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
         </motion.button>
         
         {/* Status Badge */}
-        <div className="absolute bottom-3 right-3 bg-primary-emerald text-white px-2 py-1 rounded-full text-xs font-semibold">
+        <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-[10px] shadow-lg">
           Available
         </div>
       </div>
@@ -300,14 +465,14 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
       {/* Vehicle Info */}
       <div className="p-6">
         <div className="mb-4">
-          <h3 className="text-xl font-bold text-neutral-800 mb-1 group-hover:text-primary-emerald transition-colors">
-            {vehicle.year} {vehicle.make} {vehicle.model}
-          </h3>
+                      <h3 className="text-xl font-bold text-neutral-800 mb-1 group-hover:text-emerald-600 transition-colors">
+              {vehicle.year} {vehicle.make} {vehicle.model}
+            </h3>
           <p className="text-neutral-600 text-sm mb-2">{vehicle.trim}</p>
-          <p className="text-xs text-neutral-500 flex items-center">
-            <span className="w-1.5 h-1.5 bg-primary-emerald rounded-full mr-2"></span>
-            {vehicle.location}
-          </p>
+                      <p className="text-xs text-neutral-500 flex items-center">
+              <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full mr-2"></span>
+              {vehicle.location}
+            </p>
         </div>
 
         {/* Pricing */}
@@ -345,13 +510,13 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
             {vehicle.features.slice(0, 2).map((feature: string, index: number) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-primary-emerald/10 text-primary-emerald text-xs rounded-full font-medium"
+                className="px-2.5 py-1.5 bg-neutral-100 text-neutral-600 text-xs font-medium rounded-[6px]"
               >
                 {feature}
               </span>
             ))}
             {vehicle.features.length > 2 && (
-              <span className="text-xs text-neutral-500 px-2 py-1 bg-neutral-100 rounded-full">
+              <span className="px-2.5 py-1.5 bg-neutral-100 text-neutral-600 text-xs font-medium rounded-[6px]">
                 +{vehicle.features.length - 2} more
               </span>
             )}
@@ -360,23 +525,59 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
 
         {/* Actions */}
         <div className="space-y-3">
-          <button 
-            onClick={() => window.location.href = '/inventory'}
-            className="w-full bg-gradient-emerald text-white px-4 py-3 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300"
+          <motion.button 
+            onClick={handleViewDetails}
+            className="w-full font-semibold px-5 py-3 rounded-[14px] will-change-transform backface-hidden"
+            style={{ 
+              transformStyle: 'preserve-3d',
+              WebkitFontSmoothing: 'antialiased',
+              WebkitBackfaceVisibility: 'hidden'
+            }}
+            variants={viewDetailsVariants}
+            initial="default"
+            whileHover="hover"
+            whileTap={{ 
+              scale: 0.97, 
+              y: -1,
+              transition: { 
+                type: "spring", 
+                stiffness: 1000, 
+                damping: 50,
+                duration: 0.1
+              }
+            }}
           >
             View Details
-          </button>
-          <button 
-            onClick={() => window.location.href = '/booking'}
-            className="w-full border-2 border-primary-emerald text-primary-emerald px-4 py-2.5 rounded-lg font-semibold hover:bg-primary-emerald hover:text-white transition-all duration-300"
+          </motion.button>
+          <motion.button 
+            onClick={handleBookConsultation}
+            className="w-full border-2 px-5 py-2.5 rounded-[14px] font-semibold will-change-transform backface-hidden"
+            style={{ 
+              transformStyle: 'preserve-3d',
+              WebkitFontSmoothing: 'antialiased',
+              WebkitBackfaceVisibility: 'hidden'
+            }}
+            variants={consultationButtonVariants}
+            initial="default"
+            whileHover="hover"
+            whileTap={{ 
+              scale: 0.97, 
+              y: -1,
+              transition: { 
+                type: "spring", 
+                stiffness: 1000, 
+                damping: 50,
+                duration: 0.1
+              }
+            }}
           >
             Book Consultation
-          </button>
+          </motion.button>
         </div>
       </div>
     </motion.div>
   )
-}
+})
 
 export default function InventoryPage() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -421,12 +622,20 @@ export default function InventoryPage() {
       
       <main className="pt-20">
         {/* Page Header */}
-        <section className="bg-gradient-to-br from-neutral-50 via-neutral-100 to-neutral-200 py-20 relative overflow-hidden">
-          {/* Background Elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-radial opacity-30" />
-            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-radial opacity-30" />
-          </div>
+        <section 
+          className="py-20 relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(180deg, #FEF7ED 0%, #FEFCFA 50%, #FEF7ED 100%)',
+          }}
+        >
+          {/* Subtle background pattern */}
+          <div 
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, #8B4513 1px, transparent 0)`,
+              backgroundSize: '32px 32px',
+            }}
+          />
           
           <div className="container mx-auto px-4 relative z-10">
             <motion.div 
@@ -441,35 +650,36 @@ export default function InventoryPage() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full text-sm font-medium text-neutral-700 mb-8"
               >
-                <span className="w-2 h-2 bg-primary-emerald rounded-full"></span>
+                <span className="w-2 h-2 bg-emerald-600 rounded-full"></span>
                 200+ Premium Vehicles Available
               </motion.div>
               
-              <h1 className="text-5xl lg:text-7xl font-black text-neutral-800 mb-8 leading-tight">
-                Luxury Vehicle <span className="gradient-text">Inventory</span>
+              <h1 className="text-5xl lg:text-7xl font-black mb-8 leading-tight">
+                <span className="text-neutral-800">Luxury Vehicle </span>
+                <span className="text-emerald-600">Inventory</span>
               </h1>
               
               <p className="text-xl lg:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed">
                 Browse our curated selection of premium vehicles. Each comes with our professional 
-                negotiation service and <span className="font-semibold text-primary-emerald">guaranteed savings</span>.
+                negotiation service and <span className="font-semibold text-emerald-600">guaranteed savings</span>.
               </p>
               
               {/* Trust Indicators */}
               <div className="flex flex-col sm:flex-row justify-center items-center gap-8 mt-12">
                 <div className="flex items-center gap-3 text-neutral-600">
-                  <div className="w-8 h-8 bg-primary-emerald rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-bold">✓</span>
                   </div>
                   <span className="font-medium">Certified Pre-Owned</span>
                 </div>
                 <div className="flex items-center gap-3 text-neutral-600">
-                  <div className="w-8 h-8 bg-gold-primary rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-bold">$</span>
                   </div>
                   <span className="font-medium">Best Price Guarantee</span>
                 </div>
                 <div className="flex items-center gap-3 text-neutral-600">
-                  <div className="w-8 h-8 bg-primary-emerald rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-bold">🚚</span>
                   </div>
                   <span className="font-medium">Free Delivery</span>
@@ -483,7 +693,11 @@ export default function InventoryPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="glass luxury-card p-8"
+                className="p-8 rounded-[20px]"
+                style={{
+                  background: '#FEFCFA',
+                  boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
+                }}
               >
                 <div className="flex flex-col lg:flex-row gap-6">
                   {/* Search Bar */}
@@ -494,7 +708,7 @@ export default function InventoryPage() {
                       placeholder="Search by make, model, or year..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-emerald focus:border-primary-emerald transition-all duration-200 bg-white"
+                      className="w-full pl-12 pr-4 py-4 border-2 border-neutral-200 rounded-[16px] focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all duration-200 bg-white"
                     />
                   </div>
 
@@ -502,7 +716,7 @@ export default function InventoryPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-4 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-emerald focus:border-primary-emerald transition-all duration-200 bg-white min-w-[200px]"
+                    className="px-4 py-4 border-2 border-neutral-200 rounded-[16px] focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all duration-200 bg-white min-w-[200px]"
                   >
                     <option value="newest">Newest First</option>
                     <option value="price-low">Price: Low to High</option>
@@ -511,12 +725,12 @@ export default function InventoryPage() {
                   </select>
 
                   {/* View Toggle */}
-                  <div className="flex border-2 border-neutral-200 rounded-xl overflow-hidden bg-white">
+                  <div className="flex border-2 border-neutral-200 rounded-[16px] overflow-hidden bg-white">
                     <motion.button
                       onClick={() => setViewMode('grid')}
-                      className={`px-4 py-4 transition-all duration-200 ${
+                                              className={`px-4 py-4 transition-all duration-200 ${
                         viewMode === 'grid' 
-                          ? 'bg-primary-emerald text-white shadow-lg' 
+                          ? 'bg-emerald-600 text-white shadow-lg' 
                           : 'bg-white text-neutral-600 hover:bg-neutral-50'
                       }`}
                       whileHover={{ scale: 1.05 }}
@@ -526,9 +740,9 @@ export default function InventoryPage() {
                     </motion.button>
                     <motion.button
                       onClick={() => setViewMode('list')}
-                      className={`px-4 py-4 transition-all duration-200 ${
+                                              className={`px-4 py-4 transition-all duration-200 ${
                         viewMode === 'list' 
-                          ? 'bg-primary-emerald text-white shadow-lg' 
+                          ? 'bg-emerald-600 text-white shadow-lg' 
                           : 'bg-white text-neutral-600 hover:bg-neutral-50'
                       }`}
                       whileHover={{ scale: 1.05 }}
@@ -541,7 +755,7 @@ export default function InventoryPage() {
                   {/* Filter Button */}
                   <motion.button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="flex items-center gap-3 px-6 py-4 border-2 border-neutral-200 rounded-xl hover:bg-neutral-50 hover:border-primary-emerald transition-all duration-200 bg-white"
+                    className="flex items-center gap-3 px-6 py-4 border-2 border-neutral-200 rounded-[16px] hover:bg-neutral-50 hover:border-emerald-600 transition-all duration-200 bg-white"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -553,17 +767,17 @@ export default function InventoryPage() {
                 {/* Results Info */}
                 <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="text-neutral-600">
-                    Showing <span className="font-semibold text-primary-emerald">{filteredVehicles.length}</span> of <span className="font-semibold">{mockVehicles.length}</span> luxury vehicles
+                    Showing <span className="font-semibold text-emerald-600">{filteredVehicles.length}</span> of <span className="font-semibold">{mockVehicles.length}</span> luxury vehicles
                   </div>
                   <div className="flex items-center gap-4 text-sm text-neutral-500">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-primary-emerald rounded-full"></div>
-                      <span>In Stock</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-gold-primary rounded-full"></div>
-                      <span>Best Deals</span>
-                    </div>
+                                          <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
+                        <span>In Stock</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <span>Best Deals</span>
+                      </div>
                   </div>
                 </div>
               </motion.div>
@@ -572,7 +786,12 @@ export default function InventoryPage() {
         </section>
 
         {/* Vehicle Grid */}
-        <section className="py-20">
+        <section 
+          className="py-20"
+          style={{
+            background: 'linear-gradient(180deg, #FEF7ED 0%, #FEFCFA 50%, #FEF7ED 100%)',
+          }}
+        >
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0 }}
@@ -586,10 +805,14 @@ export default function InventoryPage() {
             >
               {filteredVehicles.map((vehicle, index) => (
                 <motion.div
-                  key={vehicle.id}
+                  key={`${vehicle.id}-${viewMode}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  transition={{ 
+                    duration: 0.4, 
+                    delay: Math.min(index * 0.05, 0.5),
+                    ease: "easeOut"
+                  }}
                 >
                   <VehicleCard 
                     vehicle={vehicle} 
@@ -605,7 +828,12 @@ export default function InventoryPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center py-20"
               >
-                <div className="glass luxury-card p-12 max-w-2xl mx-auto">
+                <div className="p-12 max-w-2xl mx-auto rounded-[20px]"
+                  style={{
+                    background: '#FEFCFA',
+                    boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
+                  }}
+                >
                   <div className="text-6xl mb-6 opacity-30">🔍</div>
                   <h3 className="text-3xl font-bold text-neutral-800 mb-6">
                     No vehicles found
@@ -614,15 +842,26 @@ export default function InventoryPage() {
                     Try adjusting your search criteria or contact our experts to help you find your perfect vehicle.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button 
+                    <motion.button 
                       onClick={() => setSearchQuery('')}
-                      className="bg-gradient-emerald text-white px-8 py-4 rounded-xl font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-[14px] text-lg transition-all duration-300 group"
+                      style={{
+                        boxShadow: '0 6px 16px -3px rgba(5, 150, 105, 0.3), 0 12px 32px -6px rgba(5, 150, 105, 0.2), 0 24px 48px -12px rgba(0, 0, 0, 0.15), inset 0 1.5px 0 rgba(255, 255, 255, 0.1)',
+                      }}
+                      whileHover={{ 
+                        y: -2, 
+                        scale: 1.01,
+                        background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                        boxShadow: '0 8px 20px -3px rgba(5, 150, 105, 0.4), 0 16px 36px -6px rgba(5, 150, 105, 0.25), 0 32px 60px -12px rgba(0, 0, 0, 0.2), inset 0 1.5px 0 rgba(255, 255, 255, 0.15)',
+                      }}
+                      whileTap={{ scale: 0.98, y: 0 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     >
                       Clear Search
-                    </button>
+                    </motion.button>
                     <button 
                       onClick={() => window.location.href = '/booking'}
-                      className="border-2 border-primary-emerald text-primary-emerald px-8 py-4 rounded-xl font-semibold hover:bg-primary-emerald hover:text-white transition-all duration-300"
+                      className="border-2 border-emerald-600 text-emerald-600 px-8 py-4 rounded-[14px] text-lg font-semibold hover:bg-emerald-600 hover:text-white transition-all duration-300"
                     >
                       Contact Our Team
                     </button>
