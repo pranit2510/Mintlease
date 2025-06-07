@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .debug-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #047857;
+        }
+        .log {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Navbar Button Debug Test</h1>
+    
+    <div class="debug-section">
+        <h2>Navigation Test Buttons</h2>
+        <p>Click these buttons to test navigation functionality:</p>
+        
+        <button onclick="testNavigation('/')">Home</button>
+        <button onclick="testNavigation('/inventory')">Inventory</button>
+        <button onclick="testNavigation('/calculator')">Calculator</button>
+        <button onclick="testNavigation('#how-it-works')">How It Works (Anchor)</button>
+        <button onclick="testNavigation('/booking')">Book Consultation</button>
+        
+        <div class="log" id="log">
+            <div>Click buttons to see debug output...</div>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Event Listener Test</h2>
+        <p>Testing different event handling approaches:</p>
+        
+        <button id="test-click">addEventListener Test</button>
+        <button onclick="directClick()">Direct onclick Test</button>
+        
+        <div class="log" id="event-log">
+            <div>Event test results will appear here...</div>
+        </div>
+    </div>
+
+    <script>
+        let logCount = 0;
+        
+        function log(message) {
+            logCount++;
+            const logEl = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div>${logCount}. [${time}] ${message}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(`[${time}] ${message}`);
+        }
+        
+        function eventLog(message) {
+            const logEl = document.getElementById('event-log');
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div>[${time}] ${message}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(`[${time}] ${message}`);
+        }
+        
+        function testNavigation(href) {
+            log(`🚀 Navigation clicked: ${href}`);
+            log(`Current pathname: ${window.location.pathname}`);
+            log(`Is anchor link: ${href.startsWith('#')}`);
+            
+            try {
+                if (href.startsWith('#')) {
+                    if (window.location.pathname !== '/') {
+                        log('📍 Navigating to home with anchor: /' + href);
+                        // In real app, this would navigate to home + anchor
+                        log('✅ Would navigate to: ' + '/' + href);
+                    } else {
+                        log('🎯 Scrolling to element: ' + href);
+                        const element = document.querySelector(href);
+                        if (element) {
+                            log('✅ Element found, would scroll');
+                        } else {
+                            log('⚠️ Element not found: ' + href);
+                        }
+                    }
+                } else {
+                    log('🔗 Navigating to page: ' + href);
+                    log('✅ Would set window.location.href = ' + href);
+                    // In real test, we don't actually navigate
+                    // window.location.href = href;
+                }
+            } catch (error) {
+                log('❌ Error: ' + error.message);
+            }
+        }
+        
+        // Test event listeners
+        document.getElementById('test-click').addEventListener('click', function(e) {
+            eventLog('✅ addEventListener worked!');
+            eventLog('Event type: ' + e.type);
+            eventLog('Target: ' + e.target.tagName);
+        });
+        
+        function directClick() {
+            eventLog('✅ Direct onclick worked!');
+        }
+        
+        // Test if React/Next.js might be interfering
+        window.addEventListener('load', function() {
+            log('🏁 Page loaded');
+            log('User agent: ' + navigator.userAgent);
+            log('Window width: ' + window.innerWidth);
+            
+            // Check for common issues
+            if (typeof React !== 'undefined') {
+                log('⚠️ React detected in global scope');
+            }
+            
+            if (typeof window.__NEXT_DATA__ !== 'undefined') {
+                log('⚠️ Next.js detected');
+            }
+            
+            // Test for event capture issues
+            document.addEventListener('click', function(e) {
+                if (e.target.tagName === 'BUTTON') {
+                    log('📱 Global click captured: ' + e.target.textContent);
+                }
+            }, true); // Use capture phase
+        });
+        
+        // Clear logs function
+        function clearLogs() {
+            document.getElementById('log').innerHTML = '<div>Logs cleared...</div>';
+            document.getElementById('event-log').innerHTML = '<div>Event logs cleared...</div>';
+            logCount = 0;
+        }
+    </script>
+    
+    <div style="margin-top: 20px;">
+        <button onclick="clearLogs()" style="background: #666;">Clear Logs</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Instructions</h2>
+        <ol>
+            <li>Open browser console (F12) to see additional debug info</li>
+            <li>Click each navigation button and observe the logs</li>
+            <li>Compare behavior with your actual navbar</li>
+            <li>Check if any errors appear in console</li>
+            <li>Test on both desktop and mobile screen sizes</li>
+        </ol>
+    </div>
+</body>
+</html> 

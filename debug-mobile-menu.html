@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Debug</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom debugging styles */
+        .debug-button {
+            background: #10b981 !important;
+            border: 2px solid #047857 !important;
+            color: white !important;
+            min-height: 48px;
+            min-width: 48px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            z-index: 10000;
+        }
+        
+        .debug-menu {
+            position: fixed;
+            top: 90px;
+            left: 16px;
+            right: 16px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 9999;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        .debug-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.2);
+            z-index: 9998;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-only { display: none !important; }
+        }
+        
+        @media (max-width: 767px) {
+            .desktop-only { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-emerald-600">Mint Lease</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="desktop-only flex items-center space-x-8">
+                    <a href="#" class="text-gray-600 hover:text-emerald-600">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600">Inventory</a>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600">Calculator</a>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600">Contact</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button 
+                    id="mobile-menu-toggle"
+                    class="mobile-only debug-button"
+                    aria-label="Toggle mobile menu"
+                    aria-expanded="false"
+                    aria-controls="mobile-menu"
+                >
+                    <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu Backdrop -->
+    <div id="mobile-backdrop" class="debug-backdrop mobile-only hidden"></div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="debug-menu mobile-only hidden">
+        <div class="p-6 space-y-4">
+            <a href="#" class="block text-lg font-medium text-gray-900 py-3 px-4 rounded-lg hover:bg-emerald-50">Home</a>
+            <a href="#" class="block text-lg font-medium text-gray-900 py-3 px-4 rounded-lg hover:bg-emerald-50">Inventory</a>
+            <a href="#" class="block text-lg font-medium text-gray-900 py-3 px-4 rounded-lg hover:bg-emerald-50">Calculator</a>
+            <a href="#" class="block text-lg font-medium text-gray-900 py-3 px-4 rounded-lg hover:bg-emerald-50">Contact</a>
+            
+            <div class="pt-4 border-t border-gray-200">
+                <button class="w-full bg-emerald-600 text-white rounded-lg px-6 py-3 font-medium">
+                    Book Consultation
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="pt-20 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Mobile Menu Debug Test</h1>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4">Instructions:</h2>
+                <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                    <li>Resize your browser window to mobile size (< 768px) or use mobile device</li>
+                    <li>Look for the hamburger menu button in the top right corner</li>
+                    <li>Click/tap the button to open the mobile menu</li>
+                    <li>Click/tap again or click the backdrop to close</li>
+                    <li>Check the console for debug messages</li>
+                </ol>
+            </div>
+            
+            <div class="bg-blue-50 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-blue-900 mb-2">Debug Info:</h3>
+                <div id="debug-info" class="text-sm text-blue-800 space-y-1">
+                    <div>Window Width: <span id="window-width">-</span>px</div>
+                    <div>User Agent: <span id="user-agent">-</span></div>
+                    <div>Touch Support: <span id="touch-support">-</span></div>
+                    <div>Menu State: <span id="menu-state">closed</span></div>
+                </div>
+            </div>
+            
+            <!-- Filler content to test scrolling -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-3">Test Content 1</h3>
+                    <p class="text-gray-600">This is test content to make the page scrollable and test the mobile menu behavior.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-3">Test Content 2</h3>
+                    <p class="text-gray-600">More content to ensure proper testing of the mobile menu functionality.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-3">Test Content 3</h3>
+                    <p class="text-gray-600">Additional content for comprehensive testing.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Mobile menu functionality
+        let isMobileMenuOpen = false;
+        
+        const toggleButton = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const backdrop = document.getElementById('mobile-backdrop');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const menuState = document.getElementById('menu-state');
+        
+        // Debug info updates
+        function updateDebugInfo() {
+            document.getElementById('window-width').textContent = window.innerWidth;
+            document.getElementById('user-agent').textContent = navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop';
+            document.getElementById('touch-support').textContent = 'ontouchstart' in window ? 'Yes' : 'No';
+        }
+        
+        function toggleMobileMenu() {
+            console.log('🔄 Toggle mobile menu clicked:', {
+                currentState: isMobileMenuOpen,
+                windowWidth: window.innerWidth,
+                userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
+            });
+            
+            isMobileMenuOpen = !isMobileMenuOpen;
+            
+            if (isMobileMenuOpen) {
+                // Show menu
+                mobileMenu.classList.remove('hidden');
+                backdrop.classList.remove('hidden');
+                menuIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+                toggleButton.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+                menuState.textContent = 'open';
+                console.log('📱 Mobile menu opened');
+            } else {
+                // Hide menu
+                mobileMenu.classList.add('hidden');
+                backdrop.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+                toggleButton.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = 'unset';
+                menuState.textContent = 'closed';
+                console.log('📱 Mobile menu closed');
+            }
+        }
+        
+        // Event listeners
+        toggleButton.addEventListener('click', toggleMobileMenu);
+        backdrop.addEventListener('click', () => {
+            if (isMobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        });
+        
+        // Escape key handler
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        });
+        
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            updateDebugInfo();
+            if (window.innerWidth >= 768 && isMobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        });
+        
+        // Initial debug info update
+        updateDebugInfo();
+        
+        console.log('🚀 Mobile menu debug script loaded');
+    </script>
+</body>
+</html> 

@@ -5,6 +5,8 @@ import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring, u
 import { Menu, X, Phone, Mail, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 /**
  * Ultra-Smooth 120fps Floating Header with Directional Transitions
@@ -12,8 +14,17 @@ import { cn } from '@/lib/utils'
  */
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isRouterReady, setIsRouterReady] = useState(false)
   const shouldReduceMotion = useReducedMotion()
   const lastScrollTime = useRef(0)
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Check if router is ready for navigation
+  useEffect(() => {
+    console.log('🏁 Header component mounted, router ready!')
+    setIsRouterReady(true)
+  }, [])
   
   // Advanced 120fps scroll tracking with velocity and direction
   const scrollY = useMotionValue(0)
@@ -169,28 +180,119 @@ export const Header: React.FC = () => {
     }
   }, [scrollY])
 
-  // Navigation items
+  // Fix mobile menu on window resize - prevents menu staying open when switching to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) { // md breakpoint
+        setIsMobileMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Navigation items with proper routes
   const navItems = [
+    { label: 'Home', href: '/' },
     { label: 'Inventory', href: '/inventory' },
-    { label: 'How It Works', href: '#how-it-works' },
     { label: 'Calculator', href: '/calculator' },
+    { label: 'How It Works', href: '#how-it-works' },
     { label: 'Testimonials', href: '#testimonials' },
     { label: 'Contact', href: '#contact' }
   ]
 
-  const handleNavClick = (href: string) => {
-    if (href.startsWith('#')) {
-      // Smooth scroll for anchor links
-      const element = document.querySelector(href)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-      }
-    } else {
-      // Navigate to page routes
-      window.location.href = href
-    }
+  const handleNavClick = useCallback((href: string, event?: React.MouseEvent) => {
+    console.log('🚀 Navigation clicked:', { href, pathname, routerReady: !!router && isRouterReady })
+    console.log('🔧 Debug info:', { 
+      windowLocation: window.location.href,
+      documentTitle: document.title,
+      timestamp: new Date().toISOString()
+    })
+    
+    // Close mobile menu first
     setIsMobileMenuOpen(false)
-  }
+
+    // For anchor links, handle them differently
+    if (href.startsWith('#')) {
+      if (event) {
+        event.preventDefault()
+      }
+      
+      if (pathname !== '/') {
+        // Navigate to home page first, then scroll
+        console.log('📍 Navigating to home with anchor:', '/' + href)
+        window.location.href = '/' + href
+      } else {
+        // Smooth scroll for anchor links on home page
+        const element = document.querySelector(href)
+        if (element) {
+          console.log('🎯 Scrolling to element:', href)
+          element.scrollIntoView({ behavior: 'smooth' })
+        } else {
+          console.warn('⚠️ Element not found:', href)
+        }
+      }
+      return
+    }
+
+    // For regular page navigation, use window.location for reliability
+    // This addresses the Next.js App Router navigation issues
+    console.log('🔗 Navigating to page:', href)
+    try {
+      console.log('🎯 Setting window.location.href to:', href)
+      window.location.href = href
+      console.log('✅ Navigation initiated successfully')
+    } catch (error) {
+      console.error('❌ Navigation failed:', error)
+      // Fallback: try using Next.js router if available
+      if (router && router.push) {
+        console.log('🔄 Trying fallback with Next.js router...')
+        router.push(href)
+      }
+    }
+  }, [pathname])
+
+  // Improved mobile menu toggle handler
+  const toggleMobileMenu = useCallback((event?: React.MouseEvent | React.TouchEvent) => {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    
+    console.log('📱 Mobile menu toggle clicked:', { 
+      currentState: isMobileMenuOpen, 
+      windowWidth: window.innerWidth,
+      userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
+    })
+    
+    setIsMobileMenuOpen(prev => {
+      const newState = !prev
+      console.log('📱 Mobile menu state changed:', { from: prev, to: newState })
+      return newState
+    })
+  }, [isMobileMenuOpen])
+
+  // Add keyboard navigation support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'hidden' // Prevent background scroll
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMobileMenuOpen])
 
   return (
     <>
@@ -400,14 +502,17 @@ export const Header: React.FC = () => {
                     <circle cx="22" cy="33" r="1.5" fill="#8B9DB8" opacity="0.8" />
                   </svg>
                 </motion.div>
-                <div>
-                  <h1 className="text-xl heading-luxury text-3d-luxury">Mint Lease</h1>
+                <div className="hidden sm:block">
+                  <h1 className="text-lg sm:text-xl heading-luxury text-3d-luxury">Mint Lease</h1>
                   <p className="text-xs text-neutral-600 dark:text-neutral-400 -mt-1">Premium Auto Brokerage</p>
+                </div>
+                <div className="block sm:hidden">
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">Mint Lease</h1>
                 </div>
               </motion.div>
 
               {/* Desktop Navigation */}
-              <nav className="hidden lg:flex items-center gap-8">
+              <nav className="hidden md:flex items-center gap-6 xl:gap-8">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -434,13 +539,19 @@ export const Header: React.FC = () => {
                       style={{
                         boxShadow: '0 2px 8px rgba(4, 120, 87, 0.12)',
                         zIndex: 1,
+                        pointerEvents: 'none', // Don't interfere with button clicks
                       }}
                     />
                     
                     {/* Button with text - ABOVE background */}
                     <motion.button
-                      onClick={() => handleNavClick(item.href)}
-                      className="relative text-neutral-600 dark:text-neutral-400 font-medium px-4 py-2.5 rounded-lg w-full h-full z-10"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🎯 Button clicked:', item.label, item.href);
+                        handleNavClick(item.href);
+                      }}
+                      className="relative text-neutral-600 dark:text-neutral-400 font-medium px-4 py-2.5 rounded-lg w-full h-full cursor-pointer touch-manipulation"
                       variants={{
                         initial: { opacity: 0, y: -10 },
                         animate: { opacity: 1, y: 0 },
@@ -460,7 +571,9 @@ export const Header: React.FC = () => {
                       }}
                       style={{
                         willChange: 'transform, color',
-                        zIndex: 10,
+                        zIndex: 100,
+                        position: 'relative',
+                        pointerEvents: 'auto',
                       }}
                     >
                       {item.label}
@@ -470,19 +583,21 @@ export const Header: React.FC = () => {
                     <motion.div
                       className="absolute inset-0 rounded-lg overflow-hidden"
                       style={{ 
-                        zIndex: 20,
+                        zIndex: 1,
                         willChange: 'transform',
                         transform: 'translate3d(0,0,0)', // Force GPU layer
+                        pointerEvents: 'none', // Don't interfere with button clicks
                       }}
                     >
                       {/* Top border - Silk-smooth entrance */}
                       <motion.div
-                        className="absolute top-0 left-0 h-[2px] w-full"
+                        className="absolute top-0 left-0 h-[2px]"
                         style={{
                           background: 'linear-gradient(90deg, rgba(4, 120, 87, 0.8) 0%, rgba(16, 185, 129, 0.9) 100%)',
                           transformOrigin: "left",
                           willChange: 'transform',
                           transform: 'translate3d(0,0,0)',
+                          width: 'calc(100% + 2px)', // Extend to overlap with right border
                         }}
                         variants={{
                           initial: { 
@@ -508,12 +623,13 @@ export const Header: React.FC = () => {
                       
                       {/* Right border - Flowing cascade */}
                       <motion.div
-                        className="absolute top-0 right-0 w-[2px] h-full"
+                        className="absolute top-0 right-0 w-[2px]"
                         style={{
                           background: 'linear-gradient(180deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.85) 100%)',
                           transformOrigin: "top",
                           willChange: 'transform',
                           transform: 'translate3d(0,0,0)',
+                          height: 'calc(100% + 2px)', // Extend to overlap with bottom border
                         }}
                         variants={{
                           initial: { 
@@ -539,12 +655,14 @@ export const Header: React.FC = () => {
                       
                       {/* Bottom border - Elegant continuation */}
                       <motion.div
-                        className="absolute bottom-0 right-0 h-[2px] w-full"
+                        className="absolute bottom-0 right-0 h-[2px]"
                         style={{
                           background: 'linear-gradient(270deg, rgba(5, 150, 105, 0.85) 0%, rgba(4, 120, 87, 0.8) 100%)',
                           transformOrigin: "right",
                           willChange: 'transform',
                           transform: 'translate3d(0,0,0)',
+                          width: 'calc(100% + 2px)', // Extend to overlap with left border
+                          left: '-2px', // Shift left to cover the gap
                         }}
                         variants={{
                           initial: { 
@@ -570,12 +688,14 @@ export const Header: React.FC = () => {
                       
                       {/* Left border - Perfect completion */}
                       <motion.div
-                        className="absolute bottom-0 left-0 w-[2px] h-full"
+                        className="absolute bottom-0 left-0 w-[2px]"
                         style={{
                           background: 'linear-gradient(0deg, rgba(4, 120, 87, 0.8) 0%, rgba(16, 185, 129, 0.9) 100%)',
                           transformOrigin: "bottom",
                           willChange: 'transform',
                           transform: 'translate3d(0,0,0)',
+                          height: 'calc(100% + 2px)', // Extend to overlap with top border
+                          top: '-2px', // Shift up to cover the gap
                         }}
                         variants={{
                           initial: { 
@@ -604,7 +724,7 @@ export const Header: React.FC = () => {
               </nav>
 
               {/* CTA Button & Mobile Menu */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ 
@@ -642,6 +762,7 @@ export const Header: React.FC = () => {
                     className="hidden md:block"
                   >
                     <motion.button
+                      onClick={() => handleNavClick('/booking')}
                       className="bg-emerald-600 text-white border-0 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
@@ -652,23 +773,28 @@ export const Header: React.FC = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <span className="flex items-center relative z-10">
-                        Get Pre-Approved
+                        Book Consultation
                       </span>
                     </motion.button>
                   </motion.div>
                 </motion.div>
                 
-                {/* Mobile Menu Button */}
+                {/* Mobile Menu Button - Improved Responsiveness */}
                 <motion.button
-                  className="lg:hidden p-2.5 rounded-lg border bg-emerald-50/80 dark:bg-emerald-900/80 border-emerald-200/60 dark:border-emerald-700/60 backdrop-blur-sm relative overflow-hidden"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="md:hidden p-3 rounded-lg border-2 bg-emerald-50 dark:bg-emerald-900 border-emerald-300 dark:border-emerald-600 backdrop-blur-sm relative overflow-hidden touch-manipulation select-none shadow-lg"
+                  onClick={toggleMobileMenu}
+                  type="button"
+                  aria-label={isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+                  aria-expanded={isMobileMenuOpen}
+                  aria-controls="mobile-menu"
+                  data-testid="mobile-menu-toggle"
                   whileTap={{ 
                     scale: 0.95,
                   }}
                   whileHover={{ 
                     scale: 1.02,
                     y: -1,
-                    backgroundColor: "rgba(4, 120, 87, 0.1)",
+                    backgroundColor: "rgba(4, 120, 87, 0.15)",
                   }}
                   transition={{
                     duration: 0.2,
@@ -677,6 +803,11 @@ export const Header: React.FC = () => {
                   }}
                   style={{
                     willChange: 'transform, background-color',
+                    minHeight: '48px', // Minimum touch target size
+                    minWidth: '48px',
+                    zIndex: 10000,
+                    position: 'relative',
+                    cursor: 'pointer',
                   }}
                 >
                   <AnimatePresence mode="wait">
@@ -689,7 +820,7 @@ export const Header: React.FC = () => {
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
                       >
-                        <X className="w-5 h-5 text-emerald-700 dark:text-emerald-300" />
+                        <X className="w-6 h-6 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -700,7 +831,7 @@ export const Header: React.FC = () => {
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
                       >
-                        <Menu className="w-5 h-5 text-emerald-700 dark:text-emerald-300" />
+                        <Menu className="w-6 h-6 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -722,16 +853,23 @@ export const Header: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
+              style={{ touchAction: 'none' }}
             />
 
             {/* Enhanced Mobile Menu */}
             <motion.div
-              className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl"
+              id="mobile-menu"
+              role="navigation"
+              aria-label="Mobile navigation menu"
+              className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl md:hidden"
               style={{
-                top: useSpring(useTransform(scrollProgress, [0, 0.2, 0.6, 1], [120, 110, 100, 96]), visualUltraConfig),
-                left: navbarPadding,
-                right: navbarPadding,
-                willChange: 'top, left, right',
+                top: '90px', // Fixed position instead of dynamic
+                left: '16px',
+                right: '16px',
+                maxHeight: 'calc(100vh - 120px)',
+                overflowY: 'auto',
+                willChange: 'transform, opacity',
+                zIndex: 9999,
               }}
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -742,9 +880,14 @@ export const Header: React.FC = () => {
                 {navItems.map((item, index) => (
                   <motion.button
                     key={item.label}
-                    onClick={() => handleNavClick(item.href)}
-                    className="block w-full text-left text-lg font-medium transition-all duration-200 py-4 px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group"
-                    style={{ color: '#64748B' }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('📱 Mobile button clicked:', item.label, item.href);
+                      handleNavClick(item.href);
+                    }}
+                    className="block w-full text-left text-lg font-medium transition-all duration-200 py-4 px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group cursor-pointer touch-manipulation"
+                    style={{ color: '#64748B', zIndex: 10, position: 'relative' }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -776,48 +919,63 @@ export const Header: React.FC = () => {
                   </motion.button>
                 ))}
                 
-                <motion.div 
-                  className="pt-4"
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                >
-                  <motion.div
-                    whileHover={{ 
-                      scale: 1.02,
-                      y: -2
-                    }}
-                    whileTap={{ 
-                      scale: 0.98,
-                      y: 0
-                    }}
-                    transition={{ 
-                      type: "spring", 
-                      stiffness: 400, 
-                      damping: 25 
-                    }}
-                    style={{
-                      boxShadow: '0 6px 16px -3px rgba(5, 150, 105, 0.3), 0 12px 32px -6px rgba(5, 150, 105, 0.2), 0 24px 48px -12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                      borderRadius: '9999px'
-                    }}
+                {/* Mobile Menu Actions */}
+                <div className="pt-6 border-t border-emerald-200/30 space-y-4">
+                  {/* Primary CTA */}
+                  <motion.div 
                     className="w-full"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   >
                     <motion.button
-                      className="w-full bg-emerald-600 text-white border-0 rounded-full px-10 py-5 text-lg font-medium transition-all duration-300 group relative overflow-hidden"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('📱 Mobile Book Consultation clicked:', '/booking');
+                        handleNavClick('/booking');
+                      }}
+                      className="w-full bg-emerald-600 text-white border-0 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 group relative overflow-hidden cursor-pointer touch-manipulation"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                        boxShadow: '0 6px 16px -3px rgba(5, 150, 105, 0.3), 0 12px 32px -6px rgba(5, 150, 105, 0.2)',
                       }}
                       whileHover={{
                         background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                        boxShadow: '0 8px 20px -3px rgba(5, 150, 105, 0.4), 0 16px 36px -6px rgba(5, 150, 105, 0.25)',
                       }}
                       transition={{ duration: 0.3 }}
                     >
                       <span className="flex items-center justify-center relative z-10">
-                        Get Pre-Approved
+                        Book Consultation
                       </span>
                     </motion.button>
                   </motion.div>
-                </motion.div>
+
+                  {/* Secondary CTA */}
+                  <motion.button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('📱 Mobile View Inventory clicked:', '/inventory');
+                      handleNavClick('/inventory');
+                    }}
+                    className="w-full border-2 border-emerald-600 text-emerald-600 bg-transparent rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 hover:bg-emerald-600 hover:text-white cursor-pointer touch-manipulation"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                  >
+                    View Inventory
+                  </motion.button>
+
+                  {/* Contact Info */}
+                  <div className="pt-4 text-center">
+                    <p className="text-sm text-neutral-600 mb-2">Questions? Call us:</p>
+                    <a href="tel:1-555-MINT-LEASE" className="text-lg font-semibold text-emerald-600 hover:text-emerald-700">
+                      1-555-MINT-LEASE
+                    </a>
+                    <p className="text-xs text-neutral-500 mt-1">Available 7 days a week</p>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </>
