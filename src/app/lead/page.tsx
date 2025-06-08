@@ -3,6 +3,7 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { PremiumBadge } from '@/components/ui/PremiumBadge'
 import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
 import { ArrowRight, Phone, Clock, Shield, Star, Users, CheckCircle, Sparkles, Award, DollarSign } from 'lucide-react'
 import { animationVariants } from '@/lib/utils'
@@ -292,7 +293,7 @@ export default function LeadPage() {
       
       <main 
         ref={containerRef}
-        className="min-h-screen py-20 px-4 relative overflow-hidden"
+        className="pt-20 relative min-h-screen overflow-hidden"
         style={{ backgroundColor: '#FEF7ED' }}
         onMouseMove={handleMouseMove}
       >
@@ -324,20 +325,22 @@ export default function LeadPage() {
           />
         </div>
 
-        <motion.div
-          className="max-w-6xl mx-auto relative z-10"
-          initial="initial"
-          animate={isInView ? "visible" : "initial"}
-          variants={animationVariants.luxuryStagger}
-        >
-          {/* Header Section */}
-          <motion.div variants={animationVariants.premiumSlideUp} className="text-center mb-16">
-            <motion.div className="inline-block mb-6">
-              <div className="w-16 h-16 bg-emerald-600 rounded-[16px] flex items-center justify-center
-                             shadow-[0_8px_20px_-4px_rgba(5,150,105,0.3)] mx-auto mb-6">
-                <Sparkles className="w-8 h-8 text-white" />
-              </div>
-            </motion.div>
+        {/* Page Header */}
+        <section className="py-20 relative overflow-hidden z-10">
+          <div className="max-w-6xl mx-auto px-6 lg:px-8">
+            <motion.div
+              className="text-center space-y-6"
+              initial="initial"
+              animate={isInView ? "visible" : "initial"}
+              variants={animationVariants.luxuryStagger}
+            >
+              <motion.div
+                variants={animationVariants.premiumSlideUp}
+              >
+                <PremiumBadge icon={Sparkles}>
+                  Premium Quote Request
+                </PremiumBadge>
+              </motion.div>
             
             <motion.h1 
               variants={animationVariants.premiumSlideUp}
@@ -367,27 +370,32 @@ export default function LeadPage() {
               Experience luxury auto brokerage. Our AI specialist will call you within 5 minutes to begin your premium vehicle journey.
             </motion.p>
 
-            {/* Trust indicators */}
-            <motion.div
-              variants={animationVariants.premiumStagger}
-              className="flex flex-wrap justify-center gap-6 mb-12"
-            >
-              {trustIndicators.map((indicator, index) => (
-                <motion.div
-                  key={index}
-                  variants={animationVariants.saasCardEntrance}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 
-                           border border-white/40 shadow-lg"
-                >
-                  <span className={indicator.color}>{indicator.icon}</span>
-                  <span className="text-neutral-700 text-sm font-medium">{indicator.text}</span>
-                </motion.div>
-              ))}
+              {/* Trust indicators */}
+              <motion.div
+                variants={animationVariants.premiumStagger}
+                className="flex flex-wrap justify-center gap-6"
+              >
+                {trustIndicators.map((indicator, index) => (
+                  <motion.div
+                    key={index}
+                    variants={animationVariants.saasCardEntrance}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 
+                             border border-white/40 shadow-lg"
+                  >
+                    <span className={indicator.color}>{indicator.icon}</span>
+                    <span className="text-neutral-700 text-sm font-medium">{indicator.text}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
+        </section>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        {/* Content Section */}
+        <section className="pb-20 relative z-10">
+          <div className="max-w-6xl mx-auto px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             {/* Value Propositions */}
             <motion.div variants={animationVariants.premiumSlideUp} className="space-y-8">
               <h2 className="text-3xl font-bold text-neutral-900 mb-8">Why Choose Mint Lease?</h2>
@@ -629,7 +637,7 @@ export default function LeadPage() {
                     </span>
                   ) : creditScoreError || formData.creditScore !== 'excellent' ? (
                     <span className="flex items-center justify-center relative z-10">
-                      Credit Score Requirements Not Met
+                      Complete Application
                     </span>
                   ) : (
                     <span className="flex items-center justify-center relative z-10">
@@ -641,15 +649,16 @@ export default function LeadPage() {
 
                 <p className="text-neutral-500 text-sm text-center mt-4">
                   {creditScoreError || formData.creditScore !== 'excellent' ? (
-                    "Please select 'Excellent (700+)' credit score to proceed with your quote request."
+                    "Our financing specialists will review your information and explore available options for you."
                   ) : (
                     "By submitting, you agree to receive calls from our specialist within 5 minutes."
                   )}
                 </p>
               </motion.form>
             </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </section>
       </main>
       
       <Footer />

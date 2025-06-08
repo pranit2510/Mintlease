@@ -353,7 +353,7 @@ export default function CalculatorPage() {
         {/* 120fps Optimized Luxury Background - matching Hero */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           {/* Primary gradient layer - GPU accelerated */}
-          <motion.div 
+          <motion.div
             className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
             style={{
               x: backgroundX,
@@ -380,9 +380,9 @@ export default function CalculatorPage() {
           />
           
           {/* Minimal ambient light - Simplified */}
-          <motion.div 
+            <motion.div 
             className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-gradient-radial from-orange-100/15 to-transparent blur-3xl"
-            style={{
+              style={{
               x: useTransform(springMouseX, [-100, 100], [-3, 3]),
               y: useTransform(springMouseY, [-100, 100], [-5, 5]),
               willChange: 'transform',
@@ -405,7 +405,7 @@ export default function CalculatorPage() {
               >
                 <PremiumBadge icon={CalculatorIcon}>
                   Vehicle Finance/Lease Calculator
-                </PremiumBadge>
+              </PremiumBadge>
               </motion.div>
               
               <motion.h1 
@@ -440,14 +440,14 @@ export default function CalculatorPage() {
                 variants={animationVariants.premiumStagger}
               >
                 {keyFeatures.map((feature, index) => (
-                  <motion.div
+                <motion.div
                     key={index}
                     variants={animationVariants.saasCardEntrance}
                     className="flex items-center gap-3 text-gray-600"
                   >
                     <div style={{ color: '#059669' }}>{feature.icon}</div>
                     <span className="font-medium text-base">{feature.title}</span>
-                  </motion.div>
+                </motion.div>
                 ))}
               </motion.div>
             </motion.div>
@@ -463,7 +463,7 @@ export default function CalculatorPage() {
           >
             
                          {/* Vehicle Input Section */}
-             <motion.div
+            <motion.div
                ref={calculatorRef}
                variants={animationVariants.saasCardEntrance}
                className="mb-8"
@@ -475,37 +475,37 @@ export default function CalculatorPage() {
                    boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)'
                  }}
                >
-                 <div className="flex items-center space-x-3 mb-6">
+                  <div className="flex items-center space-x-3 mb-6">
                    <div className="p-2 rounded-lg" style={{ backgroundColor: '#059669' }}>
-                     <CalculatorIcon className="w-5 h-5 text-white" />
-                   </div>
-                   <h2 className="text-xl font-bold text-neutral-800">
+                      <CalculatorIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-xl font-bold text-neutral-800">
                      Vehicle Details
-                   </h2>
-                 </div>
- 
+                    </h2>
+                  </div>
+
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* Vehicle Price */}
+                    {/* Vehicle Price */}
                   <div className="space-y-4">
                     <label className="block text-sm font-semibold text-neutral-700">
-                      Vehicle Price
-                    </label>
-                    <div className="relative">
+                        Vehicle Price
+                      </label>
+                      <div className="relative">
                       <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 text-sm font-medium">$</span>
-                      <input
-                        type="number"
-                        value={vehiclePrice}
-                        onChange={(e) => setVehiclePrice(Number(e.target.value))}
+                        <input
+                          type="number"
+                          value={vehiclePrice}
+                          onChange={(e) => setVehiclePrice(Number(e.target.value))}
                         className="w-full pl-10 pr-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:border-emerald-500 transition-all duration-200 text-base bg-white"
-                      />
-                    </div>
-                    <input
-                      type="range"
+                        />
+                      </div>
+                      <input
+                        type="range"
                       min="10000"
                       max="150000"
-                      step="5000"
-                      value={vehiclePrice}
-                      onChange={(e) => setVehiclePrice(Number(e.target.value))}
+                        step="5000"
+                        value={vehiclePrice}
+                        onChange={(e) => setVehiclePrice(Number(e.target.value))}
                       className="w-full h-3 rounded-full appearance-none cursor-pointer"
                       style={{
                         background: `linear-gradient(to right, #059669 0%, #059669 ${((vehiclePrice - 10000) / (150000 - 10000)) * 100}%, #e2e8f0 ${((vehiclePrice - 10000) / (150000 - 10000)) * 100}%, #e2e8f0 100%)`
@@ -515,55 +515,55 @@ export default function CalculatorPage() {
                       <span>$10K</span>
                       <span>$150K</span>
                     </div>
-                  </div>
+                    </div>
 
-                  {/* Down Payment */}
+                    {/* Down Payment */}
                   <div className="space-y-4">
                     <label className="block text-sm font-semibold text-neutral-700">
-                      Down Payment
-                    </label>
-                    <div className="relative">
+                        Down Payment
+                      </label>
+                      <div className="relative">
                       <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 text-sm font-medium">$</span>
+                        <input
+                          type="number"
+                          value={downPayment}
+                          onChange={(e) => setDownPayment(Number(e.target.value))}
+                        className="w-full pl-10 pr-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:border-emerald-500 transition-all duration-200 text-base bg-white"
+                        />
+                      </div>
                       <input
-                        type="number"
+                        type="range"
+                        min="0"
+                      max={vehiclePrice * 0.5}
+                        step="1000"
                         value={downPayment}
                         onChange={(e) => setDownPayment(Number(e.target.value))}
-                        className="w-full pl-10 pr-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:border-emerald-500 transition-all duration-200 text-base bg-white"
-                      />
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max={vehiclePrice * 0.5}
-                      step="1000"
-                      value={downPayment}
-                      onChange={(e) => setDownPayment(Number(e.target.value))}
                       className="w-full h-3 rounded-full appearance-none cursor-pointer"
                       style={{
                         background: `linear-gradient(to right, #059669 0%, #059669 ${(downPayment / (vehiclePrice * 0.5)) * 100}%, #e2e8f0 ${(downPayment / (vehiclePrice * 0.5)) * 100}%, #e2e8f0 100%)`
                       }}
-                    />
+                      />
                     <div className="flex justify-between text-xs text-neutral-500 font-medium">
-                      <span>$0</span>
+                        <span>$0</span>
                       <span>{formatCurrency(vehiclePrice * 0.5)}</span>
                     </div>
-                  </div>
+                    </div>
 
-                  {/* Trade-in Value */}
+                    {/* Trade-in Value */}
                   <div className="space-y-4">
                     <label className="block text-sm font-semibold text-neutral-700">
-                      Trade-in Value (Optional)
-                    </label>
-                    <div className="relative">
+                        Trade-in Value (Optional)
+                      </label>
+                      <div className="relative">
                       <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 text-sm font-medium">$</span>
-                      <input
-                        type="number"
-                        value={tradeinValue}
-                        onChange={(e) => setTradeinValue(Number(e.target.value))}
+                        <input
+                          type="number"
+                          value={tradeinValue}
+                          onChange={(e) => setTradeinValue(Number(e.target.value))}
                         className="w-full pl-10 pr-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:border-emerald-500 transition-all duration-200 text-base bg-white"
-                      />
+                        />
+                      </div>
                     </div>
-                  </div>
 
                   {/* Credit Score */}
                   <div className="space-y-4">
@@ -587,11 +587,11 @@ export default function CalculatorPage() {
                   <div className="space-y-4">
                     <label className="block text-sm font-semibold text-neutral-700">
                       Finance Term
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
                       {[36, 48, 60, 72].map((term) => (
-                        <button
-                          key={term}
+                          <button
+                            key={term}
                           onClick={() => setFinanceTermMonths(term)}
                           className={`p-3 rounded-xl border-2 transition-all duration-200 text-sm font-semibold ${
                             financeTermMonths === term
@@ -601,16 +601,16 @@ export default function CalculatorPage() {
                           style={financeTermMonths === term ? { backgroundColor: '#059669' } : {}}
                         >
                           {term} Mo
-                        </button>
-                      ))}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
                   {/* Lease Term */}
                   <div className="space-y-4">
                     <label className="block text-sm font-semibold text-neutral-700">
                       Lease Term
-                    </label>
+                      </label>
                     <div className="grid grid-cols-2 gap-2">
                       {[24, 36, 48].map((term) => (
                         <button
@@ -633,10 +633,10 @@ export default function CalculatorPage() {
             </motion.div>
 
                          {/* Finance vs Lease Comparison */}
-             <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 0.6, delay: 0.2 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
                className="mb-8"
              >
                              <h2 className="text-2xl font-bold text-neutral-800 text-center mb-6">
@@ -654,14 +654,14 @@ export default function CalculatorPage() {
                  >
                    <div className="flex items-center space-x-3 mb-4">
                      <div className="p-2 rounded-lg" style={{ backgroundColor: '#059669' }}>
-                       <CurrencyDollarIcon className="w-5 h-5 text-white" />
+                      <CurrencyDollarIcon className="w-5 h-5 text-white" />
                      </div>
                     <div>
                                              <h3 className="text-lg font-bold text-neutral-800">Finance Option</h3>
                        <p className="text-sm text-neutral-600">Own your vehicle</p>
                     </div>
                   </div>
-
+                  
                   <div className="space-y-6">
                                          <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#059669' }}>
                        <div className="text-3xl font-bold text-white mb-1">
@@ -738,7 +738,7 @@ export default function CalculatorPage() {
                          {formatCurrency(costs.leasePayment)}
                        </div>
                        <div className="text-orange-100 text-sm">Monthly Payment</div>
-                     </div>
+                  </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-4 bg-white rounded-xl border border-neutral-200">
@@ -779,15 +779,15 @@ export default function CalculatorPage() {
                       <div className="flex items-center gap-3 text-sm">
                         <CheckCircleIcon className="w-4 h-4" style={{ color: '#EA580C' }} />
                         <span>Upgrade every few years</span>
-                      </div>
+                    </div>
+                    </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
                          {/* Dealership vs Mint Lease Comparison */}
-             <motion.div
+              <motion.div
                ref={comparisonRef}
                variants={animationVariants.luxuryFadeIn}
                className="mb-8"
@@ -829,9 +829,9 @@ export default function CalculatorPage() {
                   style={{ 
                     backgroundColor: '#F8F9FA',
                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.06)'
-                  }}
-                >
-                  <div className="flex items-center space-x-3 mb-6">
+                }}
+              >
+                <div className="flex items-center space-x-3 mb-6">
                     <div className="p-3 rounded-xl bg-neutral-500">
                       <BuildingStorefrontIcon className="w-6 h-6 text-white" />
                     </div>
@@ -932,13 +932,13 @@ export default function CalculatorPage() {
                         </div>
                       </div>
                     </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-                         {/* Benefits Section */}
-             <motion.div
+              {/* Benefits Section */}
+              <motion.div
                variants={animationVariants.premiumStagger}
                className="mb-8"
              >
@@ -956,33 +956,33 @@ export default function CalculatorPage() {
                       backgroundColor: '#FEFCFA',
                       boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)'
                     }}
-                    whileHover={{ 
-                      y: -4,
+                whileHover={{ 
+                  y: -4,
                       scale: 1.02,
-                      transition: { type: "spring", stiffness: 300, damping: 25 }
-                    }}
-                  >
+                  transition: { type: "spring", stiffness: 300, damping: 25 }
+                }}
+              >
                      <div className="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#059669' }}>
                        <div className="text-white">
-                         {benefit.icon}
-                       </div>
-                     </div>
+                          {benefit.icon}
+                        </div>
+                      </div>
                      <h3 className="text-lg font-bold text-neutral-800 mb-2">
-                       {benefit.title}
+                          {benefit.title}
                      </h3>
                     <p className="text-neutral-600 mb-4">
-                      {benefit.description}
-                    </p>
+                          {benefit.description}
+                        </p>
                     <div className="inline-flex items-center px-4 py-2 rounded-full" style={{ backgroundColor: '#059669', color: 'white' }}>
                       <span className="text-sm font-semibold">{benefit.stat}</span>
                     </div>
                   </motion.div>
-                ))}
-              </div>
-            </motion.div>
+                  ))}
+                </div>
+              </motion.div>
 
-            {/* CTA Section */}
-            <motion.div
+              {/* CTA Section */}
+              <motion.div
               variants={animationVariants.luxuryFadeIn}
               className="text-center mb-12"
             >

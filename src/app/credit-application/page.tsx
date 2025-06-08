@@ -3,8 +3,9 @@
 import React, { useState, useRef, useCallback, useReducer } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { PremiumBadge } from '@/components/ui/PremiumBadge'
 import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
-import { ArrowRight, ArrowLeft, Shield, Award, CreditCard, CheckCircle, User, DollarSign, Calendar, Building, Phone, MapPin, Sparkles } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Shield, Award, CreditCard, CheckCircle, User, Users, DollarSign, Calendar, Building, Phone, MapPin, Sparkles } from 'lucide-react'
 import { animationVariants } from '@/lib/utils'
 
 /**
@@ -29,28 +30,44 @@ interface FormState {
     ssn: string
     phone: string
     email: string
+    maritalStatus: string
+    dependents: string
     
-    // Address
+    // Address Information
     address: string
     city: string
     state: string
     zipCode: string
+    residenceType: string
+    monthsAtAddress: string
+    monthlyRent: string
     
-    // Employment
+    // Employment Information
     employmentStatus: string
     employer: string
     jobTitle: string
     monthlyIncome: string
     yearsEmployed: string
+    employerPhone: string
     
-    // Financial
-    monthlyDebt: string
-    rentMortgage: string
+    // Employer Address
+    employerAddress: string
+    employerCity: string
+    employerState: string
+    employerZip: string
     
-    // Vehicle
-    vehicleType: string
-    budget: string
-    downPayment: string
+    // Previous Employment (if applicable)
+    previousEmployer: string
+    previousJobTitle: string
+    previousEmploymentYears: string
+    
+    // Co-Applicant Information
+    hasCoApplicant: string
+    coApplicantFirstName: string
+    coApplicantLastName: string
+    coApplicantSSN: string
+    coApplicantDOB: string
+    coApplicantPhone: string
   }
 }
 
@@ -63,20 +80,34 @@ const initialState: FormState = {
     ssn: '',
     phone: '',
     email: '',
+    maritalStatus: '',
+    dependents: '',
     address: '',
     city: '',
     state: '',
     zipCode: '',
+    residenceType: '',
+    monthsAtAddress: '',
+    monthlyRent: '',
     employmentStatus: '',
     employer: '',
     jobTitle: '',
     monthlyIncome: '',
     yearsEmployed: '',
-    monthlyDebt: '',
-    rentMortgage: '',
-    vehicleType: '',
-    budget: '',
-    downPayment: ''
+    employerPhone: '',
+    employerAddress: '',
+    employerCity: '',
+    employerState: '',
+    employerZip: '',
+    previousEmployer: '',
+    previousJobTitle: '',
+    previousEmploymentYears: '',
+    hasCoApplicant: '',
+    coApplicantFirstName: '',
+    coApplicantLastName: '',
+    coApplicantSSN: '',
+    coApplicantDOB: '',
+    coApplicantPhone: ''
   }
 }
 
@@ -93,7 +124,7 @@ function formReducer(state: FormState, action: FormAction): FormState {
     case 'NEXT_STEP':
       return {
         ...state,
-        currentStep: Math.min(state.currentStep + 1, 5)
+        currentStep: Math.min(state.currentStep + 1, 4)
       }
     case 'PREV_STEP':
       return {
@@ -187,7 +218,7 @@ export default function CreditApplicationPage() {
     },
     {
       id: 2,
-      title: "Address",
+      title: "Address & Residence",
       icon: <MapPin className="w-5 h-5" />,
       color: "text-amber-600",
       bgColor: "bg-amber-600"
@@ -201,17 +232,10 @@ export default function CreditApplicationPage() {
     },
     {
       id: 4,
-      title: "Financial",
-      icon: <DollarSign className="w-5 h-5" />,
+      title: "Co-Applicant",
+      icon: <Users className="w-5 h-5" />,
       color: "text-emerald-600",
       bgColor: "bg-emerald-600"
-    },
-    {
-      id: 5,
-      title: "Vehicle Preferences",
-      icon: <CreditCard className="w-5 h-5" />,
-      color: "text-amber-600",
-      bgColor: "bg-amber-600"
     }
   ]
 
@@ -356,7 +380,7 @@ export default function CreditApplicationPage() {
       
       <main 
         ref={containerRef}
-        className="min-h-screen py-20 px-4 relative overflow-hidden"
+        className="pt-20 relative min-h-screen overflow-hidden"
         style={{ backgroundColor: '#FEF7ED' }}
         onMouseMove={handleMouseMove}
       >
@@ -388,20 +412,22 @@ export default function CreditApplicationPage() {
           />
         </div>
 
-        <motion.div
-          className="max-w-4xl mx-auto relative z-10"
-          initial="initial"
-          animate={isInView ? "visible" : "initial"}
-          variants={animationVariants.luxuryStagger}
-        >
-          {/* Header Section */}
-          <motion.div variants={animationVariants.premiumSlideUp} className="text-center mb-16">
-            <motion.div className="inline-block mb-6">
-              <div className="w-16 h-16 bg-emerald-600 rounded-[16px] flex items-center justify-center
-                             shadow-[0_8px_20px_-4px_rgba(5,150,105,0.3)] mx-auto mb-6">
-                <CreditCard className="w-8 h-8 text-white" />
-              </div>
-            </motion.div>
+        {/* Page Header */}
+        <section className="py-20 relative overflow-hidden z-10">
+          <div className="max-w-4xl mx-auto px-6 lg:px-8">
+            <motion.div
+              className="text-center space-y-6"
+              initial="initial"
+              animate={isInView ? "visible" : "initial"}
+              variants={animationVariants.luxuryStagger}
+            >
+              <motion.div
+                variants={animationVariants.premiumSlideUp}
+              >
+                <PremiumBadge icon={CreditCard}>
+                  Credit Application
+                </PremiumBadge>
+              </motion.div>
             
             <motion.h1 
               variants={animationVariants.premiumSlideUp}
@@ -424,19 +450,26 @@ export default function CreditApplicationPage() {
               </span>
             </motion.h1>
             
-            <motion.p 
-              variants={animationVariants.premiumSlideUp}
-              className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed mb-8"
-            >
-              Secure your luxury vehicle financing with our streamlined credit application process.
-            </motion.p>
-          </motion.div>
+              <motion.p 
+                variants={animationVariants.premiumSlideUp}
+                className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed"
+              >
+                Secure your luxury vehicle financing with our streamlined credit application process.
+              </motion.p>
+            </motion.div>
+          </div>
+        </section>
 
-          {/* Progress Steps */}
-          <motion.div
-            variants={animationVariants.premiumSlideUp}
-            className="mb-12"
-          >
+        {/* Form Section */}
+        <section className="pb-20 relative z-10">
+          <div className="max-w-4xl mx-auto px-6 lg:px-8">
+            {/* Progress Steps */}
+            <motion.div
+              initial="initial"
+              animate={isInView ? "visible" : "initial"}
+              variants={animationVariants.luxuryStagger}
+              className="mb-12"
+            >
             <div className="flex items-center justify-between max-w-2xl mx-auto">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex items-center">
@@ -733,7 +766,7 @@ export default function CreditApplicationPage() {
               </motion.div>
             )}
 
-            {/* Step 4: Financial */}
+            {/* Step 4: Co-Applicant Information */}
             {formState.currentStep === 4 && (
               <motion.div
                 key="step4"
@@ -743,99 +776,82 @@ export default function CreditApplicationPage() {
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">Monthly Debt Payments</label>
-                    <input
-                      type="number"
-                      value={formState.data.monthlyDebt}
-                      onChange={(e) => updateField('monthlyDebt', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
-                      placeholder="1200"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">Monthly Rent/Mortgage</label>
-                    <input
-                      type="number"
-                      value={formState.data.rentMortgage}
-                      onChange={(e) => updateField('rentMortgage', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
-                      placeholder="2000"
-                      required
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 5: Vehicle Preferences */}
-            {formState.currentStep === 5 && (
-              <motion.div
-                key="step5"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-6"
-              >
                 <div>
-                  <label className="block text-neutral-700 text-sm font-medium mb-2">Vehicle Type</label>
+                  <label className="block text-neutral-700 text-sm font-medium mb-2">Do you have a Co-Applicant?</label>
                   <select
-                    value={formState.data.vehicleType}
-                    onChange={(e) => updateField('vehicleType', e.target.value)}
+                    value={formState.data.hasCoApplicant}
+                    onChange={(e) => updateField('hasCoApplicant', e.target.value)}
                     className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                              text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
                              focus:border-emerald-500 transition-all duration-300"
-                    required
                   >
-                    <option value="">Select Vehicle Type</option>
-                    <option value="luxury-sedan">Luxury Sedan</option>
-                    <option value="luxury-suv">Luxury SUV</option>
-                    <option value="sports-car">Sports Car</option>
-                    <option value="electric-luxury">Electric Luxury</option>
+                    <option value="">Select Option</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
                   </select>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">Budget Range</label>
-                    <select
-                      value={formState.data.budget}
-                      onChange={(e) => updateField('budget', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
-                      required
-                    >
-                      <option value="">Select Budget</option>
-                      <option value="50k-75k">$50,000 - $75,000</option>
-                      <option value="75k-100k">$75,000 - $100,000</option>
-                      <option value="100k-150k">$100,000 - $150,000</option>
-                      <option value="150k+">$150,000+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">Down Payment</label>
-                    <input
-                      type="number"
-                      value={formState.data.downPayment}
-                      onChange={(e) => updateField('downPayment', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
-                      placeholder="10000"
-                      required
-                    />
-                  </div>
-                </div>
+                {formState.data.hasCoApplicant === 'yes' && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-neutral-700 text-sm font-medium mb-2">Co-Applicant First Name</label>
+                        <input
+                          type="text"
+                          value={formState.data.coApplicantFirstName}
+                          onChange={(e) => updateField('coApplicantFirstName', e.target.value)}
+                          className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                                   text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                                   focus:border-emerald-500 transition-all duration-300"
+                          placeholder="First Name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-neutral-700 text-sm font-medium mb-2">Co-Applicant Last Name</label>
+                        <input
+                          type="text"
+                          value={formState.data.coApplicantLastName}
+                          onChange={(e) => updateField('coApplicantLastName', e.target.value)}
+                          className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                                   text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                                   focus:border-emerald-500 transition-all duration-300"
+                          placeholder="Last Name"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-neutral-700 text-sm font-medium mb-2">Co-Applicant SSN</label>
+                        <input
+                          type="text"
+                          value={formState.data.coApplicantSSN}
+                          onChange={(e) => updateField('coApplicantSSN', e.target.value)}
+                          className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                                   text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                                   focus:border-emerald-500 transition-all duration-300"
+                          placeholder="XXX-XX-XXXX"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-neutral-700 text-sm font-medium mb-2">Co-Applicant Phone</label>
+                        <input
+                          type="tel"
+                          value={formState.data.coApplicantPhone}
+                          onChange={(e) => updateField('coApplicantPhone', e.target.value)}
+                          className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                                   text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                                   focus:border-emerald-500 transition-all duration-300"
+                          placeholder="(555) 123-4567"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
               </motion.div>
             )}
+
+
 
             {/* Navigation Buttons */}
             <div className="flex justify-between pt-8 mt-8 border-t border-neutral-200">
@@ -851,7 +867,7 @@ export default function CreditApplicationPage() {
                 Previous
               </motion.button>
 
-              {formState.currentStep < 5 ? (
+              {formState.currentStep < 4 ? (
                 <motion.button
                   onClick={nextStep}
                   whileHover={{ 
@@ -937,7 +953,8 @@ export default function CreditApplicationPage() {
               )}
             </div>
           </motion.div>
-        </motion.div>
+          </div>
+        </section>
       </main>
       
       <Footer />
