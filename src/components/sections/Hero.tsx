@@ -308,9 +308,12 @@ export const Hero: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden overflow-x-hidden w-full"
+      className="hero-section relative min-h-screen flex items-center justify-center overflow-hidden w-full"
       style={{ 
-        backgroundColor: '#FEF7ED'
+        backgroundColor: '#FEF7ED',
+        overflowX: 'hidden',
+        maxWidth: '100vw',
+        position: 'relative'
       }}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
@@ -575,14 +578,28 @@ export const Hero: React.FC = () => {
               </p>
             </motion.div>
 
-            {/* Floating Carousel */}
-            <div className="relative py-6 overflow-hidden w-full">
-              <div className="relative overflow-hidden w-full">
+            {/* Clean Infinite Carousel with CSS Clipping */}
+            <div 
+              className="relative py-6 w-full"
+              style={{
+                clipPath: 'inset(0 0 0 0)',
+                WebkitClipPath: 'inset(0 0 0 0)'
+              }}
+            >
+              <div 
+                className="relative overflow-hidden"
+                style={{
+                  maskImage: 'linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%)',
+                  maskSize: '100% 100%',
+                  WebkitMaskSize: '100% 100%'
+                }}
+              >
                 <motion.div
-                  className="flex space-x-12 items-center will-change-transform"
+                  className="flex items-center space-x-12 will-change-transform"
                   style={{
                     width: 'max-content',
-                    willChange: 'transform'
+                    transform: 'translate3d(0,0,0)',
                   }}
                   animate={{
                     x: [0, -1920],
@@ -599,22 +616,16 @@ export const Hero: React.FC = () => {
                   {[...companyNames, ...companyNames].map((company, index) => (
                     <div
                       key={`${company}-${index}`}
-                      className="flex-shrink-0"
+                      className="flex-shrink-0 text-center"
                       style={{ minWidth: '140px' }}
                     >
-                      <div className="text-center">
-                        <span className="text-base font-medium text-neutral-500 tracking-wide hover:text-neutral-700 transition-colors duration-300">
-                          {company}
-                        </span>
-                      </div>
+                      <span className="text-base font-medium text-neutral-500 tracking-wide hover:text-neutral-700 transition-colors duration-300">
+                        {company}
+                      </span>
                     </div>
                   ))}
                 </motion.div>
               </div>
-              
-              {/* Subtle gradient fade edges - matches page background */}
-              <div className="absolute left-0 top-0 w-20 h-full pointer-events-none" style={{ background: 'linear-gradient(to right, #FEF7ED, transparent)' }}></div>
-              <div className="absolute right-0 top-0 w-20 h-full pointer-events-none" style={{ background: 'linear-gradient(to left, #FEF7ED, transparent)' }}></div>
             </div>
           </motion.div>
         </motion.div>
