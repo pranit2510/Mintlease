@@ -202,7 +202,7 @@ export default function RootLayout({
           `
         }}
       />
-      <body className={`antialiased overflow-x-hidden max-w-full ${inter.variable} ${sourceSerif.variable} font-sans`} style={{ backgroundColor: '#FEF7ED', overflowX: 'hidden', maxWidth: '100vw' }}>
+      <body className={`antialiased overflow-x-hidden max-w-full ${inter.variable} ${sourceSerif.variable} font-sans mint-background`}>
         {/* Emergency visibility fix script */}
         <script dangerouslySetInnerHTML={{
           __html: `
@@ -251,8 +251,8 @@ export default function RootLayout({
           Skip to main content
         </a>
         
-        {/* Main app content */}
-        <div id="main-content" className="min-h-screen">
+        {/* Main app content with global background */}
+        <div id="main-content" className="min-h-screen relative">
           {children}
         </div>
         

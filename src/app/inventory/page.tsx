@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { PageBackground, SectionBackground } from '@/components/layout/GlobalBackground'
+import { PremiumBadge } from '@/components/ui/PremiumBadge'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MagnifyingGlassIcon, FunnelIcon, Squares2X2Icon, ListBulletIcon, XMarkIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
-import { HeartIcon, ShareIcon } from '@heroicons/react/24/solid'
+import { MagnifyingGlassIcon, FunnelIcon, Squares2X2Icon, ListBulletIcon, XMarkIcon, ChevronDownIcon, CheckIcon, HeartIcon as HeartIconOutline } from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconSolid, ShareIcon } from '@heroicons/react/24/solid'
 import { Shield, DollarSign, Truck } from 'lucide-react'
 import { Slider, Box, Typography, ThemeProvider, createTheme } from '@mui/material'
 import { styled } from '@mui/material/styles'
@@ -63,6 +65,7 @@ interface MockVehicle {
   mileage: number
   mpg: string
   engine: string
+  vehicleType: string
   image: string
   features: string[]
   location: string
@@ -82,6 +85,7 @@ const mockVehicles: MockVehicle[] = [
     mileage: 12000,
     mpg: '21/26',
     engine: '3.0L Turbo I6',
+    vehicleType: 'SUV',
     image: '/vehicles/bmw-x5.jpg',
     features: ['Premium Package', 'Harman Kardon Audio', 'Panoramic Roof'],
     location: 'Beverly Hills, CA',
@@ -99,6 +103,7 @@ const mockVehicles: MockVehicle[] = [
     mileage: 9500,
     mpg: '22/29',
     engine: '2.0L Turbo I4',
+    vehicleType: 'Crossover',
     image: '/vehicles/mercedes-glc.jpg',
     features: ['MBUX Infotainment', 'LED Headlights', 'Apple CarPlay'],
     location: 'Manhattan, NY',
@@ -116,6 +121,7 @@ const mockVehicles: MockVehicle[] = [
     mileage: 15000,
     mpg: '19/25',
     engine: '3.0L Turbo V6',
+    vehicleType: 'SUV',
     image: '/vehicles/audi-q7.jpg',
     features: ['Virtual Cockpit', 'Bang & Olufsen Audio', 'Quattro AWD'],
     location: 'Austin, TX',
@@ -133,6 +139,7 @@ const mockVehicles: MockVehicle[] = [
     mileage: 6000,
     mpg: '131 MPGe',
     engine: 'Dual Motor AWD',
+    vehicleType: 'Crossover',
     image: '/vehicles/tesla-model-y.jpg',
     features: ['Autopilot', '15" Touchscreen', 'Supercharging'],
     location: 'Seattle, WA',
@@ -150,6 +157,7 @@ const mockVehicles: MockVehicle[] = [
     mileage: 14800,
     mpg: '20/27',
     engine: '3.5L V6',
+    vehicleType: 'SUV',
     image: '/vehicles/lexus-rx.jpg',
     features: ['Mark Levinson Audio', 'Safety System+', 'Heated Seats'],
     location: 'Miami, FL',
@@ -167,6 +175,7 @@ const mockVehicles: MockVehicle[] = [
     mileage: 5200,
     mpg: '19/25',
     engine: '2.9L Twin-Turbo V6',
+    vehicleType: 'Crossover',
     image: '/vehicles/porsche-macan.jpg',
     features: ['Sport Chrono', 'BOSE Audio', 'Air Suspension'],
     location: 'Newport Beach, CA',
@@ -230,13 +239,17 @@ const consultationButtonVariants = {
   }
 }
 
-const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }> = React.memo(({ vehicle, viewMode }) => {
-  const [isFavorited, setIsFavorited] = useState(false)
+const VehicleCard: React.FC<{ 
+  vehicle: MockVehicle; 
+  viewMode: 'grid' | 'list';
+  isFavorited: boolean;
+  onFavoriteToggle: (id: number) => void;
+}> = React.memo(({ vehicle, viewMode, isFavorited, onFavoriteToggle }) => {
   
   // Memoized handlers for better performance
   const handleFavoriteToggle = useCallback(() => {
-    setIsFavorited(prev => !prev)
-  }, [])
+    onFavoriteToggle(vehicle.id)
+  }, [onFavoriteToggle, vehicle.id])
   
   const handleViewDetails = useCallback(() => {
     window.location.href = '/inventory'
@@ -281,18 +294,27 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
             </div>
             
             {/* Savings Badge */}
-            <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg">
+            <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
               Save ${vehicle.savings.toLocaleString()}
             </div>
             
             {/* Favorite Button */}
             <motion.button
               onClick={handleFavoriteToggle}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full glass-strong flex items-center justify-center hover:scale-110 transition-all duration-200"
+              className="absolute top-4 right-4 w-11 h-11 rounded-full flex items-center justify-center z-10"
+              style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.12)',
+              }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <HeartIcon className={`w-5 h-5 ${isFavorited ? 'text-red-500' : 'text-neutral-400'}`} />
+              {isFavorited ? (
+                <HeartIconSolid className="w-5 h-5 text-red-500" />
+              ) : (
+                <HeartIconOutline className="w-5 h-5 text-neutral-600 hover:text-red-500 transition-colors" />
+              )}
             </motion.button>
           </div>
 
@@ -325,8 +347,8 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
             {/* Key Specs */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-neutral-50 p-4 rounded-lg text-center">
-                <div className="text-2xl font-bold text-neutral-800">{vehicle.mileage.toLocaleString()}</div>
-                <div className="text-sm text-neutral-500">Miles</div>
+                <div className="text-2xl font-bold text-neutral-800">{vehicle.vehicleType}</div>
+                <div className="text-sm text-neutral-500">Type</div>
               </div>
               <div className="bg-neutral-50 p-4 rounded-lg text-center">
                 <div className="text-2xl font-bold text-neutral-800">{vehicle.mpg}</div>
@@ -417,7 +439,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
       }}
     >
       {/* Vehicle Image */}
-      <div className="relative h-56 bg-gradient-to-br from-neutral-200 to-neutral-300 overflow-hidden rounded-[20px] m-4 mb-3">
+      <div className="relative h-56 bg-gradient-to-br from-neutral-200 to-neutral-300 overflow-hidden rounded-[20px] m-4 mb-3 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
           <div className="text-center">
             <div className="text-5xl mb-2 opacity-30">🚗</div>
@@ -428,22 +450,31 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
         </div>
         
         {/* Savings Badge */}
-        <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg">
+        <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
           Save ${vehicle.savings.toLocaleString()}
         </div>
         
         {/* Favorite Button */}
         <motion.button
           onClick={handleFavoriteToggle}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full glass-strong flex items-center justify-center"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center z-10"
+          style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(8px)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+          }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
-          <HeartIcon className={`w-4 h-4 ${isFavorited ? 'text-red-500' : 'text-neutral-400'}`} />
+          {isFavorited ? (
+            <HeartIconSolid className="w-4 h-4 text-red-500" />
+          ) : (
+            <HeartIconOutline className="w-4 h-4 text-neutral-600 hover:text-red-500 transition-colors" />
+          )}
         </motion.button>
         
         {/* Status Badge */}
-        <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-[10px] shadow-lg">
+        <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
           Available
         </div>
       </div>
@@ -477,8 +508,8 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
         {/* Key Specs */}
         <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
           <div className="bg-neutral-50 p-2 rounded text-center">
-            <div className="font-bold text-neutral-800">{(vehicle.mileage / 1000).toFixed(0)}K</div>
-            <div className="text-neutral-500">Miles</div>
+            <div className="font-bold text-neutral-800">{vehicle.vehicleType}</div>
+            <div className="text-neutral-500">Type</div>
           </div>
           <div className="bg-neutral-50 p-2 rounded text-center">
             <div className="font-bold text-neutral-800">{vehicle.mpg}</div>
@@ -947,6 +978,8 @@ function InventoryPageContent() {
   // Filter sidebar is now always visible
   const [filteredVehicles, setFilteredVehicles] = useState(mockVehicles)
   const [scrollY, setScrollY] = useState(0)
+  // Centralized favorites state management
+  const [favoriteVehicles, setFavoriteVehicles] = useState<Set<number>>(new Set())
   
   // Parallax scroll effect
   useEffect(() => {
@@ -996,6 +1029,18 @@ function InventoryPageContent() {
     setSearchQuery('')
   }, [])
 
+  const toggleFavorite = useCallback((vehicleId: number) => {
+    setFavoriteVehicles(prev => {
+      const newFavorites = new Set(prev)
+      if (newFavorites.has(vehicleId)) {
+        newFavorites.delete(vehicleId)
+      } else {
+        newFavorites.add(vehicleId)
+      }
+      return newFavorites
+    })
+  }, [])
+
   useEffect(() => {
     let filtered = [...mockVehicles]
     
@@ -1043,7 +1088,7 @@ function InventoryPageContent() {
   }, [searchQuery, sortBy, filters])
 
   return (
-    <>
+    <PageBackground>
       <Header />
       
       <main className="pt-20">
@@ -1088,125 +1133,17 @@ function InventoryPageContent() {
                 willChange: 'transform, opacity',
               }}
             >
-              <motion.div
-                initial={{ opacity: 1, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-neutral-700 mb-8 will-change-transform overflow-hidden group cursor-pointer relative"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.8) 0%, rgba(254, 252, 250, 0.65) 50%, rgba(254, 252, 250, 0.75) 100%)',
-                  backdropFilter: 'blur(20px) saturate(180%) brightness(110%)',
-                  WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(110%)',
-                  border: '1px solid transparent',
-                  borderImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%) 1',
-                  boxShadow: `
-                    0 1px 3px rgba(139, 69, 19, 0.05),
-                    0 4px 12px rgba(139, 69, 19, 0.04),
-                    0 8px 24px rgba(139, 69, 19, 0.03),
-                    0 16px 48px rgba(0, 0, 0, 0.02),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                    inset 0 -1px 0 rgba(255, 255, 255, 0.05)
-                  `,
-                  transform: 'translateZ(0)',
-                  backfaceVisibility: 'hidden',
-                }}
-                whileHover={{ 
-                  scale: 1.015,
-                  y: -2,
-                  background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.9) 0%, rgba(254, 252, 250, 0.75) 50%, rgba(254, 252, 250, 0.85) 100%)',
-                  backdropFilter: 'blur(24px) saturate(200%) brightness(115%)',
-                  WebkitBackdropFilter: 'blur(24px) saturate(200%) brightness(115%)',
-                  boxShadow: `
-                    0 2px 6px rgba(139, 69, 19, 0.08),
-                    0 6px 16px rgba(139, 69, 19, 0.06),
-                    0 12px 32px rgba(139, 69, 19, 0.04),
-                    0 24px 64px rgba(0, 0, 0, 0.03),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-                    inset 0 -1px 0 rgba(255, 255, 255, 0.08)
-                  `,
-                  transition: { type: "spring", stiffness: 400, damping: 25 }
-                }}
-                whileTap={{ scale: 0.995, y: 0 }}
-                animate={{
-                  boxShadow: [
-                    `0 1px 3px rgba(139, 69, 19, 0.05), 0 4px 12px rgba(139, 69, 19, 0.04), 0 8px 24px rgba(139, 69, 19, 0.03), 0 16px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.05)`,
-                    `0 2px 4px rgba(139, 69, 19, 0.06), 0 5px 14px rgba(139, 69, 19, 0.045), 0 10px 28px rgba(139, 69, 19, 0.035), 0 20px 56px rgba(0, 0, 0, 0.025), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.06)`,
-                    `0 1px 3px rgba(139, 69, 19, 0.05), 0 4px 12px rgba(139, 69, 19, 0.04), 0 8px 24px rgba(139, 69, 19, 0.03), 0 16px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.05)`
-                  ]
-                }}
-                transition={{
-                  boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                  type: "spring", 
-                  stiffness: 400, 
-                  damping: 25 
-                }}
-              >
-                {/* Subtle glass reflection */}
-                <motion.div 
-                  className="absolute inset-0 rounded-full opacity-30"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(255, 255, 255, 0.08) 100%)',
-                    pointerEvents: 'none'
-                  }}
-                  animate={{
-                    opacity: [0.25, 0.35, 0.25]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-
-                {/* Animated border gradient */}
-                <motion.div 
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3))',
-                    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    maskComposite: 'xor',
-                    WebkitMaskComposite: 'xor',
-                    padding: '1px',
-                    pointerEvents: 'none'
-                  }}
-                  animate={{
-                    background: [
-                      'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%)',
-                      'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.4) 100%)',
-                      'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%)'
-                    ]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-
-                <motion.div
-                  className="relative z-10"
-                  animate={{ 
-                    scale: [1, 1.05, 1],
-                    opacity: [0.8, 1, 0.8]
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  <span className="w-2 h-2 bg-emerald-600 rounded-full block drop-shadow-sm"
+              <PremiumBadge 
+                icon={({ className }: { className?: string }) => (
+                  <span className={`w-2 h-2 bg-emerald-600 rounded-full block drop-shadow-sm ${className}`}
                     style={{
                       boxShadow: '0 0 6px rgba(5, 150, 105, 0.4)'
                     }}
-                  ></span>
-                </motion.div>
-                
-                <span className="relative z-10 tracking-wide font-medium">
-                  200+ Premium Vehicles Available
-                </span>
-              </motion.div>
+                  />
+                )}
+              >
+                200+ Premium Vehicles Available
+              </PremiumBadge>
               
               <h1 className="text-5xl lg:text-7xl font-black mb-8 leading-tight">
                 <span className="text-neutral-800">Luxury Vehicle </span>
@@ -1420,6 +1357,8 @@ function InventoryPageContent() {
                     <VehicleCard 
                       vehicle={vehicle} 
                       viewMode={viewMode}
+                      isFavorited={favoriteVehicles.has(vehicle.id)}
+                      onFavoriteToggle={toggleFavorite}
                     />
                   </motion.div>
                 ))}
@@ -1477,8 +1416,10 @@ function InventoryPageContent() {
         </div>
       </main>
       
-      <Footer />
-    </>
+      <SectionBackground>
+        <Footer />
+      </SectionBackground>
+    </PageBackground>
   )
 }
 

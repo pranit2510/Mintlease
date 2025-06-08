@@ -7,6 +7,7 @@ import { Hero } from '@/components/sections/Hero'
 import { VehicleShowcase } from '@/components/sections/VehicleShowcase'
 import HowItWorks from '@/components/sections/HowItWorks'
 import Testimonials from '@/components/sections/Testimonials'
+import { PageBackground, SectionBackground } from '@/components/layout/GlobalBackground'
 
 /**
  * Homepage - Mint Lease Premium Auto Brokerage
@@ -14,7 +15,7 @@ import Testimonials from '@/components/sections/Testimonials'
  */
 export default function HomePage() {
   return (
-    <>
+    <PageBackground>
       {/* Navigation Header */}
       <Header />
       
@@ -23,17 +24,25 @@ export default function HomePage() {
         <Hero />
         
         {/* Premium Vehicle Showcase */}
-        <VehicleShowcase />
+        <SectionBackground>
+          <VehicleShowcase />
+        </SectionBackground>
         
         {/* How It Works Process */}
-        <HowItWorks />
+        <SectionBackground>
+          <HowItWorks />
+        </SectionBackground>
         
         {/* Customer Testimonials */}
-        <Testimonials />
+        <SectionBackground>
+          <Testimonials />
+        </SectionBackground>
       </main>
       
       {/* Footer */}
-      <Footer />
-    </>
+      <SectionBackground>
+        <Footer />
+      </SectionBackground>
+    </PageBackground>
   )
 }
