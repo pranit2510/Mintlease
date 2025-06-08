@@ -183,7 +183,7 @@ export const Header: React.FC = () => {
   // Fix mobile menu on window resize - prevents menu staying open when switching to desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) { // md breakpoint
+      if (typeof window !== 'undefined' && window.innerWidth >= 768) { // md breakpoint
         setIsMobileMenuOpen(false)
       }
     }
@@ -246,8 +246,8 @@ export const Header: React.FC = () => {
   const handleNavClick = useCallback((href: string, event?: React.MouseEvent) => {
     console.log('🚀 Navigation clicked:', { href, pathname, routerReady: !!router && isRouterReady })
     console.log('🔧 Debug info:', { 
-      windowLocation: window.location.href,
-      documentTitle: document.title,
+      windowLocation: typeof window !== 'undefined' ? window.location.href : 'SSR',
+      documentTitle: typeof document !== 'undefined' ? document.title : 'SSR',
       timestamp: new Date().toISOString()
     })
     
@@ -263,15 +263,19 @@ export const Header: React.FC = () => {
       if (pathname !== '/') {
         // Navigate to home page first, then scroll
         console.log('📍 Navigating to home with anchor:', '/' + href)
-        window.location.href = '/' + href
+        if (typeof window !== 'undefined') {
+          window.location.href = '/' + href
+        }
       } else {
         // Smooth scroll for anchor links on home page
-        const element = document.querySelector(href)
-        if (element) {
-          console.log('🎯 Scrolling to element:', href)
-          element.scrollIntoView({ behavior: 'smooth' })
-        } else {
-          console.warn('⚠️ Element not found:', href)
+        if (typeof document !== 'undefined') {
+          const element = document.querySelector(href)
+          if (element) {
+            console.log('🎯 Scrolling to element:', href)
+            element.scrollIntoView({ behavior: 'smooth' })
+          } else {
+            console.warn('⚠️ Element not found:', href)
+          }
         }
       }
       return
@@ -280,16 +284,18 @@ export const Header: React.FC = () => {
     // For regular page navigation, use window.location for reliability
     // This addresses the Next.js App Router navigation issues
     console.log('🔗 Navigating to page:', href)
-    try {
-      console.log('🎯 Setting window.location.href to:', href)
-      window.location.href = href
-      console.log('✅ Navigation initiated successfully')
-    } catch (error) {
-      console.error('❌ Navigation failed:', error)
-      // Fallback: try using Next.js router if available
-      if (router && router.push) {
-        console.log('🔄 Trying fallback with Next.js router...')
-        router.push(href)
+    if (typeof window !== 'undefined') {
+      try {
+        console.log('🎯 Setting window.location.href to:', href)
+        window.location.href = href
+        console.log('✅ Navigation initiated successfully')
+      } catch (error) {
+        console.error('❌ Navigation failed:', error)
+        // Fallback: try using Next.js router if available
+        if (router && router.push) {
+          console.log('🔄 Trying fallback with Next.js router...')
+          router.push(href)
+        }
       }
     }
   }, [pathname])
@@ -303,8 +309,8 @@ export const Header: React.FC = () => {
     
     console.log('📱 Mobile menu toggle clicked:', { 
       currentState: isMobileMenuOpen, 
-      windowWidth: window.innerWidth,
-      userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
+      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 'SSR',
+      userAgent: typeof navigator !== 'undefined' ? (navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop') : 'SSR'
     })
     
     setIsMobileMenuOpen(prev => {
@@ -352,13 +358,10 @@ export const Header: React.FC = () => {
           mass: 0.1,
         }}
         style={{
-          top: navbarPadding,
-          left: navbarPadding,
-          right: navbarPadding,
           scale: navbarScale,
           y: navbarY,
-          willChange: 'transform, top, left, right',
-          minWidth: '320px', // Ensure minimum width for mobile
+          x: 0,
+          willChange: 'transform',
         }}
       >
         <motion.div
@@ -420,7 +423,7 @@ export const Header: React.FC = () => {
           
 
           
-          <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mx-auto max-w-full">
+          <div className="mx-auto max-w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
             <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20">
               {/* Logo */}
               <motion.div

@@ -653,29 +653,63 @@ const RangeSlider: React.FC<{
 
   return (
     <motion.div
-      className="bg-white/60 backdrop-blur-xl border border-emerald-100/50 rounded-2xl p-6 shadow-luxury hover:shadow-luxury-lg transition-all duration-300"
-      style={{ overflowX: 'hidden', overflowY: 'visible' }}
-      whileHover={{ y: -2, scale: 1.01 }}
+      className="rounded-[8px] sm:rounded-2xl p-3 sm:p-6 transition-all duration-300"
+      style={{ 
+        overflowX: 'hidden', 
+        overflowY: 'visible',
+        background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+          'linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.6) 100%)' :
+          'rgba(255, 255, 255, 0.6)',
+        backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+          'blur(8px)' : 
+          'blur(16px)',
+        border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+          '1px solid rgba(226, 232, 240, 0.5)' : 
+          '1px solid rgba(16, 185, 129, 0.1)',
+        boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
+          '0 1px 3px rgba(0, 0, 0, 0.04)' :
+          '0 4px 20px rgba(0, 0, 0, 0.08)',
+      }}
+      whileHover={{ 
+        y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -2 : 0, 
+        scale: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 1.01 : 1 
+      }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-4">
         <div className="flex flex-col gap-1">
           <Typography
             variant="subtitle2"
-            className="text-neutral-700 font-semibold"
+            className="text-slate-700 font-semibold text-sm sm:text-base"
           >
             {label}
           </Typography>
           <Typography
             variant="body2"
-            className="text-emerald-600 font-semibold text-right text-sm"
+            className="text-emerald-600 font-semibold text-right text-xs sm:text-base"
           >
             {formatValue(value[0])} - {formatValue(value[1])}
           </Typography>
         </div>
         
         <ThemeProvider theme={luxuryTheme}>
-          <Box sx={{ px: 3, py: 1, width: '100%', maxWidth: '100%', overflow: 'visible' }}>
+          <Box sx={{ 
+            px: { xs: 1, sm: 3 }, 
+            py: 1, 
+            width: '100%', 
+            maxWidth: '100%', 
+            overflow: 'visible',
+            '& .MuiSlider-thumb': {
+              width: { xs: 20, sm: 24 },
+              height: { xs: 20, sm: 24 }
+            },
+            '& .MuiSlider-rail': {
+              height: { xs: 6, sm: 8 }
+            },
+            '& .MuiSlider-track': {
+              height: { xs: 6, sm: 8 }
+            }
+          }}>
             <LuxurySlider
               value={value}
               onChange={handleChange}
@@ -689,7 +723,7 @@ const RangeSlider: React.FC<{
           </Box>
         </ThemeProvider>
         
-        <div className="flex justify-between text-xs text-neutral-500">
+        <div className="flex justify-between text-xs sm:text-sm text-neutral-500">
           <span>{formatValue(min)}</span>
           <span>{formatValue(max)}</span>
         </div>
@@ -707,7 +741,9 @@ const FilterSidebar: React.FC<{
   uniqueModels: string[];
   uniqueLocations: string[];
   allFeatures: string[];
-}> = React.memo(({ filters, updateFilter, clearAllFilters, uniqueMakes, uniqueModels, uniqueLocations, allFeatures }) => {
+  filteredVehicles: MockVehicle[];
+  setIsFilterOpen?: (open: boolean) => void;
+}> = React.memo(({ filters, updateFilter, clearAllFilters, uniqueMakes, uniqueModels, uniqueLocations, allFeatures, filteredVehicles, setIsFilterOpen }) => {
   
   // Enhanced number formatting
   const formatCurrency = (amount: number) => {
@@ -737,25 +773,35 @@ const FilterSidebar: React.FC<{
     }
 
     return (
-      <div className="space-y-3">
-        <label className="text-sm font-semibold text-neutral-800">{label}</label>
-        <div className="space-y-2">
+      <div className="space-y-2 sm:space-y-4">
+        <label className="text-sm sm:text-base font-semibold text-slate-800">{label}</label>
+        <div className="space-y-2 sm:space-y-3">
           {displayOptions.map((option) => (
             <motion.div
               key={option}
-              className="flex items-center gap-3 p-3 rounded-[12px] cursor-pointer will-change-transform overflow-hidden"
+              className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-4 rounded-[8px] sm:rounded-[12px] cursor-pointer will-change-transform overflow-hidden min-h-[44px] touch-manipulation"
               onClick={() => toggleOption(option)}
               style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)',
-                backdropFilter: 'blur(8px) saturate(150%)',
-                WebkitBackdropFilter: 'blur(8px) saturate(150%)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: '0 1px 3px rgba(139, 69, 19, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                  'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.5) 100%)' :
+                  'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)',
+                backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                  'blur(4px) saturate(110%)' : 
+                  'blur(8px) saturate(150%)',
+                WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                  'blur(4px) saturate(110%)' : 
+                  'blur(8px) saturate(150%)',
+                border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                  '1px solid rgba(226, 232, 240, 0.6)' : 
+                  '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
+                  '0 1px 2px rgba(0, 0, 0, 0.04)' :
+                  '0 1px 3px rgba(139, 69, 19, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 transform: 'translateZ(0)',
                 backfaceVisibility: 'hidden'
               }}
               whileHover={{ 
-                y: -1,
+                y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -1 : 0,
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%)',
                 boxShadow: '0 2px 8px rgba(139, 69, 19, 0.08), 0 4px 16px rgba(139, 69, 19, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
                 transition: { type: "spring", stiffness: 400, damping: 25 }
@@ -763,29 +809,29 @@ const FilterSidebar: React.FC<{
               whileTap={{ scale: 0.98, y: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
-                          <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all will-change-transform ${
+              <div className={`w-4 h-4 sm:w-6 sm:h-6 rounded border transition-all will-change-transform flex-shrink-0 flex items-center justify-center ${
               selected.includes(option) 
                 ? 'bg-emerald-600 border-emerald-600' 
-                : 'border-neutral-300'
-            } ${selected.includes(option) ? 'shadow-glow' : 'shadow-3d-sm'}`}
+                : 'border-slate-300 bg-white/50'
+            }`}
             style={{
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden'
             }}>
                 {selected.includes(option) && (
-                  <CheckIcon className="w-3 h-3 text-white" />
+                  <CheckIcon className="w-2.5 h-2.5 sm:w-4 sm:h-4 text-white" />
                 )}
               </div>
-              <span className="text-sm text-neutral-700 select-none truncate flex-1" style={{ minWidth: 0 }}>{option}</span>
+              <span className="text-sm sm:text-base text-slate-700 select-none truncate flex-1 font-medium" style={{ minWidth: 0 }}>{option}</span>
             </motion.div>
           ))}
           {options.length > 5 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
+              className="text-sm sm:text-base text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-2 p-2 min-h-[44px] touch-manipulation rounded-lg hover:bg-emerald-50/50 transition-colors"
             >
               {isExpanded ? 'Show Less' : `Show ${options.length - 5} More`}
-              <ChevronDownIcon className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+              <ChevronDownIcon className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
             </button>
           )}
         </div>
@@ -804,17 +850,27 @@ const FilterSidebar: React.FC<{
         mass: 0.5
       }}
       whileHover={{ 
-        y: -4,
-        boxShadow: '0 8px 32px rgba(139, 69, 19, 0.12), 0 16px 64px rgba(139, 69, 19, 0.06)',
+        y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -4 : 0,
+        boxShadow: typeof window !== 'undefined' && window.innerWidth >= 1024 ? '0 8px 32px rgba(139, 69, 19, 0.12), 0 16px 64px rgba(139, 69, 19, 0.06)' : '0 2px 12px rgba(139, 69, 19, 0.06)',
         transition: { duration: 0.3, ease: "easeOut" }
       }}
-      className="w-full rounded-[24px] will-change-transform overflow-hidden"
+      className="w-full rounded-[16px] lg:rounded-[24px] will-change-transform overflow-hidden lg:h-fit"
       style={{
-        background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.95) 0%, rgba(254, 252, 250, 0.85) 100%)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        boxShadow: '0 2px 12px rgba(139, 69, 19, 0.06), 0 4px 24px rgba(139, 69, 19, 0.03), 0 8px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+        background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+          'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%)' :
+          'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
+        backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+          'blur(12px) saturate(130%)' : 
+          'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+          'blur(12px) saturate(130%)' : 
+          'blur(20px) saturate(180%)',
+        border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+          '1px solid rgba(226, 232, 240, 0.4)' : 
+          '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
+          '0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.06)' :
+          '0 2px 12px rgba(139, 69, 19, 0.06), 0 4px 24px rgba(139, 69, 19, 0.03), 0 8px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         transform: 'translateZ(0)',
         backfaceVisibility: 'hidden',
         contain: 'layout style paint',
@@ -822,34 +878,44 @@ const FilterSidebar: React.FC<{
       }}
     >
       {/* Header */}
-      <div className="sticky top-0 p-6 z-10 border-b border-neutral-100/60"
+      <div className="sticky top-0 p-3 sm:p-6 z-10 border-b border-neutral-100/50"
         style={{
-          background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
-          backdropFilter: 'blur(12px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: '0 1px 0 rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+            'linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.88) 100%)' :
+            'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
+          backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+            'blur(8px) saturate(120%)' : 
+            'blur(12px) saturate(180%)',
+          WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+            'blur(8px) saturate(120%)' : 
+            'blur(12px) saturate(180%)',
+          borderBottom: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+            '1px solid rgba(226, 232, 240, 0.3)' : 
+            '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
+            '0 1px 3px rgba(0, 0, 0, 0.04)' :
+            '0 1px 0 rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         }}
       >
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-neutral-800 mb-2">
-            <span className="text-neutral-800">Filter </span>
-            <span className="text-emerald-600">Vehicles</span>
+        <div className="mb-3 sm:mb-6">
+          <h2 className="text-lg sm:text-2xl font-semibold text-slate-800 mb-1 sm:mb-2 tracking-tight">
+            <span className="text-slate-800">Filter </span>
+            <span className="text-emerald-600 font-medium">Vehicles</span>
           </h2>
-          <p className="text-sm text-neutral-600">
+          <p className="text-xs sm:text-sm text-slate-500 font-medium">
             Find your perfect luxury vehicle
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <motion.button
             onClick={clearAllFilters}
-            className="btn-outline px-4 py-2 text-sm font-medium rounded-[10px] will-change-transform"
+            className="px-3 py-2 sm:py-2 text-xs sm:text-sm font-medium rounded-[8px] sm:rounded-[10px] will-change-transform min-h-[36px] sm:min-h-auto flex items-center justify-center flex-1 sm:flex-none text-slate-600 border border-slate-200 bg-white/60 hover:bg-white/80 hover:border-slate-300 transition-all"
             style={{
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden'
             }}
             whileHover={{ 
-              y: -1,
+              y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -1 : 0,
               transition: { type: "spring", stiffness: 400, damping: 25 }
             }}
             whileTap={{ scale: 0.98, y: 0 }}
@@ -861,7 +927,7 @@ const FilterSidebar: React.FC<{
       </div>
 
       {/* Filter Content */}
-      <div className="p-6 space-y-8 overflow-y-auto overflow-x-hidden" style={{ maxHeight: 'calc(100vh - 350px)' }}>
+      <div className="p-3 sm:p-6 space-y-4 sm:space-y-8">
         {/* Price Range Slider */}
         <RangeSlider
           label="Monthly Payment"
@@ -942,25 +1008,55 @@ const FilterSidebar: React.FC<{
         />
 
         {/* Availability */}
-        <div className="space-y-3">
-          <label className="text-sm font-semibold text-neutral-800">Availability</label>
+        <div className="space-y-2 sm:space-y-4">
+          <label className="text-sm sm:text-base font-semibold text-slate-800">Availability</label>
           <motion.div
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-neutral-50 cursor-pointer transition-colors"
+            className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-4 rounded-[8px] sm:rounded-lg cursor-pointer transition-colors min-h-[44px] touch-manipulation"
             onClick={() => updateFilter('availableOnly', !filters.availableOnly)}
-            whileHover={{ scale: 1.02 }}
+            style={{
+              background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.5) 100%)' :
+                'transparent',
+              border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                '1px solid rgba(226, 232, 240, 0.6)' : 
+                'none',
+              boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
+                '0 1px 2px rgba(0, 0, 0, 0.04)' :
+                'none'
+            }}
+            whileHover={{ scale: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 1.02 : 1 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
+            <div className={`w-4 h-4 sm:w-6 sm:h-6 rounded border flex items-center justify-center transition-all flex-shrink-0 ${
               filters.availableOnly 
-                ? 'bg-emerald-600 border-emerald-600 shadow-sm' 
-                : 'border-neutral-300 hover:border-emerald-400 hover:shadow-sm'
+                ? 'bg-emerald-600 border-emerald-600' 
+                : 'border-slate-300 bg-white/50 hover:border-emerald-400'
             }`}>
               {filters.availableOnly && (
-                <CheckIcon className="w-3 h-3 text-white" />
+                <CheckIcon className="w-2.5 h-2.5 sm:w-4 sm:h-4 text-white" />
               )}
             </div>
-            <span className="text-sm text-neutral-700 select-none">Available Only</span>
+            <span className="text-sm sm:text-base text-slate-700 select-none font-medium">Available Only</span>
           </motion.div>
+        </div>
+
+        {/* Mobile Apply Button */}
+        <div className="lg:hidden pt-3 sm:pt-6 border-t border-slate-200/50 sticky bottom-0 bg-gradient-to-t from-white/95 to-transparent backdrop-blur-sm">
+          <motion.button
+                         onClick={() => {
+               if (typeof window !== 'undefined' && window.innerWidth < 1024 && setIsFilterOpen) {
+                 setTimeout(() => setIsFilterOpen(false), 100)
+               }
+             }}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3.5 px-6 rounded-xl shadow-md transition-all min-h-[48px] touch-manipulation flex items-center justify-center gap-2 text-sm"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <span>Apply Filters</span>
+            <span className="text-xs bg-white/25 px-2 py-0.5 rounded-full font-semibold">
+              {filteredVehicles.length}
+            </span>
+          </motion.button>
         </div>
       </div>
 
@@ -975,7 +1071,8 @@ function InventoryPageContent() {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState('newest')
-  // Filter sidebar is now always visible
+  // Mobile-responsive filter sidebar state
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [filteredVehicles, setFilteredVehicles] = useState(mockVehicles)
   const [scrollY, setScrollY] = useState(0)
   // Centralized favorites state management
@@ -1012,6 +1109,10 @@ function InventoryPageContent() {
 
   const updateFilter = useCallback((key: string, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }))
+    // Auto-close mobile filter after selection for better UX
+    if (typeof window !== 'undefined' && window.innerWidth < 1024 && key !== 'priceRange' && key !== 'msrpRange' && key !== 'yearRange' && key !== 'mileageRange') {
+      setTimeout(() => setIsFilterOpen(false), 300)
+    }
   }, [])
 
   const clearAllFilters = useCallback(() => {
@@ -1145,19 +1246,19 @@ function InventoryPageContent() {
                 200+ Premium Vehicles Available
               </PremiumBadge>
               
-              <h1 className="text-5xl lg:text-7xl font-black mb-8 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 lg:mb-8 leading-tight">
                 <span className="text-neutral-800">Luxury Vehicle </span>
                 <span className="text-emerald-600">Inventory</span>
               </h1>
               
-              <p className="text-xl lg:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-lg sm:text-xl lg:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
                 Browse our curated selection of premium vehicles. Each comes with our professional 
                 negotiation service and <span className="font-semibold text-emerald-600">guaranteed savings</span>.
               </p>
               
               {/* Trust Indicators */}
               <motion.div
-                className="flex justify-center items-center gap-8 mt-12"
+                className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 mt-12"
                 initial="initial"
                 whileInView="animate"
                 viewport={{ once: true, amount: 0.5 }}
@@ -1177,7 +1278,7 @@ function InventoryPageContent() {
                   className="flex items-center gap-3 text-neutral-600"
                 >
                   <Shield className="w-5 h-5 text-emerald-600" />
-                  <span className="font-medium text-base">Brand New Vehicles</span>
+                  <span className="font-medium text-sm sm:text-base">Brand New Vehicles</span>
                 </motion.div>
                 <motion.div
                   variants={{
@@ -1187,7 +1288,7 @@ function InventoryPageContent() {
                   className="flex items-center gap-3 text-neutral-600"
                 >
                   <DollarSign className="w-5 h-5 text-orange-500" />
-                  <span className="font-medium text-base">Best Price Guarantee</span>
+                  <span className="font-medium text-sm sm:text-base">Best Price Guarantee</span>
                 </motion.div>
                 <motion.div
                   variants={{
@@ -1197,41 +1298,91 @@ function InventoryPageContent() {
                   className="flex items-center gap-3 text-neutral-600"
                 >
                   <Truck className="w-5 h-5 text-emerald-600" />
-                  <span className="font-medium text-base">Home Delivery</span>
+                  <span className="font-medium text-sm sm:text-base">Home Delivery</span>
                 </motion.div>
               </motion.div>
             </motion.div>
           </div>
         </section>
 
-        {/* Main Content Area with L-shaped Layout */}
+        {/* Main Content Area with Responsive Layout */}
         <div className="container mx-auto px-4 relative pb-32">
-          <div className="flex gap-6 relative">
-            {/* Filter Sidebar - Fixed on left */}
-            <div className="w-80 flex-shrink-0 h-full">
-              <div 
-                className="sticky"
-                style={{ 
-                  top: '6rem',
-                  maxHeight: 'calc(100vh - 8rem)',
-                  overflowY: 'auto',
-                  overflowX: 'hidden'
-                }}
+          <div className="flex flex-col lg:flex-row gap-6 relative">
+            {/* Mobile Filter Button */}
+            <div className="lg:hidden mb-6">
+                                <motion.button
+                    onClick={() => setIsFilterOpen(true)}
+                    className="flex items-center gap-2 px-6 py-4 bg-emerald-600 text-white rounded-full font-medium shadow-lg hover:bg-emerald-700 transition-colors min-h-[44px] touch-manipulation"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <FunnelIcon className="w-5 h-5" />
+                    Filters
+                  </motion.button>
+            </div>
+
+            {/* Filter Sidebar - Desktop sticky, Mobile overlay */}
+            <div className={`
+              lg:w-80 lg:flex-shrink-0 lg:h-full
+              ${isFilterOpen ? 'fixed inset-0 z-50 lg:relative lg:inset-auto' : 'hidden lg:block'}
+            `}>
+              {/* Mobile Backdrop */}
+              <AnimatePresence>
+                {isFilterOpen && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setIsFilterOpen(false)}
+                  />
+                )}
+              </AnimatePresence>
+              
+              {/* Sidebar Content */}
+              <motion.div 
+                initial={{ x: isFilterOpen ? -100 : 0, opacity: isFilterOpen ? 0 : 1 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -100, opacity: 0 }}
+                className={`
+                  lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:overflow-x-hidden
+                  ${isFilterOpen ? 'fixed left-0 top-0 bottom-0 w-80 max-w-[90vw] z-50 overflow-y-auto' : ''}
+                `}
               >
+                                 {/* Mobile Close Button */}
+                 {isFilterOpen && (
+                   <div className="lg:hidden p-4 border-b border-neutral-200 bg-white sticky top-0 z-10 shadow-sm">
+                     <motion.button
+                       onClick={() => setIsFilterOpen(false)}
+                       className="flex items-center gap-2 text-neutral-600 hover:text-neutral-800 p-2 -m-2 min-h-[44px] touch-manipulation rounded-lg"
+                       whileHover={{ scale: 1.05 }}
+                       whileTap={{ scale: 0.95 }}
+                     >
+                       <XMarkIcon className="w-6 h-6" />
+                       <span className="font-medium">Close Filters</span>
+                     </motion.button>
+                   </div>
+                 )}
+                
                 <FilterSidebar
                   filters={filters}
                   updateFilter={updateFilter}
-                  clearAllFilters={clearAllFilters}
+                  clearAllFilters={() => {
+                    clearAllFilters()
+                    if (typeof window !== 'undefined' && window.innerWidth < 1024) setIsFilterOpen(false)
+                  }}
                   uniqueMakes={uniqueMakes}
                   uniqueModels={uniqueModels}
                   uniqueLocations={uniqueLocations}
                   allFeatures={allFeatures}
+                  filteredVehicles={filteredVehicles}
+                  setIsFilterOpen={setIsFilterOpen}
                 />
-              </div>
+              </motion.div>
             </div>
 
-            {/* Right Content Area */}
-            <div className="flex-1">
+            {/* Main Content Area */}
+            <div className="flex-1 lg:min-w-0">
               {/* Search Controls - Top of L */}
               <motion.div 
                 initial={{ opacity: 1, y: 0 }}
@@ -1245,7 +1396,7 @@ function InventoryPageContent() {
                   backfaceVisibility: 'hidden',
                 }}
               >
-                <div className="flex flex-col lg:flex-row gap-6">
+                <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
                   {/* Search Bar */}
                   <div className="flex-1 relative">
                     <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral-400" />
@@ -1254,7 +1405,7 @@ function InventoryPageContent() {
                       placeholder="Search by make, model, or year..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 border-neutral-200 rounded-[16px] focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all duration-200 bg-white will-change-transform"
+                      className="w-full pl-12 pr-4 py-3 lg:py-4 border-2 border-neutral-200 rounded-[16px] focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all duration-200 bg-white will-change-transform"
                       style={{
                         transform: 'translateZ(0)',
                         backfaceVisibility: 'hidden',
@@ -1262,44 +1413,47 @@ function InventoryPageContent() {
                     />
                   </div>
 
-                  {/* Sort */}
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-4 border-2 border-neutral-200 rounded-[16px] focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all duration-200 bg-white min-w-[200px]"
-                  >
-                    <option value="newest">Newest First</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="savings">Highest Savings</option>
-                  </select>
+                  {/* Controls Row */}
+                  <div className="flex gap-3 lg:gap-4">
+                    {/* Sort */}
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="flex-1 lg:flex-none px-3 lg:px-4 py-3 lg:py-4 border-2 border-neutral-200 rounded-[16px] focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all duration-200 bg-white lg:min-w-[200px] text-sm lg:text-base"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                      <option value="savings">Highest Savings</option>
+                    </select>
 
-                  {/* View Toggle */}
-                  <div className="flex border-2 border-neutral-200 rounded-[16px] overflow-hidden bg-white">
-                    <motion.button
-                      onClick={() => setViewMode('grid')}
-                      className={`px-4 py-4 transition-all duration-200 ${
-                        viewMode === 'grid' 
-                          ? 'bg-emerald-600 text-white shadow-lg' 
-                          : 'bg-white text-neutral-600 hover:bg-neutral-50'
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Squares2X2Icon className="w-5 h-5" />
-                    </motion.button>
-                    <motion.button
-                      onClick={() => setViewMode('list')}
-                      className={`px-4 py-4 transition-all duration-200 ${
-                        viewMode === 'list' 
-                          ? 'bg-emerald-600 text-white shadow-lg' 
-                          : 'bg-white text-neutral-600 hover:bg-neutral-50'
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <ListBulletIcon className="w-5 h-5" />
-                    </motion.button>
+                    {/* View Toggle */}
+                    <div className="flex border-2 border-neutral-200 rounded-[16px] overflow-hidden bg-white">
+                      <motion.button
+                        onClick={() => setViewMode('grid')}
+                        className={`px-3 lg:px-4 py-3 lg:py-4 transition-all duration-200 ${
+                          viewMode === 'grid' 
+                            ? 'bg-emerald-600 text-white shadow-lg' 
+                            : 'bg-white text-neutral-600 hover:bg-neutral-50'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Squares2X2Icon className="w-4 h-4 lg:w-5 lg:h-5" />
+                      </motion.button>
+                      <motion.button
+                        onClick={() => setViewMode('list')}
+                        className={`px-3 lg:px-4 py-3 lg:py-4 transition-all duration-200 ${
+                          viewMode === 'list' 
+                            ? 'bg-emerald-600 text-white shadow-lg' 
+                            : 'bg-white text-neutral-600 hover:bg-neutral-50'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <ListBulletIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+                      </motion.button>
+                    </div>
                   </div>
                 </div>
 
@@ -1326,9 +1480,9 @@ function InventoryPageContent() {
                 initial={{ opacity: 1 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className={`grid gap-10 ${
+                className={`grid gap-6 lg:gap-10 ${
                   viewMode === 'grid' 
-                    ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
                     : 'grid-cols-1'
                 }`}
                 style={{

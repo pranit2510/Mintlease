@@ -140,11 +140,28 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://maps.googleapis.com" />
         
         {/* Viewport and mobile optimization */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
         <meta name="theme-color" content="#047857" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Mint Lease" />
+        
+        {/* Enhanced mobile web app tags */}
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="application-name" content="Mint Lease" />
+        <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+        
+        {/* Performance hints */}
+        <meta name="prerender" content="allow" />
+        <meta httpEquiv="x-dns-prefetch-control" content="on" />
+        
+        {/* Touch and interaction optimization */}
+        <meta name="HandheldFriendly" content="true" />
+        <meta name="MobileOptimized" content="width" />
+        
+        {/* PWA theme colors for different contexts */}
+        <meta name="theme-color" content="#047857" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#065f46" media="(prefers-color-scheme: dark)" />
         
         {/* Microsoft Edge/IE specific */}
         <meta name="msapplication-TileColor" content="#047857" />
