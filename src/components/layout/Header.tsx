@@ -339,7 +339,7 @@ export const Header: React.FC = () => {
     <>
       {/* 120fps Optimized Dynamic Navigation Header */}
       <motion.header
-        className="fixed z-50"
+        className="fixed z-50 w-full"
         initial={{ y: -100, opacity: 0 }}
         animate={{ 
           y: 0, 
@@ -358,6 +358,7 @@ export const Header: React.FC = () => {
           scale: navbarScale,
           y: navbarY,
           willChange: 'transform, top, left, right',
+          minWidth: '320px', // Ensure minimum width for mobile
         }}
       >
         <motion.div
@@ -419,11 +420,11 @@ export const Header: React.FC = () => {
           
 
           
-          <div className="px-8 lg:px-12 xl:px-16 mx-auto max-w-8xl">
-            <div className="flex items-center justify-between h-18 lg:h-20">
+          <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mx-auto max-w-full">
+            <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20">
               {/* Logo */}
               <motion.div
-                className="flex items-center gap-3 lg:gap-4"
+                className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0"
                 whileHover={{ 
                   scale: shouldReduceMotion ? 1 : 1.02,
                   y: shouldReduceMotion ? 0 : -2,
@@ -438,7 +439,7 @@ export const Header: React.FC = () => {
                 }}
               >
                 <motion.div 
-                  className="w-20 h-12 flex items-center justify-center relative"
+                  className="w-16 h-10 sm:w-18 sm:h-11 lg:w-20 lg:h-12 flex items-center justify-center relative flex-shrink-0"
                   style={{
                     willChange: 'transform',
                     transformStyle: 'preserve-3d',
@@ -544,16 +545,16 @@ export const Header: React.FC = () => {
                   </svg>
                 </motion.div>
                 <div className="hidden sm:block">
-                  <h1 className="text-lg sm:text-xl heading-luxury text-3d-luxury">Mint Lease</h1>
-                  <p className="text-xs text-neutral-600 dark:text-neutral-400 -mt-1">Premium Auto Brokerage</p>
+                  <h1 className="text-base sm:text-lg lg:text-xl heading-luxury text-3d-luxury whitespace-nowrap">Mint Lease</h1>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400 -mt-1 hidden md:block">Premium Auto Brokerage</p>
                 </div>
                 <div className="block sm:hidden">
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">Mint Lease</h1>
+                  <h1 className="text-base font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent whitespace-nowrap">Mint Lease</h1>
                 </div>
               </motion.div>
 
               {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center gap-8 lg:gap-12 xl:gap-20 2xl:gap-24 ml-8 lg:ml-12 xl:ml-16">
+              <nav className="hidden lg:flex items-center gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 ml-4 lg:ml-6 xl:ml-8 2xl:ml-12 flex-shrink-0">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -607,7 +608,7 @@ export const Header: React.FC = () => {
                         }
                       }}
                       data-navbar-button="true"
-                      className="relative text-neutral-600 dark:text-neutral-400 font-medium px-8 py-4 w-full h-full cursor-pointer touch-manipulation focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-none border-0 border-none ring-0 ring-offset-0"
+                      className="relative text-neutral-600 dark:text-neutral-400 font-medium px-3 md:px-4 lg:px-6 xl:px-8 py-3 md:py-4 w-full h-full cursor-pointer touch-manipulation focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-none border-0 border-none ring-0 ring-offset-0"
                       variants={{
                         initial: { opacity: 0, y: -8 },
                         animate: { opacity: 1, y: 0 },
@@ -786,7 +787,7 @@ export const Header: React.FC = () => {
               </nav>
 
               {/* CTA Button & Mobile Menu */}
-              <div className="flex items-center gap-6 sm:gap-8 lg:gap-12 mr-2 lg:mr-4">
+              <div className="flex items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mr-1 sm:mr-2 lg:mr-4">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ 
@@ -821,7 +822,7 @@ export const Header: React.FC = () => {
                       boxShadow: '0 4px 12px -2px rgba(5, 150, 105, 0.25), 0 8px 24px -4px rgba(5, 150, 105, 0.15), 0 16px 32px -8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                       borderRadius: '9999px'
                     }}
-                    className="hidden md:block"
+                    className="hidden lg:block"
                   >
                     <motion.div
                       onClick={() => handleNavClick('/lead')}
@@ -833,7 +834,7 @@ export const Header: React.FC = () => {
                           handleNavClick('/lead');
                         }
                       }}
-                      className="bg-emerald-600 text-white border-0 rounded-full px-7 py-3.5 text-sm font-medium transition-all duration-300 group relative overflow-hidden focus:outline-none focus:ring-0 cursor-pointer"
+                      className="bg-emerald-600 text-white border-0 rounded-full px-4 sm:px-6 lg:px-7 py-2.5 sm:py-3 lg:py-3.5 text-xs sm:text-sm font-medium transition-all duration-300 group relative overflow-hidden focus:outline-none focus:ring-0 cursor-pointer whitespace-nowrap"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                         outline: 'none',
@@ -853,7 +854,7 @@ export const Header: React.FC = () => {
                 
                 {/* Mobile Menu Button - Improved Responsiveness */}
                 <motion.div
-                  className="md:hidden p-3.5 rounded-lg border-2 bg-emerald-50 dark:bg-emerald-900 border-emerald-300 dark:border-emerald-600 backdrop-blur-sm relative overflow-hidden touch-manipulation select-none shadow-lg focus:outline-none focus:ring-0 cursor-pointer"
+                  className="lg:hidden p-3 sm:p-3.5 rounded-lg border-2 bg-emerald-50 dark:bg-emerald-900 border-emerald-300 dark:border-emerald-600 backdrop-blur-sm relative overflow-hidden touch-manipulation select-none shadow-lg focus:outline-none focus:ring-0 cursor-pointer flex-shrink-0"
                   onClick={toggleMobileMenu}
                   role="button"
                   tabIndex={0}
@@ -882,8 +883,10 @@ export const Header: React.FC = () => {
                   }}
                   style={{
                     willChange: 'transform, background-color',
-                    minHeight: '52px', // Minimum touch target size
-                    minWidth: '52px',
+                    minHeight: '48px', // Minimum touch target size
+                    minWidth: '48px',
+                    maxHeight: '52px', // Maximum size to prevent overflow
+                    maxWidth: '52px',
                     zIndex: 10000,
                     position: 'relative',
                     cursor: 'pointer',
@@ -942,7 +945,7 @@ export const Header: React.FC = () => {
               id="mobile-menu"
               role="navigation"
               aria-label="Mobile navigation menu"
-              className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl md:hidden"
+              className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl lg:hidden"
               style={{
                 top: '90px', // Fixed position instead of dynamic
                 left: '16px',
