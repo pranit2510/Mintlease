@@ -109,7 +109,7 @@ const HowItWorks: React.FC = () => {
   const steps = [
     {
       step: 1,
-      title: "Book Consultation",
+      title: "Get a Quote",
       description: "Secure your spot with a $499 refundable deposit. Schedule a consultation that fits your timeline and preferences.",
       icon: <CalendarDaysIcon className="w-full h-full" />,
       features: [
@@ -271,7 +271,7 @@ const HowItWorks: React.FC = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <motion.button 
-              onClick={() => window.location.href = '/booking'}
+              onClick={() => window.location.href = '/lead'}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-5 rounded-full text-lg transition-all duration-300 group/btn"
               style={{
                 boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3), 0 16px 40px -8px rgba(5, 150, 105, 0.2), 0 32px 64px -16px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.1)',
@@ -285,7 +285,7 @@ const HowItWorks: React.FC = () => {
               whileTap={{ scale: 0.98, y: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
-              Book $499 Consultation
+              Get a Quote
             </motion.button>
             <motion.button 
               onClick={() => window.location.href = '/calculator'}

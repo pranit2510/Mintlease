@@ -256,8 +256,8 @@ const VehicleCard: React.FC<{
   }, [])
   
   const handleInquireAboutDeal = useCallback(() => {
-    // For now, direct to booking - could be lead form or contact
-    window.location.href = '/booking'
+            // For now, direct to lead - for quote form
+        window.location.href = '/lead'
   }, [])
   
   if (viewMode === 'list') {
@@ -1402,7 +1402,7 @@ function InventoryPageContent() {
                         Clear Search
                       </motion.button>
                       <button 
-                        onClick={() => window.location.href = '/booking'}
+                        onClick={() => window.location.href = '/lead'}
                         className="border-2 border-emerald-600 text-emerald-600 px-8 py-4 rounded-[14px] text-lg font-semibold hover:bg-emerald-600 hover:text-white transition-all duration-300"
                       >
                         Contact Our Team

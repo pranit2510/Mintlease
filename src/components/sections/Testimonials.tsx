@@ -335,7 +335,7 @@ const Testimonials: React.FC = () => {
             Start your journey to significant savings with our professional auto brokerage service.
           </p>
           <motion.button 
-            onClick={() => window.location.href = '/booking'}
+            onClick={() => window.location.href = '/lead'}
             className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-10 py-5 rounded-full text-lg transition-all duration-300 group/btn"
             style={{
               background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
@@ -350,7 +350,7 @@ const Testimonials: React.FC = () => {
             whileTap={{ scale: 0.98, y: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            Book Your $499 Consultation
+            Get a Quote
           </motion.button>
         </motion.div>
       </div>

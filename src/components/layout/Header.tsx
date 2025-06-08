@@ -824,13 +824,13 @@ export const Header: React.FC = () => {
                     className="hidden md:block"
                   >
                     <motion.div
-                      onClick={() => handleNavClick('/booking')}
+                      onClick={() => handleNavClick('/lead')}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          handleNavClick('/booking');
+                          handleNavClick('/lead');
                         }
                       }}
                       className="bg-emerald-600 text-white border-0 rounded-full px-7 py-3.5 text-sm font-medium transition-all duration-300 group relative overflow-hidden focus:outline-none focus:ring-0 cursor-pointer"
@@ -845,7 +845,7 @@ export const Header: React.FC = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <span className="flex items-center relative z-10">
-                        Book Consultation
+                        Get a Quote
                       </span>
                     </motion.div>
                   </motion.div>
@@ -1021,15 +1021,15 @@ export const Header: React.FC = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log('📱 Mobile Book Consultation clicked:', '/booking');
-                        handleNavClick('/booking');
+                        console.log('📱 Mobile Get a Quote clicked:', '/lead');
+                        handleNavClick('/lead');
                       }}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          handleNavClick('/booking');
+                          handleNavClick('/lead');
                         }
                       }}
                       className="w-full bg-emerald-600 text-white border-0 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 group relative overflow-hidden cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
@@ -1046,7 +1046,7 @@ export const Header: React.FC = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <span className="flex items-center justify-center relative z-10">
-                        Book Consultation
+                        Get a Quote
                       </span>
                     </motion.div>
                   </motion.div>

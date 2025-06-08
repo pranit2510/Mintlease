@@ -61,11 +61,11 @@ export default function CalculatorPage() {
     restDelta: 0.01
   })
 
-  // Enhanced parallax transforms
-  const backgroundX = useTransform(springMouseX, [-100, 100], [-20, 20])
-  const backgroundY = useTransform(springMouseY, [-100, 100], [-10, 10])
-  const accentX = useTransform(springMouseX, [-100, 100], [-5, 5])
-  const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
+  // Reduced parallax transforms to prevent unwanted movement
+  const backgroundX = useTransform(springMouseX, [-100, 100], [-5, 5])
+  const backgroundY = useTransform(springMouseY, [-100, 100], [-3, 3])
+  const accentX = useTransform(springMouseX, [-100, 100], [-2, 2])
+  const accentY = useTransform(springMouseY, [-100, 100], [-2, 2])
 
   // Interactive depth layers
   const [interactiveIntensity, setInteractiveIntensity] = useState(1)
@@ -97,79 +97,25 @@ export default function CalculatorPage() {
   }, [isInView, controls])
 
   useEffect(() => {
-    // Enhanced GSAP Timeline for advanced animations - matching Hero style
+    // Simplified GSAP Timeline to avoid conflicts
     const tl = gsap.timeline({ delay: 0.3 })
     
-    // Title animation with enhanced effects
-    tl.fromTo(titleRef.current, 
-      { 
-        opacity: 0, 
-        y: 120, 
-        scale: 0.8,
-        rotateX: 45
-      },
-      { 
-        opacity: 1, 
-        y: 0, 
-        scale: 1, 
-        rotateX: 0,
-        duration: 1.4, 
-        ease: "power3.out" 
-      }
-    )
-    // Subtitle with floating effect
-    .fromTo(subtitleRef.current,
-      { 
-        opacity: 0, 
-        y: 60,
-        filter: "blur(10px)"
-      },
-      { 
-        opacity: 1, 
-        y: 0,
-        filter: "blur(0px)",
-        duration: 1.0, 
-        ease: "power2.out" 
-      },
-      "-=0.9"
-    )
-    // Calculator with bounce effect
-    .fromTo(calculatorRef.current,
-      { 
-        opacity: 0, 
-        y: 40, 
-        scale: 0.8,
-        rotateY: 15
-      },
-      { 
-        opacity: 1, 
-        y: 0, 
-        scale: 1,
-        rotateY: 0,
-        duration: 0.8, 
-        ease: "back.out(2.5)" 
-      },
-      "-=0.5"
-    )
-    // Comparison cards with stagger effect
-    .fromTo(comparisonRef.current?.children || [],
-      { 
-        opacity: 0, 
-        y: 30,
-        scale: 0.9,
-        rotateZ: -5
-      },
-      { 
-        opacity: 1, 
-        y: 0,
-        scale: 1,
-        rotateZ: 0,
-        duration: 0.6,
-        stagger: 0.15,
-        ease: "power2.out" 
-      },
-      "-=0.4"
-    )
+    // Basic title animation
+    if (titleRef.current) {
+      tl.fromTo(titleRef.current, 
+        { opacity: 0, y: 60 },
+        { opacity: 1, y: 0, duration: 1.0, ease: "power2.out" }
+      )
+    }
+    
+    // Basic subtitle animation
+    if (subtitleRef.current) {
+      tl.fromTo(subtitleRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+        "-=0.6"
+      )
+    }
 
     return () => {
       tl.kill()
@@ -402,9 +348,7 @@ export default function CalculatorPage() {
           maxWidth: '100vw',
           position: 'relative'
         }}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+
       >
         {/* 120fps Optimized Luxury Background - matching Hero */}
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -859,14 +803,12 @@ export default function CalculatorPage() {
 
               {/* Savings Highlight */}
               <div className="text-center mb-8">
-                <motion.div
+                <div
                   className="inline-block p-8 rounded-3xl shadow-lg border border-white/20 backdrop-blur-sm"
                   style={{ 
                     backgroundColor: '#059669',
                     boxShadow: '0 8px 32px rgba(5, 150, 105, 0.2)'
                   }}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 >
                                      <div className="text-4xl font-bold text-white mb-2">
                      {formatCurrency(Math.max(comparison.savings.totalFinance, comparison.savings.totalLease))}
@@ -877,7 +819,7 @@ export default function CalculatorPage() {
                    <div className="text-emerald-200 text-sm mt-1">
                      Average savings across finance and lease options
                    </div>
-                </motion.div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1055,7 +997,7 @@ export default function CalculatorPage() {
                    Ready to Start Saving?
                  </h2>
                  <p className="text-lg text-neutral-600 mb-6">
-                   Book a consultation and let our experts negotiate the best deal for you
+                   Get a quote and let our experts negotiate the best deal for you
                  </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -1064,9 +1006,9 @@ export default function CalculatorPage() {
                     style={{ backgroundColor: '#059669' }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => window.location.href = '/booking'}
+                    onClick={() => window.location.href = '/lead'}
                   >
-                    Book Consultation
+                    Get a Quote
                   </motion.button>
                   
                   <motion.button
