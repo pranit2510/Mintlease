@@ -192,13 +192,54 @@ export const Header: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // AGGRESSIVE OUTLINE REMOVAL via DOM manipulation
+  useEffect(() => {
+    const removeOutlines = () => {
+      // Target all navbar buttons
+      const navbarButtons = document.querySelectorAll('[data-navbar-button="true"]');
+      navbarButtons.forEach((button) => {
+        const element = button as HTMLElement;
+        element.style.outline = 'none';
+        element.style.outlineColor = 'transparent';
+        element.style.outlineStyle = 'none';
+        element.style.outlineWidth = '0';
+        element.style.outlineOffset = '0';
+        element.style.boxShadow = 'none';
+        element.style.border = 'none';
+        // @ts-ignore
+        element.style.webkitFocusRingColor = 'transparent';
+        // @ts-ignore
+        element.style.webkitTapHighlightColor = 'transparent';
+        // @ts-ignore
+        element.style.webkitAppearance = 'none';
+        // @ts-ignore
+        element.style.mozAppearance = 'none';
+        element.style.appearance = 'none';
+      });
+    };
+
+    // Run immediately
+    removeOutlines();
+    
+    // Run again after component mount
+    const timer = setTimeout(removeOutlines, 100);
+    
+    // Run on window focus (for browser dev tools interactions)
+    window.addEventListener('focus', removeOutlines);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('focus', removeOutlines);
+    };
+  }, []);
+
   // Navigation items with proper routes
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Inventory', href: '/inventory' },
     { label: 'Calculator', href: '/calculator' },
+    { label: 'Credit App', href: '/credit-application' },
     { label: 'How It Works', href: '#how-it-works' },
-    { label: 'Testimonials', href: '#testimonials' },
     { label: 'Contact', href: '#contact' }
   ]
 
@@ -378,11 +419,11 @@ export const Header: React.FC = () => {
           
 
           
-          <div className="px-6 lg:px-8 mx-auto max-w-7xl">
-            <div className="flex items-center justify-between h-16">
+          <div className="px-8 lg:px-12 xl:px-16 mx-auto max-w-8xl">
+            <div className="flex items-center justify-between h-18 lg:h-20">
               {/* Logo */}
               <motion.div
-                className="flex items-center gap-3"
+                className="flex items-center gap-3 lg:gap-4"
                 whileHover={{ 
                   scale: shouldReduceMotion ? 1 : 1.02,
                   y: shouldReduceMotion ? 0 : -2,
@@ -512,7 +553,7 @@ export const Header: React.FC = () => {
               </motion.div>
 
               {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center gap-6 xl:gap-8">
+              <nav className="hidden md:flex items-center gap-8 lg:gap-12 xl:gap-20 2xl:gap-24 ml-8 lg:ml-12 xl:ml-16">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -524,69 +565,90 @@ export const Header: React.FC = () => {
                   >
                     {/* Background layer - BEHIND text */}
                     <motion.div
-                      className="absolute inset-0 bg-emerald-50 rounded-lg"
+                      className="absolute inset-0 rounded-lg"
                       variants={{
-                        initial: { opacity: 0, scale: 0.9 },
+                        initial: { 
+                          opacity: 0, 
+                          scale: 0.95,
+                          backgroundColor: 'transparent',
+                          boxShadow: '0 0 0 rgba(4, 120, 87, 0)'
+                        },
                         hover: { 
                           opacity: 1, 
                           scale: 1,
+                          backgroundColor: 'rgba(236, 253, 245, 0.8)', // More subtle emerald-50 
+                          boxShadow: '0 1px 4px rgba(4, 120, 87, 0.08)'
                         }
                       }}
                       transition={{ 
-                        duration: 0.2,
-                        ease: "easeOut"
+                        duration: 0.12,
+                        ease: [0.25, 0.46, 0.45, 0.94] // Custom cubic-bezier for smoother animation
                       }}
                       style={{
-                        boxShadow: '0 2px 8px rgba(4, 120, 87, 0.12)',
                         zIndex: 1,
                         pointerEvents: 'none', // Don't interfere with button clicks
                       }}
                     />
                     
-                    {/* Button with text - ABOVE background */}
-                    <motion.button
+                    {/* Div with button behavior - ABOVE background */}
+                    <motion.div
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         console.log('🎯 Button clicked:', item.label, item.href);
                         handleNavClick(item.href);
                       }}
-                      className="relative text-neutral-600 dark:text-neutral-400 font-medium px-4 py-2.5 rounded-lg w-full h-full cursor-pointer touch-manipulation"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleNavClick(item.href);
+                        }
+                      }}
+                      data-navbar-button="true"
+                      className="relative text-neutral-600 dark:text-neutral-400 font-medium px-8 py-4 w-full h-full cursor-pointer touch-manipulation focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-none border-0 border-none ring-0 ring-offset-0"
                       variants={{
-                        initial: { opacity: 0, y: -10 },
+                        initial: { opacity: 0, y: -8 },
                         animate: { opacity: 1, y: 0 },
                         hover: { 
-                          scale: shouldReduceMotion ? 1 : 1.02,
-                          y: shouldReduceMotion ? 0 : -1,
+                          scale: shouldReduceMotion ? 1 : 1.01,
+                          y: shouldReduceMotion ? 0 : -0.5,
                           color: "rgb(4, 120, 87)",
                         },
                         tap: { 
-                          scale: shouldReduceMotion ? 1 : 0.98,
+                          scale: shouldReduceMotion ? 1 : 0.99,
                           y: 0,
                         }
                       }}
                       transition={{ 
-                        duration: 0.2,
-                        ease: "easeOut"
+                        duration: 0.15,
+                        ease: [0.25, 0.46, 0.45, 0.94] // Smooth cubic-bezier
                       }}
                       style={{
                         willChange: 'transform, color',
                         zIndex: 100,
                         position: 'relative',
                         pointerEvents: 'auto',
-                      }}
+                        outline: 'none',
+                        border: 'none',
+                        borderRadius: '0',
+                        background: 'transparent',
+                        boxShadow: 'none',
+                        appearance: 'none',
+                        WebkitAppearance: 'none',
+                        MozAppearance: 'none'
+                      } as React.CSSProperties}
                     >
                       {item.label}
-                    </motion.button>
+                    </motion.div>
                     
-                    {/* Ultra-Smooth 120fps Luxury Border Animation */}
+                    {/* BORDER ANIMATION - Only visible on hover */}
                     <motion.div
                       className="absolute inset-0 rounded-lg overflow-hidden"
                       style={{ 
-                        zIndex: 1,
-                        willChange: 'transform',
-                        transform: 'translate3d(0,0,0)', // Force GPU layer
-                        pointerEvents: 'none', // Don't interfere with button clicks
+                        zIndex: 2,
+                        pointerEvents: 'none',
                       }}
                     >
                       {/* Top border - Silk-smooth entrance */}
@@ -611,10 +673,10 @@ export const Header: React.FC = () => {
                         }}
                         transition={{ 
                           type: "spring",
-                          stiffness: shouldReduceMotion ? 150 : 320,
-                          damping: shouldReduceMotion ? 40 : 35,
-                          mass: shouldReduceMotion ? 1 : 0.08,
-                          velocity: shouldReduceMotion ? 0 : 2,
+                          stiffness: shouldReduceMotion ? 200 : 420,
+                          damping: shouldReduceMotion ? 30 : 28,
+                          mass: shouldReduceMotion ? 1 : 0.05,
+                          velocity: shouldReduceMotion ? 0 : 3,
                           restSpeed: 0.001,
                           restDelta: 0.0001,
                           delay: 0
@@ -643,13 +705,13 @@ export const Header: React.FC = () => {
                         }}
                         transition={{ 
                           type: "spring",
-                          stiffness: shouldReduceMotion ? 150 : 310,
-                          damping: shouldReduceMotion ? 40 : 36,
-                          mass: shouldReduceMotion ? 1 : 0.07,
-                          velocity: shouldReduceMotion ? 0 : 1.8,
+                          stiffness: shouldReduceMotion ? 200 : 410,
+                          damping: shouldReduceMotion ? 30 : 27,
+                          mass: shouldReduceMotion ? 1 : 0.04,
+                          velocity: shouldReduceMotion ? 0 : 2.8,
                           restSpeed: 0.001,
                           restDelta: 0.0001,
-                          delay: 0.06
+                          delay: 0.03
                         }}
                       />
                       
@@ -676,13 +738,13 @@ export const Header: React.FC = () => {
                         }}
                         transition={{ 
                           type: "spring",
-                          stiffness: shouldReduceMotion ? 150 : 300,
-                          damping: shouldReduceMotion ? 40 : 37,
-                          mass: shouldReduceMotion ? 1 : 0.06,
-                          velocity: shouldReduceMotion ? 0 : 1.6,
+                          stiffness: shouldReduceMotion ? 200 : 400,
+                          damping: shouldReduceMotion ? 30 : 26,
+                          mass: shouldReduceMotion ? 1 : 0.035,
+                          velocity: shouldReduceMotion ? 0 : 2.6,
                           restSpeed: 0.001,
                           restDelta: 0.0001,
-                          delay: 0.12
+                          delay: 0.06
                         }}
                       />
                       
@@ -709,13 +771,13 @@ export const Header: React.FC = () => {
                         }}
                         transition={{ 
                           type: "spring",
-                          stiffness: shouldReduceMotion ? 150 : 290,
-                          damping: shouldReduceMotion ? 40 : 38,
-                          mass: shouldReduceMotion ? 1 : 0.05,
-                          velocity: shouldReduceMotion ? 0 : 1.4,
+                          stiffness: shouldReduceMotion ? 200 : 390,
+                          damping: shouldReduceMotion ? 30 : 25,
+                          mass: shouldReduceMotion ? 1 : 0.03,
+                          velocity: shouldReduceMotion ? 0 : 2.4,
                           restSpeed: 0.001,
                           restDelta: 0.0001,
-                          delay: 0.18
+                          delay: 0.09
                         }}
                       />
                     </motion.div>
@@ -724,7 +786,7 @@ export const Header: React.FC = () => {
               </nav>
 
               {/* CTA Button & Mobile Menu */}
-              <div className="flex items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-6 sm:gap-8 lg:gap-12 mr-2 lg:mr-4">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ 
@@ -761,11 +823,21 @@ export const Header: React.FC = () => {
                     }}
                     className="hidden md:block"
                   >
-                    <motion.button
+                    <motion.div
                       onClick={() => handleNavClick('/booking')}
-                      className="bg-emerald-600 text-white border-0 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 group relative overflow-hidden"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleNavClick('/booking');
+                        }
+                      }}
+                      className="bg-emerald-600 text-white border-0 rounded-full px-7 py-3.5 text-sm font-medium transition-all duration-300 group relative overflow-hidden focus:outline-none focus:ring-0 cursor-pointer"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                        outline: 'none',
+                        border: 'none',
                       }}
                       whileHover={{
                         background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
@@ -775,15 +847,22 @@ export const Header: React.FC = () => {
                       <span className="flex items-center relative z-10">
                         Book Consultation
                       </span>
-                    </motion.button>
+                    </motion.div>
                   </motion.div>
                 </motion.div>
                 
                 {/* Mobile Menu Button - Improved Responsiveness */}
-                <motion.button
-                  className="md:hidden p-3 rounded-lg border-2 bg-emerald-50 dark:bg-emerald-900 border-emerald-300 dark:border-emerald-600 backdrop-blur-sm relative overflow-hidden touch-manipulation select-none shadow-lg"
+                <motion.div
+                  className="md:hidden p-3.5 rounded-lg border-2 bg-emerald-50 dark:bg-emerald-900 border-emerald-300 dark:border-emerald-600 backdrop-blur-sm relative overflow-hidden touch-manipulation select-none shadow-lg focus:outline-none focus:ring-0 cursor-pointer"
                   onClick={toggleMobileMenu}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      toggleMobileMenu();
+                    }
+                  }}
                   aria-label={isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
                   aria-expanded={isMobileMenuOpen}
                   aria-controls="mobile-menu"
@@ -803,11 +882,13 @@ export const Header: React.FC = () => {
                   }}
                   style={{
                     willChange: 'transform, background-color',
-                    minHeight: '48px', // Minimum touch target size
-                    minWidth: '48px',
+                    minHeight: '52px', // Minimum touch target size
+                    minWidth: '52px',
                     zIndex: 10000,
                     position: 'relative',
                     cursor: 'pointer',
+                    outline: 'none',
+                    border: '2px solid rgba(52, 211, 153, 0.3)',
                   }}
                 >
                   <AnimatePresence mode="wait">
@@ -835,7 +916,7 @@ export const Header: React.FC = () => {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.button>
+                </motion.div>
               </div>
             </div>
           </div>
@@ -878,7 +959,7 @@ export const Header: React.FC = () => {
             >
               <div className="p-6 space-y-2">
                 {navItems.map((item, index) => (
-                  <motion.button
+                  <motion.div
                     key={item.label}
                     onClick={(e) => {
                       e.preventDefault();
@@ -886,8 +967,16 @@ export const Header: React.FC = () => {
                       console.log('📱 Mobile button clicked:', item.label, item.href);
                       handleNavClick(item.href);
                     }}
-                    className="block w-full text-left text-lg font-medium transition-all duration-200 py-4 px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group cursor-pointer touch-manipulation"
-                    style={{ color: '#64748B', zIndex: 10, position: 'relative' }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleNavClick(item.href);
+                      }
+                    }}
+                    className="block w-full text-left text-lg font-medium transition-all duration-200 py-4 px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
+                    style={{ color: '#64748B', zIndex: 10, position: 'relative', outline: 'none', border: 'none', background: 'transparent' }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -916,7 +1005,7 @@ export const Header: React.FC = () => {
                     />
                     
                     <span className="relative z-10">{item.label}</span>
-                  </motion.button>
+                  </motion.div>
                 ))}
                 
                 {/* Mobile Menu Actions */}
@@ -928,17 +1017,27 @@ export const Header: React.FC = () => {
                     whileTap={{ scale: 0.99 }}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   >
-                    <motion.button
+                    <motion.div
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         console.log('📱 Mobile Book Consultation clicked:', '/booking');
                         handleNavClick('/booking');
                       }}
-                      className="w-full bg-emerald-600 text-white border-0 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 group relative overflow-hidden cursor-pointer touch-manipulation"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleNavClick('/booking');
+                        }
+                      }}
+                      className="w-full bg-emerald-600 text-white border-0 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 group relative overflow-hidden cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                         boxShadow: '0 6px 16px -3px rgba(5, 150, 105, 0.3), 0 12px 32px -6px rgba(5, 150, 105, 0.2)',
+                        outline: 'none',
+                        border: 'none',
                       }}
                       whileHover={{
                         background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
@@ -949,23 +1048,34 @@ export const Header: React.FC = () => {
                       <span className="flex items-center justify-center relative z-10">
                         Book Consultation
                       </span>
-                    </motion.button>
+                    </motion.div>
                   </motion.div>
 
                   {/* Secondary CTA */}
-                  <motion.button
+                  <motion.div
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       console.log('📱 Mobile View Inventory clicked:', '/inventory');
                       handleNavClick('/inventory');
                     }}
-                    className="w-full border-2 border-emerald-600 text-emerald-600 bg-transparent rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 hover:bg-emerald-600 hover:text-white cursor-pointer touch-manipulation"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleNavClick('/inventory');
+                      }
+                    }}
+                    className="w-full border-2 border-emerald-600 text-emerald-600 bg-transparent rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 hover:bg-emerald-600 hover:text-white cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
+                    style={{
+                      outline: 'none',
+                    }}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                   >
                     View Inventory
-                  </motion.button>
+                  </motion.div>
 
                   {/* Contact Info */}
                   <div className="pt-4 text-center">

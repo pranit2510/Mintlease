@@ -5,11 +5,12 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { motion, useAnimation, useInView, useMotionValue, useSpring, AnimatePresence, useReducedMotion, useTransform } from 'framer-motion'
 import { CalendarDaysIcon, CreditCardIcon, ShieldCheckIcon, SparklesIcon, CheckBadgeIcon, StarIcon, LockClosedIcon, ClockIcon, PhoneIcon, UserGroupIcon, TrophyIcon, DocumentCheckIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/outline'
+import { Star, Users, Trophy } from 'lucide-react'
 import { animationVariants } from '@/lib/utils'
 
 /**
- * Booking Page - Premium $499 Consultation Deposit
- * Features: Luxury animations, glassmorphism, interactive 3D effects, trust elements, Stripe integration ready
+ * Booking Page - Secure Your Approved Vehicle
+ * Features: Post-approval deposit collection, delivery scheduling, luxury animations
  */
 export default function BookingPage() {
   const containerRef = useRef<HTMLElement>(null)
@@ -304,21 +305,48 @@ export default function BookingPage() {
 
             {/* Trust Indicators */}
             <motion.div 
-              className="flex flex-wrap justify-center items-center gap-8 mb-12"
-              variants={itemVariants}
+              className="flex justify-center items-center gap-8 mb-12"
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, amount: 0.5 }}
+              variants={{
+                initial: { opacity: 0 },
+                animate: { 
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 }
+                }
+              }}
             >
-              <div className="flex items-center space-x-2 text-neutral-600">
-                <StarIcon className="w-5 h-5 text-yellow-400 fill-current" />
-                <span className="font-semibold">4.9/5 Rating</span>
-              </div>
-              <div className="flex items-center space-x-2 text-neutral-600">
-                <UserGroupIcon className="w-5 h-5 text-emerald-600" />
-                <span className="font-semibold">2,500+ Happy Clients</span>
-              </div>
-              <div className="flex items-center space-x-2 text-neutral-600">
-                <TrophyIcon className="w-5 h-5 text-gold-primary" />
-                <span className="font-semibold">$15M+ Saved</span>
-              </div>
+              <motion.div
+                variants={{
+                  initial: { opacity: 0, y: 20 },
+                  animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                }}
+                className="flex items-center gap-3 text-neutral-600"
+              >
+                <Star className="w-5 h-5 text-orange-500" />
+                <span className="font-medium text-base">4.9/5 Rating</span>
+              </motion.div>
+              <motion.div
+                variants={{
+                  initial: { opacity: 0, y: 20 },
+                  animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                }}
+                className="flex items-center gap-3 text-neutral-600"
+              >
+                <Users className="w-5 h-5 text-emerald-600" />
+                <span className="font-medium text-base">2,500+ Happy Clients</span>
+              </motion.div>
+              <motion.div
+                variants={{
+                  initial: { opacity: 0, y: 20 },
+                  animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                }}
+                className="flex items-center gap-3 text-neutral-600"
+              >
+                <Trophy className="w-5 h-5 text-orange-500" />
+                <span className="font-medium text-base">$15M+ Saved</span>
+              </motion.div>
             </motion.div>
           </motion.div>
 
@@ -751,7 +779,7 @@ export default function BookingPage() {
                   className="mt-6 text-neutral-600 text-lg"
                   variants={itemVariants}
                 >
-                  Join thousands of satisfied clients who've saved an average of $8,500+ on their vehicle purchase.
+                  Join thousands of satisfied clients who've saved an average of $8,500+ on their vehicle lease or financing.
                 </motion.p>
               </motion.div>
             </motion.div>

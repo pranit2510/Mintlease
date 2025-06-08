@@ -99,8 +99,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning={true}>
       <head>
+        {/* Emergency visibility fix for Framer Motion issue */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            /* Emergency visibility fix for Framer Motion issue */
+            [style*="opacity:0"], 
+            [style*="opacity: 0"],
+            [style*="opacity:0;"],
+            [style*="opacity: 0;"] {
+              opacity: 1 !important;
+            }
+            /* Ensure header is visible */
+            header {
+              opacity: 1 !important;
+              transform: none !important;
+            }
+            /* Ensure main content is visible */
+            main {
+              opacity: 1 !important;
+            }
+            /* RESTORE SHADOW EFFECTS FOR LUXURY DESIGN */
+            .glass,
+            .glass-strong,
+            .luxury-card {
+              /* Allow natural shadows to work */
+              transition-property: transform, opacity, color, background-color, border-color, box-shadow !important;
+            }
+          `
+        }} />
+        
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -158,24 +187,62 @@ export default function RootLayout({
             })
           }}
         />
-        
-        {/* Dark mode script - runs before React hydration to prevent flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                  }
-                } catch (e) {}
-              })();
-            `
-          }}
-        />
       </head>
-      <body className={`antialiased overflow-x-hidden ${inter.variable} ${sourceSerif.variable} font-sans`}>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {}
+            })();
+          `
+        }}
+      />
+      <body className={`antialiased overflow-x-hidden max-w-full ${inter.variable} ${sourceSerif.variable} font-sans`} style={{ backgroundColor: '#FEF7ED', overflowX: 'hidden', maxWidth: '100vw' }}>
+        {/* Emergency visibility fix script */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            // Force visibility after page load
+            if (typeof window !== 'undefined') {
+              window.addEventListener('load', function() {
+                // Remove all opacity 0 styles
+                document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach(function(el) {
+                  el.style.opacity = '1';
+                  el.style.visibility = 'visible';
+                });
+                
+                // Fix header specifically
+                const header = document.querySelector('header');
+                if (header) {
+                  header.style.opacity = '1';
+                  header.style.transform = 'none';
+                  header.style.visibility = 'visible';
+                }
+                
+                // Fix all divs that might be hidden
+                document.querySelectorAll('div[style*="opacity"], section[style*="opacity"]').forEach(function(el) {
+                  if (parseFloat(window.getComputedStyle(el).opacity) < 0.1) {
+                    el.style.opacity = '1';
+                  }
+                });
+                
+                console.log('Forced visibility fix applied');
+              });
+              
+              // Also run after a short delay in case of late rendering
+              setTimeout(function() {
+                document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach(function(el) {
+                  el.style.opacity = '1';
+                });
+              }, 100);
+            }
+          `
+        }} />
+        
         {/* Skip to main content for accessibility */}
         <a 
           href="#main-content" 

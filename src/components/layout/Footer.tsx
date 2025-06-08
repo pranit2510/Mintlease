@@ -40,6 +40,7 @@ export const Footer: React.FC = () => {
     { label: "How It Works", href: "#how-it-works" },
     { label: "Inventory", href: "/inventory" },
     { label: "Calculator", href: "/calculator" },
+    { label: "Get Quote", href: "/lead" },
     { label: "Book Consultation", href: "/booking" }
   ]
 

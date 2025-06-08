@@ -308,7 +308,7 @@ export const Hero: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden overflow-x-hidden w-full"
       style={{ 
         backgroundColor: '#FEF7ED'
       }}
@@ -576,10 +576,14 @@ export const Hero: React.FC = () => {
             </motion.div>
 
             {/* Floating Carousel */}
-            <div className="relative py-6 overflow-hidden">
-              <div className="relative overflow-hidden">
+            <div className="relative py-6 overflow-hidden w-full">
+              <div className="relative overflow-hidden w-full">
                 <motion.div
-                  className="flex space-x-12 items-center"
+                  className="flex space-x-12 items-center will-change-transform"
+                  style={{
+                    width: 'max-content',
+                    willChange: 'transform'
+                  }}
                   animate={{
                     x: [0, -1920],
                   }}

@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MagnifyingGlassIcon, FunnelIcon, Squares2X2Icon, ListBulletIcon, XMarkIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { HeartIcon, ShareIcon } from '@heroicons/react/24/solid'
+import { Shield, DollarSign, Truck } from 'lucide-react'
 import { Slider, Box, Typography, ThemeProvider, createTheme } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
@@ -241,7 +242,8 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
     window.location.href = '/inventory'
   }, [])
   
-  const handleBookConsultation = useCallback(() => {
+  const handleInquireAboutDeal = useCallback(() => {
+    // For now, direct to booking - could be lead form or contact
     window.location.href = '/booking'
   }, [])
   
@@ -369,7 +371,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
                 View Details
               </motion.button>
               <motion.button 
-                onClick={handleBookConsultation}
+                onClick={handleInquireAboutDeal}
                 className="flex-1 border-2 px-8 py-4 rounded-[14px] text-lg font-semibold will-change-transform"
                 style={{ 
                   transform: 'translateZ(0)',
@@ -381,7 +383,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
                 whileTap={{ scale: 0.98, y: 0 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
               >
-                Book Consultation
+                Inquire About Deal
               </motion.button>
               <button className="w-14 h-14 border border-neutral-300 rounded-xl flex items-center justify-center hover:bg-neutral-50 hover:border-primary-emerald transition-all duration-200 group">
                 <ShareIcon className="w-5 h-5 text-neutral-600 group-hover:text-primary-emerald" />
@@ -525,7 +527,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
             View Details
           </motion.button>
           <motion.button 
-            onClick={handleBookConsultation}
+            onClick={handleInquireAboutDeal}
             className="w-full border-2 px-5 py-2.5 rounded-[14px] font-semibold will-change-transform"
             style={{ 
               transform: 'translateZ(0)',
@@ -537,7 +539,7 @@ const VehicleCard: React.FC<{ vehicle: MockVehicle; viewMode: 'grid' | 'list' }>
             whileTap={{ scale: 0.98, y: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            Book Consultation
+            Inquire About Deal
           </motion.button>
         </div>
       </div>
@@ -561,6 +563,7 @@ const luxuryTheme = createTheme({
 const LuxurySlider = styled(Slider)(({ theme }) => ({
   color: '#047857',
   height: 8,
+  margin: '16px 0', // Add vertical margin to ensure thumb visibility
   '& .MuiSlider-track': {
     border: 'none',
     background: 'linear-gradient(45deg, #047857, #059669)',
@@ -620,11 +623,12 @@ const RangeSlider: React.FC<{
   return (
     <motion.div
       className="bg-white/60 backdrop-blur-xl border border-emerald-100/50 rounded-2xl p-6 shadow-luxury hover:shadow-luxury-lg transition-all duration-300"
+      style={{ overflowX: 'hidden', overflowY: 'visible' }}
       whileHover={{ y: -2, scale: 1.01 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
+      <div className="space-y-3">
+        <div className="flex flex-col gap-1">
           <Typography
             variant="subtitle2"
             className="text-neutral-700 font-semibold"
@@ -632,15 +636,15 @@ const RangeSlider: React.FC<{
             {label}
           </Typography>
           <Typography
-            variant="caption"
-            className="text-emerald-600 font-medium"
+            variant="body2"
+            className="text-emerald-600 font-semibold text-right text-sm"
           >
             {formatValue(value[0])} - {formatValue(value[1])}
           </Typography>
         </div>
         
         <ThemeProvider theme={luxuryTheme}>
-          <Box sx={{ px: 1 }}>
+          <Box sx={{ px: 3, py: 1, width: '100%', maxWidth: '100%', overflow: 'visible' }}>
             <LuxurySlider
               value={value}
               onChange={handleChange}
@@ -708,16 +712,21 @@ const FilterSidebar: React.FC<{
           {displayOptions.map((option) => (
             <motion.div
               key={option}
-              className="flex items-center gap-3 p-3 rounded-[12px] cursor-pointer will-change-transform"
+              className="flex items-center gap-3 p-3 rounded-[12px] cursor-pointer will-change-transform overflow-hidden"
               onClick={() => toggleOption(option)}
               style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)',
+                backdropFilter: 'blur(8px) saturate(150%)',
+                WebkitBackdropFilter: 'blur(8px) saturate(150%)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 1px 3px rgba(139, 69, 19, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 transform: 'translateZ(0)',
                 backfaceVisibility: 'hidden'
               }}
               whileHover={{ 
-                backgroundColor: 'rgba(5, 150, 105, 0.05)',
-                boxShadow: '0 2px 8px rgba(5, 150, 105, 0.1)',
                 y: -1,
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%)',
+                boxShadow: '0 2px 8px rgba(139, 69, 19, 0.08), 0 4px 16px rgba(139, 69, 19, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
                 transition: { type: "spring", stiffness: 400, damping: 25 }
               }}
               whileTap={{ scale: 0.98, y: 0 }}
@@ -727,11 +736,8 @@ const FilterSidebar: React.FC<{
               selected.includes(option) 
                 ? 'bg-emerald-600 border-emerald-600' 
                 : 'border-neutral-300'
-            }`}
+            } ${selected.includes(option) ? 'shadow-glow' : 'shadow-3d-sm'}`}
             style={{
-              boxShadow: selected.includes(option) 
-                ? '0 2px 8px rgba(5, 150, 105, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)' 
-                : '0 1px 3px rgba(0, 0, 0, 0.1)',
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden'
             }}>
@@ -739,7 +745,7 @@ const FilterSidebar: React.FC<{
                   <CheckIcon className="w-3 h-3 text-white" />
                 )}
               </div>
-              <span className="text-sm text-neutral-700 select-none">{option}</span>
+              <span className="text-sm text-neutral-700 select-none truncate flex-1" style={{ minWidth: 0 }}>{option}</span>
             </motion.div>
           ))}
           {options.length > 5 && (
@@ -758,17 +764,26 @@ const FilterSidebar: React.FC<{
 
   return (
     <motion.div
-      initial={{ opacity: 1, x: -20 }}
+      initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ 
+        type: "spring",
+        stiffness: 400,
+        damping: 30,
+        mass: 0.5
+      }}
       whileHover={{ 
+        y: -4,
         boxShadow: '0 8px 32px rgba(139, 69, 19, 0.12), 0 16px 64px rgba(139, 69, 19, 0.06)',
         transition: { duration: 0.3, ease: "easeOut" }
       }}
-      className="w-full rounded-[24px] will-change-transform"
+      className="w-full rounded-[24px] will-change-transform overflow-hidden"
       style={{
-        background: '#FEFCFA',
-        boxShadow: '0 2px 12px rgba(139, 69, 19, 0.06), 0 4px 24px rgba(139, 69, 19, 0.03), 0 8px 48px rgba(0, 0, 0, 0.02)',
+        background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.95) 0%, rgba(254, 252, 250, 0.85) 100%)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 2px 12px rgba(139, 69, 19, 0.06), 0 4px 24px rgba(139, 69, 19, 0.03), 0 8px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         transform: 'translateZ(0)',
         backfaceVisibility: 'hidden',
         contain: 'layout style paint',
@@ -776,10 +791,13 @@ const FilterSidebar: React.FC<{
       }}
     >
       {/* Header */}
-      <div className="sticky top-0 p-6 z-10 border-b border-neutral-100"
+      <div className="sticky top-0 p-6 z-10 border-b border-neutral-100/60"
         style={{
-          background: 'rgba(254, 252, 250, 0.95)',
-          backdropFilter: 'blur(8px)',
+          background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
+          backdropFilter: 'blur(12px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 1px 0 rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         }}
       >
         <div className="mb-6">
@@ -794,18 +812,12 @@ const FilterSidebar: React.FC<{
         <div className="flex gap-3">
           <motion.button
             onClick={clearAllFilters}
-            className="px-4 py-2 text-sm font-medium rounded-[10px] border will-change-transform"
+            className="btn-outline px-4 py-2 text-sm font-medium rounded-[10px] will-change-transform"
             style={{
-              backgroundColor: 'transparent',
-              borderColor: '#059669',
-              color: '#059669',
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden'
             }}
             whileHover={{ 
-              backgroundColor: '#059669',
-              color: '#ffffff',
-              boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
               y: -1,
               transition: { type: "spring", stiffness: 400, damping: 25 }
             }}
@@ -818,7 +830,7 @@ const FilterSidebar: React.FC<{
       </div>
 
       {/* Filter Content */}
-      <div className="p-6 space-y-8 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 350px)' }}>
+      <div className="p-6 space-y-8 overflow-y-auto overflow-x-hidden" style={{ maxHeight: 'calc(100vh - 350px)' }}>
         {/* Price Range Slider */}
         <RangeSlider
           label="Monthly Payment"
@@ -921,25 +933,7 @@ const FilterSidebar: React.FC<{
         </div>
       </div>
 
-      {/* Custom CSS for smooth scrollbar */}
-      <style jsx>{`
-        /* Smooth custom scrollbar with theme colors */
-        .overflow-y-auto::-webkit-scrollbar {
-          width: 6px;
-        }
-        .overflow-y-auto::-webkit-scrollbar-track {
-          background: rgba(5, 150, 105, 0.05);
-          border-radius: 3px;
-        }
-        .overflow-y-auto::-webkit-scrollbar-thumb {
-          background: rgba(5, 150, 105, 0.3);
-          border-radius: 3px;
-          transition: all 0.2s ease;
-        }
-        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-          background: rgba(5, 150, 105, 0.5);
-        }
-      `}</style>
+
     </motion.div>
   )
 })
@@ -1053,16 +1047,7 @@ function InventoryPageContent() {
       <Header />
       
       <main className="pt-20">
-        {/* Subtle background pattern */}
-        <div 
-          className="fixed inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, #8B4513 1px, transparent 0)`,
-            backgroundSize: '32px 32px',
-            willChange: 'transform',
-            transform: `translateY(${scrollY * 0.5}px) translateZ(0)`,
-          }}
-        />
+
         
         {/* Page Header */}
         <section className="py-20 relative overflow-hidden z-10">
@@ -1107,10 +1092,120 @@ function InventoryPageContent() {
                 initial={{ opacity: 1, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full text-sm font-medium text-neutral-700 mb-8"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-neutral-700 mb-8 will-change-transform overflow-hidden group cursor-pointer relative"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.8) 0%, rgba(254, 252, 250, 0.65) 50%, rgba(254, 252, 250, 0.75) 100%)',
+                  backdropFilter: 'blur(20px) saturate(180%) brightness(110%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(110%)',
+                  border: '1px solid transparent',
+                  borderImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%) 1',
+                  boxShadow: `
+                    0 1px 3px rgba(139, 69, 19, 0.05),
+                    0 4px 12px rgba(139, 69, 19, 0.04),
+                    0 8px 24px rgba(139, 69, 19, 0.03),
+                    0 16px 48px rgba(0, 0, 0, 0.02),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                    inset 0 -1px 0 rgba(255, 255, 255, 0.05)
+                  `,
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden',
+                }}
+                whileHover={{ 
+                  scale: 1.015,
+                  y: -2,
+                  background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.9) 0%, rgba(254, 252, 250, 0.75) 50%, rgba(254, 252, 250, 0.85) 100%)',
+                  backdropFilter: 'blur(24px) saturate(200%) brightness(115%)',
+                  WebkitBackdropFilter: 'blur(24px) saturate(200%) brightness(115%)',
+                  boxShadow: `
+                    0 2px 6px rgba(139, 69, 19, 0.08),
+                    0 6px 16px rgba(139, 69, 19, 0.06),
+                    0 12px 32px rgba(139, 69, 19, 0.04),
+                    0 24px 64px rgba(0, 0, 0, 0.03),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                    inset 0 -1px 0 rgba(255, 255, 255, 0.08)
+                  `,
+                  transition: { type: "spring", stiffness: 400, damping: 25 }
+                }}
+                whileTap={{ scale: 0.995, y: 0 }}
+                animate={{
+                  boxShadow: [
+                    `0 1px 3px rgba(139, 69, 19, 0.05), 0 4px 12px rgba(139, 69, 19, 0.04), 0 8px 24px rgba(139, 69, 19, 0.03), 0 16px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.05)`,
+                    `0 2px 4px rgba(139, 69, 19, 0.06), 0 5px 14px rgba(139, 69, 19, 0.045), 0 10px 28px rgba(139, 69, 19, 0.035), 0 20px 56px rgba(0, 0, 0, 0.025), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.06)`,
+                    `0 1px 3px rgba(139, 69, 19, 0.05), 0 4px 12px rgba(139, 69, 19, 0.04), 0 8px 24px rgba(139, 69, 19, 0.03), 0 16px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.05)`
+                  ]
+                }}
+                transition={{
+                  boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                  type: "spring", 
+                  stiffness: 400, 
+                  damping: 25 
+                }}
               >
-                <span className="w-2 h-2 bg-emerald-600 rounded-full"></span>
-                200+ Premium Vehicles Available
+                {/* Subtle glass reflection */}
+                <motion.div 
+                  className="absolute inset-0 rounded-full opacity-30"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(255, 255, 255, 0.08) 100%)',
+                    pointerEvents: 'none'
+                  }}
+                  animate={{
+                    opacity: [0.25, 0.35, 0.25]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+
+                {/* Animated border gradient */}
+                <motion.div 
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3))',
+                    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    maskComposite: 'xor',
+                    WebkitMaskComposite: 'xor',
+                    padding: '1px',
+                    pointerEvents: 'none'
+                  }}
+                  animate={{
+                    background: [
+                      'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%)',
+                      'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.4) 100%)',
+                      'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%)'
+                    ]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+
+                <motion.div
+                  className="relative z-10"
+                  animate={{ 
+                    scale: [1, 1.05, 1],
+                    opacity: [0.8, 1, 0.8]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <span className="w-2 h-2 bg-emerald-600 rounded-full block drop-shadow-sm"
+                    style={{
+                      boxShadow: '0 0 6px rgba(5, 150, 105, 0.4)'
+                    }}
+                  ></span>
+                </motion.div>
+                
+                <span className="relative z-10 tracking-wide font-medium">
+                  200+ Premium Vehicles Available
+                </span>
               </motion.div>
               
               <h1 className="text-5xl lg:text-7xl font-black mb-8 leading-tight">
@@ -1124,26 +1219,50 @@ function InventoryPageContent() {
               </p>
               
               {/* Trust Indicators */}
-              <div className="flex flex-col sm:flex-row justify-center items-center gap-8 mt-12">
-                <div className="flex items-center gap-3 text-neutral-600">
-                  <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">✓</span>
-                  </div>
-                  <span className="font-medium">Certified Pre-Owned</span>
-                </div>
-                <div className="flex items-center gap-3 text-neutral-600">
-                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">$</span>
-                  </div>
-                  <span className="font-medium">Best Price Guarantee</span>
-                </div>
-                <div className="flex items-center gap-3 text-neutral-600">
-                  <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">🚚</span>
-                  </div>
-                  <span className="font-medium">Free Delivery</span>
-                </div>
-              </div>
+              <motion.div
+                className="flex justify-center items-center gap-8 mt-12"
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, amount: 0.5 }}
+                variants={{
+                  initial: { opacity: 0 },
+                  animate: { 
+                    opacity: 1,
+                    transition: { staggerChildren: 0.1 }
+                  }
+                }}
+              >
+                <motion.div
+                  variants={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                  }}
+                  className="flex items-center gap-3 text-neutral-600"
+                >
+                  <Shield className="w-5 h-5 text-emerald-600" />
+                  <span className="font-medium text-base">Brand New Vehicles</span>
+                </motion.div>
+                <motion.div
+                  variants={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                  }}
+                  className="flex items-center gap-3 text-neutral-600"
+                >
+                  <DollarSign className="w-5 h-5 text-orange-500" />
+                  <span className="font-medium text-base">Best Price Guarantee</span>
+                </motion.div>
+                <motion.div
+                  variants={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                  }}
+                  className="flex items-center gap-3 text-neutral-600"
+                >
+                  <Truck className="w-5 h-5 text-emerald-600" />
+                  <span className="font-medium text-base">Home Delivery</span>
+                </motion.div>
+              </motion.div>
             </motion.div>
           </div>
         </section>
@@ -1158,7 +1277,8 @@ function InventoryPageContent() {
                 style={{ 
                   top: '6rem',
                   maxHeight: 'calc(100vh - 8rem)',
-                  overflowY: 'auto'
+                  overflowY: 'auto',
+                  overflowX: 'hidden'
                 }}
               >
                 <FilterSidebar

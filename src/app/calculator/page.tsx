@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { motion, useAnimation, useInView, useMotionValue, useSpring, AnimatePresence, useReducedMotion, useTransform } from 'framer-motion'
 import { CalculatorIcon, CurrencyDollarIcon, ChartBarIcon, CheckCircleIcon, SparklesIcon, TrophyIcon, ShieldCheckIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline'
+import { TrendingUp, Shield, Zap } from 'lucide-react'
 import { animationVariants } from '@/lib/utils'
 
 /**
@@ -45,6 +46,18 @@ export default function CalculatorPage() {
   const [interestRate, setInterestRate] = useState(4.2)
   const [tradeinValue, setTradeinValue] = useState(0)
   const [calculationStep, setCalculationStep] = useState(0)
+  const [scrollY, setScrollY] = useState(0)
+
+  // Parallax scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      requestAnimationFrame(() => {
+        setScrollY(window.scrollY)
+      })
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Animation variants matching home page style
   const containerVariants = {
@@ -199,234 +212,244 @@ export default function CalculatorPage() {
     <>
       <Header />
       
-      <motion.main 
-        ref={containerRef}
-        className="relative pt-32 min-h-screen overflow-hidden"
-        style={{
-          background: `
-            radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
-            linear-gradient(135deg, #FEF7ED 0%, #FDF4E7 50%, #FCF0E1 100%)
-          `
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        variants={containerVariants}
-        initial="hidden"
-        animate={controls}
-      >
-        {/* Enhanced Background Layers */}
-        <motion.div
-          className="absolute inset-0 hero-atmosphere-layer-1"
-          style={{
-            x: backgroundX,
-            y: backgroundY,
-          }}
-        />
-        <motion.div
-          className="absolute inset-0 hero-atmosphere-layer-2"
-          style={{
-            x: useTransform(backgroundX, [0, 20], [0, -10]),
-            y: useTransform(backgroundY, [0, 10], [0, -5]),
-          }}
-        />
+      <main className="pt-20">
 
-        <div className="container mx-auto px-4 py-12 relative z-10">
-          {/* Hero Section */}
+        
+        {/* Page Header - Scaled to match inventory */}
+        <section className="py-20 relative overflow-hidden z-10">
+          {/* Animated background gradient */}
           <motion.div
-            variants={heroVariants}
-            className="text-center mb-20"
-          >
-            <motion.div
-              className="inline-flex items-center space-x-2 px-6 py-3 mb-8 glass luxury-card rounded-full"
-              whileHover={{ scale: 1.05, y: -2 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <SparklesIcon className="w-5 h-5 text-primary-emerald" />
-              <span className="text-sm font-medium text-emerald-700">Premium Savings Calculator</span>
-            </motion.div>
-
-            <motion.h1 
-              className="text-5xl lg:text-7xl font-bold text-neutral-800 mb-8 text-3d-luxury"
-              variants={itemVariants}
-            >
-              Calculate Your{' '}
-              <span className="gradient-text bg-gradient-to-r from-emerald-600 via-emerald-500 to-gold-primary bg-clip-text text-transparent">
-                Savings
-              </span>
-            </motion.h1>
-            
-            <motion.p 
-              className="text-xl lg:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed"
-              variants={itemVariants}
-            >
-              Discover your potential savings with our expert negotiation services. 
-              See exactly how much you could save on your dream vehicle.
-            </motion.p>
-          </motion.div>
-
-          <div className="max-w-8xl mx-auto grid grid-cols-1 xl:grid-cols-12 gap-12">
-            {/* Calculator Form - Enhanced */}
-            <motion.div
-              variants={itemVariants}
-              className="xl:col-span-5"
+            className="absolute inset-0 opacity-50"
+            animate={{
+              background: [
+                'radial-gradient(circle at 20% 50%, rgba(5, 150, 105, 0.1) 0%, transparent 50%)',
+                'radial-gradient(circle at 80% 50%, rgba(249, 115, 22, 0.1) 0%, transparent 50%)',
+                'radial-gradient(circle at 20% 50%, rgba(5, 150, 105, 0.1) 0%, transparent 50%)',
+              ],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            style={{
+              willChange: 'background',
+              transform: 'translateZ(0)',
+            }}
+          />
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div 
+              initial={{ opacity: 1, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.6,
+                type: "spring",
+                stiffness: 100,
+                damping: 15
+              }}
+              className="text-center mb-16"
+              style={{
+                transform: 'translateZ(0)',
+                willChange: 'transform, opacity',
+              }}
             >
               <motion.div
-                className="luxury-card p-8 lg:p-10 relative overflow-hidden"
-                whileHover={{ 
-                  y: -8,
-                  rotateY: 2,
-                  rotateX: 2,
-                  transition: { type: "spring", stiffness: 400, damping: 25 }
+                initial={{ opacity: 1, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full text-sm font-medium text-neutral-700 mb-8"
+              >
+                <SparklesIcon className="w-4 h-4 text-emerald-600" />
+                Premium Savings Calculator
+              </motion.div>
+              
+              <h1 className="text-5xl lg:text-7xl font-black mb-8 leading-tight">
+                <span className="text-neutral-800">Calculate Your </span>
+                <span className="text-emerald-600">Savings</span>
+              </h1>
+              
+              <p className="text-xl lg:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed">
+                Discover your potential savings with our expert negotiation services. 
+                See exactly how much you could save on your <span className="font-semibold text-emerald-600">dream vehicle</span>.
+              </p>
+              
+              {/* Trust Indicators matching inventory */}
+              <motion.div
+                className="flex justify-center items-center gap-8 mt-12"
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, amount: 0.5 }}
+                variants={{
+                  initial: { opacity: 0 },
+                  animate: { 
+                    opacity: 1,
+                    transition: { staggerChildren: 0.1 }
+                  }
                 }}
               >
-                {/* Animated background elements */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-gold-50/30 rounded-xl"
-                  animate={{
-                    scale: isHovering ? 1.02 : 1,
-                    opacity: isHovering ? 0.8 : 0.5
+                  variants={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
                   }}
-                  transition={{ duration: 0.4 }}
-                />
-                
+                  className="flex items-center gap-3 text-neutral-600"
+                >
+                  <TrendingUp className="w-5 h-5 text-emerald-600" />
+                  <span className="font-medium text-base">Average Savings</span>
+                </motion.div>
+                <motion.div
+                  variants={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                  }}
+                  className="flex items-center gap-3 text-neutral-600"
+                >
+                  <Shield className="w-5 h-5 text-orange-500" />
+                  <span className="font-medium text-base">Zero Risk Guarantee</span>
+                </motion.div>
+                <motion.div
+                  variants={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                  }}
+                  className="flex items-center gap-3 text-neutral-600"
+                >
+                  <Zap className="w-5 h-5 text-emerald-600" />
+                  <span className="font-medium text-base">Instant Results</span>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        <div className="container mx-auto px-4 py-12 relative z-10">
+
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Calculator Form - Scaled Down */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <motion.div
+                className="glass p-6 lg:p-8 relative overflow-hidden rounded-2xl"
+                whileHover={{ 
+                  y: -4,
+                  transition: { type: "spring", stiffness: 300, damping: 25 }
+                }}
+              >
                 <div className="relative z-10">
-                  <div className="flex items-center space-x-4 mb-10">
-                    <motion.div
-                      className="p-3 bg-gradient-emerald rounded-xl shadow-glow"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    >
-                      <CalculatorIcon className="w-8 h-8 text-white" />
-                    </motion.div>
-                    <h2 className="text-3xl font-bold text-neutral-800 text-3d-luxury">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="p-2 bg-emerald-600 rounded-lg">
+                      <CalculatorIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-xl font-bold text-neutral-800">
                       Vehicle Calculator
                     </h2>
                   </div>
 
-                  <div className="space-y-8">
+                  <div className="space-y-6">
                     {/* Vehicle Price */}
-                    <motion.div
-                      variants={itemVariants}
-                      className="space-y-4"
-                    >
-                      <label className="block text-lg font-semibold text-neutral-700 mb-3">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-neutral-700">
                         Vehicle Price
                       </label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 text-lg font-medium">$</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 text-sm">$</span>
                         <input
                           type="number"
                           value={vehiclePrice}
                           onChange={(e) => setVehiclePrice(Number(e.target.value))}
-                          className="w-full pl-10 pr-6 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-semibold bg-white/80 backdrop-blur-sm"
+                          className="w-full pl-8 pr-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-sm bg-white"
                         />
                       </div>
-                      <motion.input
+                      <input
                         type="range"
                         min="25000"
                         max="250000"
                         step="5000"
                         value={vehiclePrice}
                         onChange={(e) => setVehiclePrice(Number(e.target.value))}
-                        className="w-full mt-3 accent-emerald-500 h-3 rounded-full appearance-none bg-gradient-to-r from-emerald-100 to-emerald-200"
-                        whileHover={{ scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="w-full accent-emerald-500 h-2 rounded-full"
                       />
-                      <div className="flex justify-between text-sm text-neutral-500 font-medium">
+                      <div className="flex justify-between text-xs text-neutral-500">
                         <span>$25k</span>
                         <span>$250k</span>
                       </div>
-                    </motion.div>
+                    </div>
 
                     {/* Down Payment */}
-                    <motion.div
-                      variants={itemVariants}
-                      className="space-y-4"
-                    >
-                      <label className="block text-lg font-semibold text-neutral-700 mb-3">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-neutral-700">
                         Down Payment
                       </label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 text-lg font-medium">$</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 text-sm">$</span>
                         <input
                           type="number"
                           value={downPayment}
                           onChange={(e) => setDownPayment(Number(e.target.value))}
-                          className="w-full pl-10 pr-6 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-semibold bg-white/80 backdrop-blur-sm"
+                          className="w-full pl-8 pr-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-sm bg-white"
                         />
                       </div>
-                      <motion.input
+                      <input
                         type="range"
                         min="0"
                         max={vehiclePrice * 0.4}
                         step="1000"
                         value={downPayment}
                         onChange={(e) => setDownPayment(Number(e.target.value))}
-                        className="w-full mt-3 accent-emerald-500 h-3 rounded-full appearance-none bg-gradient-to-r from-emerald-100 to-emerald-200"
-                        whileHover={{ scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="w-full accent-emerald-500 h-2 rounded-full"
                       />
-                      <div className="flex justify-between text-sm text-neutral-500 font-medium">
+                      <div className="flex justify-between text-xs text-neutral-500">
                         <span>$0</span>
                         <span>{formatCurrency(vehiclePrice * 0.4)}</span>
                       </div>
-                    </motion.div>
+                    </div>
 
                     {/* Trade-in Value */}
-                    <motion.div
-                      variants={itemVariants}
-                      className="space-y-4"
-                    >
-                      <label className="block text-lg font-semibold text-neutral-700 mb-3">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-neutral-700">
                         Trade-in Value (Optional)
                       </label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 text-lg font-medium">$</span>
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 text-sm">$</span>
                         <input
                           type="number"
                           value={tradeinValue}
                           onChange={(e) => setTradeinValue(Number(e.target.value))}
-                          className="w-full pl-10 pr-6 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-semibold bg-white/80 backdrop-blur-sm"
+                          className="w-full pl-8 pr-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-sm bg-white"
                         />
                       </div>
-                    </motion.div>
+                    </div>
 
                     {/* Term Selection */}
-                    <motion.div
-                      variants={itemVariants}
-                      className="space-y-4"
-                    >
-                      <label className="block text-lg font-semibold text-neutral-700 mb-3">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-neutral-700">
                         Lease/Loan Term
                       </label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-2">
                         {[24, 36, 48, 60].map((term) => (
-                          <motion.button
+                          <button
                             key={term}
                             onClick={() => setLeaseTerm(term)}
-                            className={`p-4 rounded-xl border-2 transition-all duration-300 font-semibold ${
+                            className={`p-3 rounded-lg border transition-all duration-200 text-sm font-medium ${
                               leaseTerm === term
                                 ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                : 'border-neutral-200 bg-white/80 text-neutral-600 hover:border-emerald-300'
+                                : 'border-neutral-300 bg-white text-neutral-600 hover:border-emerald-300'
                             }`}
-                            whileHover={{ scale: 1.02, y: -2 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
                           >
                             {term} Months
-                          </motion.button>
+                          </button>
                         ))}
                       </div>
-                    </motion.div>
+                    </div>
 
                     {/* Interest Rate */}
-                    <motion.div
-                      variants={itemVariants}
-                      className="space-y-4"
-                    >
-                      <label className="block text-lg font-semibold text-neutral-700 mb-3">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-neutral-700">
                         Interest Rate (%)
                       </label>
                       <div className="relative">
@@ -435,216 +458,155 @@ export default function CalculatorPage() {
                           step="0.1"
                           value={interestRate}
                           onChange={(e) => setInterestRate(Number(e.target.value))}
-                          className="w-full px-6 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-semibold bg-white/80 backdrop-blur-sm"
+                          className="w-full pl-4 pr-8 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-sm bg-white"
                         />
-                        <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-500 text-lg font-medium">%</span>
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-500 text-sm">%</span>
                       </div>
-                      <motion.input
+                      <input
                         type="range"
                         min="1"
                         max="12"
                         step="0.1"
                         value={interestRate}
                         onChange={(e) => setInterestRate(Number(e.target.value))}
-                        className="w-full mt-3 accent-emerald-500 h-3 rounded-full appearance-none bg-gradient-to-r from-emerald-100 to-emerald-200"
-                        whileHover={{ scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="w-full accent-emerald-500 h-2 rounded-full"
                       />
-                      <div className="flex justify-between text-sm text-neutral-500 font-medium">
+                      <div className="flex justify-between text-xs text-neutral-500">
                         <span>1%</span>
                         <span>12%</span>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
             </motion.div>
 
-            {/* Results Section - Enhanced */}
+            {/* Results Section - Scaled Down */}
             <motion.div
-              variants={itemVariants}
-              className="xl:col-span-7 space-y-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="space-y-6"
             >
               {/* Savings Highlight */}
               <motion.div
-                className="luxury-card p-8 lg:p-10 relative overflow-hidden"
+                className="glass p-6 lg:p-8 relative overflow-hidden rounded-2xl"
                 whileHover={{ 
-                  y: -8,
-                  scale: 1.02,
-                  transition: { type: "spring", stiffness: 400, damping: 25 }
+                  y: -4,
+                  transition: { type: "spring", stiffness: 300, damping: 25 }
                 }}
               >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-emerald opacity-5 rounded-xl"
-                  animate={{
-                    scale: isHovering ? 1.1 : 1,
-                    opacity: isHovering ? 0.1 : 0.05
-                  }}
-                  transition={{ duration: 0.4 }}
-                />
-                
                 <div className="relative z-10">
-                  <div className="flex items-center space-x-4 mb-8">
-                    <motion.div
-                      className="p-3 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl shadow-glow"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    >
-                      <CurrencyDollarIcon className="w-8 h-8 text-white" />
-                    </motion.div>
-                    <h3 className="text-3xl font-bold text-neutral-800 text-3d-luxury">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="p-2 bg-emerald-600 rounded-lg">
+                      <CurrencyDollarIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-neutral-800">
                       Your Potential Savings
                     </h3>
                   </div>
                   
-                  <div className="text-center p-8 bg-gradient-emerald rounded-2xl text-white mb-8 relative overflow-hidden shadow-luxury">
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                      animate={{
-                        x: ['-100%', '100%'],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "linear"
-                      }}
-                    />
-                    <motion.div 
-                      className="text-6xl font-bold mb-3"
-                      initial={{ scale: 0.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.2 }}
-                    >
+                  <div className="text-center p-6 bg-emerald-600 rounded-xl text-white mb-6">
+                    <div className="text-4xl font-bold mb-2">
                       {formatCurrency(savings.totalSavings)}
-                    </motion.div>
-                    <div className="text-emerald-100 text-xl font-medium">Total Estimated Savings</div>
+                    </div>
+                    <div className="text-emerald-100 text-sm">Total Estimated Savings</div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <motion.div 
-                      className="text-center p-6 glass rounded-xl"
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    >
-                      <div className="text-2xl font-bold text-emerald-600 mb-2">{formatCurrency(savings.vehicleSavings)}</div>
-                      <div className="text-sm text-neutral-600 font-medium">Vehicle Negotiation</div>
-                    </motion.div>
-                    <motion.div 
-                      className="text-center p-6 glass rounded-xl"
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    >
-                      <div className="text-2xl font-bold text-gold-primary mb-2">{formatCurrency(savings.feesSaved)}</div>
-                      <div className="text-sm text-neutral-600 font-medium">Fees & Documentation</div>
-                    </motion.div>
-                    <motion.div 
-                      className="text-center p-6 glass rounded-xl"
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    >
-                      <div className="text-2xl font-bold text-neutral-700 mb-2">{Math.round((savings.totalSavings / vehiclePrice) * 100)}%</div>
-                      <div className="text-sm text-neutral-600 font-medium">Total Discount</div>
-                    </motion.div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="text-center p-4 bg-white rounded-lg border border-neutral-200">
+                      <div className="text-lg font-bold text-emerald-600 mb-1">{formatCurrency(savings.vehicleSavings)}</div>
+                      <div className="text-xs text-neutral-600">Vehicle Negotiation</div>
+                    </div>
+                    <div className="text-center p-4 bg-white rounded-lg border border-neutral-200">
+                      <div className="text-lg font-bold text-orange-500 mb-1">{formatCurrency(savings.feesSaved)}</div>
+                      <div className="text-xs text-neutral-600">Fees & Documentation</div>
+                    </div>
+                    <div className="text-center p-4 bg-white rounded-lg border border-neutral-200">
+                      <div className="text-lg font-bold text-neutral-700 mb-1">{Math.round((savings.totalSavings / vehiclePrice) * 100)}%</div>
+                      <div className="text-xs text-neutral-600">Total Discount</div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
 
               {/* Payment Comparison */}
               <motion.div
-                className="luxury-card p-8 lg:p-10"
+                className="glass p-6 lg:p-8 rounded-2xl"
                 whileHover={{ 
-                  y: -8,
-                  transition: { type: "spring", stiffness: 400, damping: 25 }
+                  y: -4,
+                  transition: { type: "spring", stiffness: 300, damping: 25 }
                 }}
-                variants={itemVariants}
               >
-                <div className="flex items-center space-x-4 mb-8">
-                  <motion.div
-                    className="p-3 bg-gradient-to-r from-gold-primary to-gold-secondary rounded-xl shadow-glow"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  >
-                    <ChartBarIcon className="w-8 h-8 text-white" />
-                  </motion.div>
-                  <h3 className="text-3xl font-bold text-neutral-800 text-3d-luxury">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="p-2 bg-orange-500 rounded-lg">
+                    <ChartBarIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-neutral-800">
                     Payment Options
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <motion.div 
-                    className="p-6 border-2 border-emerald-200 rounded-xl bg-emerald-50/50"
-                    whileHover={{ scale: 1.02, y: -5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  >
-                    <h4 className="text-xl font-bold text-emerald-700 mb-4">Lease Payment</h4>
-                    <div className="text-4xl font-bold text-emerald-600 mb-2">{formatCurrency(leasePayment)}</div>
-                    <div className="text-emerald-600 font-medium">per month</div>
-                    <div className="mt-4 text-sm text-neutral-600">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 border border-emerald-200 rounded-lg bg-emerald-50">
+                    <h4 className="text-lg font-bold text-emerald-700 mb-3">Lease Payment</h4>
+                    <div className="text-3xl font-bold text-emerald-600 mb-1">{formatCurrency(leasePayment)}</div>
+                    <div className="text-emerald-600 text-sm mb-3">per month</div>
+                    <div className="text-xs text-neutral-600 space-y-1">
                       <div>• Lower monthly payments</div>
                       <div>• Latest technology</div>
                       <div>• Warranty coverage</div>
                     </div>
-                  </motion.div>
+                  </div>
 
-                  <motion.div 
-                    className="p-6 border-2 border-neutral-200 rounded-xl bg-neutral-50/50"
-                    whileHover={{ scale: 1.02, y: -5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  >
-                    <h4 className="text-xl font-bold text-neutral-700 mb-4">Loan Payment</h4>
-                    <div className="text-4xl font-bold text-neutral-600 mb-2">{formatCurrency(loanPayment)}</div>
-                    <div className="text-neutral-600 font-medium">per month</div>
-                    <div className="mt-4 text-sm text-neutral-600">
+                  <div className="p-4 border border-neutral-200 rounded-lg bg-neutral-50">
+                    <h4 className="text-lg font-bold text-neutral-700 mb-3">Loan Payment</h4>
+                    <div className="text-3xl font-bold text-neutral-600 mb-1">{formatCurrency(loanPayment)}</div>
+                    <div className="text-neutral-600 text-sm mb-3">per month</div>
+                    <div className="text-xs text-neutral-600 space-y-1">
                       <div>• Build equity</div>
                       <div>• No mileage limits</div>
                       <div>• Full ownership</div>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               </motion.div>
 
               {/* Benefits Section */}
               <motion.div
-                className="luxury-card p-8 lg:p-10"
+                className="glass p-6 lg:p-8 rounded-2xl"
                 whileHover={{ 
-                  y: -8,
-                  transition: { type: "spring", stiffness: 400, damping: 25 }
+                  y: -4,
+                  transition: { type: "spring", stiffness: 300, damping: 25 }
                 }}
-                variants={itemVariants}
               >
-                <h3 className="text-3xl font-bold text-neutral-800 text-3d-luxury mb-8">
+                <h3 className="text-xl font-bold text-neutral-800 mb-6">
                   Why Choose Mint Lease?
                 </h3>
                 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {benefits.map((benefit, index) => (
-                    <motion.div
+                    <div
                       key={index}
-                      className="flex items-start space-x-6 p-6 glass rounded-xl"
-                      variants={itemVariants}
-                      whileHover={{ scale: 1.02, x: 10 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className="flex items-start space-x-4 p-4 bg-white rounded-lg border border-neutral-200"
                     >
-                      <motion.div 
-                        className="w-16 h-16 bg-gradient-emerald rounded-xl flex items-center justify-center text-white shadow-glow"
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      >
-                        {benefit.icon}
-                      </motion.div>
-                      <div className="flex-1">
-                        <h4 className="text-xl font-bold text-neutral-800 mb-2">
-                          {benefit.title}
-                        </h4>
-                        <p className="text-neutral-600 mb-3 leading-relaxed">
-                          {benefit.description}
-                        </p>
-                        <div className="inline-flex items-center px-4 py-2 bg-emerald-100 rounded-full">
-                          <span className="text-sm font-semibold text-emerald-700">{benefit.value}</span>
+                      <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white">
+                        <div className="w-5 h-5">
+                          {benefit.icon}
                         </div>
                       </div>
-                    </motion.div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-bold text-neutral-800 mb-1">
+                          {benefit.title}
+                        </h4>
+                        <p className="text-neutral-600 text-sm mb-2">
+                          {benefit.description}
+                        </p>
+                        <div className="inline-flex items-center px-3 py-1 bg-emerald-100 rounded-full">
+                          <span className="text-xs font-semibold text-emerald-700">{benefit.value}</span>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </motion.div>
@@ -652,39 +614,26 @@ export default function CalculatorPage() {
               {/* CTA Section */}
               <motion.div
                 className="text-center"
-                variants={itemVariants}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <motion.button
-                  className="inline-flex items-center space-x-3 px-12 py-6 bg-gradient-emerald text-white text-xl font-bold rounded-2xl shadow-luxury"
-                  whileHover={{ 
-                    scale: 1.05, 
-                    y: -5,
-                    boxShadow: "0 35px 60px -12px rgba(0, 0, 0, 0.35), 0 0 30px rgba(16, 185, 129, 0.4)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                <button
+                  className="inline-flex items-center space-x-3 px-8 py-4 bg-emerald-600 text-white text-lg font-bold rounded-xl hover:bg-emerald-700 transition-colors duration-200"
                   onClick={() => window.location.href = '/booking'}
                 >
                   <span>Start Saving Today</span>
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    →
-                  </motion.div>
-                </motion.button>
+                  <span>→</span>
+                </button>
                 
-                <motion.p 
-                  className="mt-6 text-neutral-600 text-lg"
-                  variants={itemVariants}
-                >
+                <p className="mt-4 text-neutral-600 text-sm">
                   Ready to save {formatCurrency(savings.totalSavings)} on your next vehicle?
-                </motion.p>
+                </p>
               </motion.div>
             </motion.div>
           </div>
         </div>
-      </motion.main>
+      </main>
       
       <Footer />
     </>

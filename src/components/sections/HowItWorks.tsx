@@ -140,7 +140,7 @@ const HowItWorks: React.FC = () => {
         "Paperwork handled for you",
         "Financing rate optimization",
         "Delivery to your location",
-        "Post-purchase support"
+        "Post-delivery support"
       ]
     }
   ];
@@ -185,14 +185,7 @@ const HowItWorks: React.FC = () => {
         background: 'linear-gradient(180deg, #FEF7ED 0%, #FEFCFA 50%, #FEF7ED 100%)',
       }}
     >
-      {/* Subtle background pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, #8B4513 1px, transparent 0)`,
-          backgroundSize: '32px 32px',
-        }}
-      />
+
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}

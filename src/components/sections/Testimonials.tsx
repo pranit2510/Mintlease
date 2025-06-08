@@ -70,7 +70,7 @@ const testimonials: TestimonialProps[] = [
     vehicle: "2023 Lexus RX",
     savings: 6300,
     rating: 5,
-    testimonial: "Outstanding service! They found my dream Lexus RX and saved me thousands. The team kept me informed throughout the entire process. This is how car buying should be done.",
+    testimonial: "Outstanding service! They found my dream Lexus RX and saved me thousands. The team kept me informed throughout the entire process. This is how car leasing should be done.",
     image: "/testimonials/lisa-wang.jpg",
     verified: true
   }
@@ -176,7 +176,7 @@ const TestimonialCard: React.FC<{
         {/* Vehicle Info */}
         <div className="mt-6 pt-6 border-t border-neutral-200">
           <div className="text-center">
-            <span className="text-neutral-600 text-sm">Purchased: </span>
+            <span className="text-neutral-600 text-sm">Leased: </span>
             <span className="font-semibold text-neutral-800">{testimonial.vehicle}</span>
           </div>
         </div>
@@ -233,14 +233,7 @@ const Testimonials: React.FC = () => {
         background: 'linear-gradient(180deg, #FEF7ED 0%, #FEFCFA 50%, #FEF7ED 100%)',
       }}
     >
-      {/* Subtle background pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, #8B4513 1px, transparent 0)`,
-          backgroundSize: '32px 32px',
-        }}
-      />
+
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}

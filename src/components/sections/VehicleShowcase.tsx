@@ -204,14 +204,7 @@ export const VehicleShowcase: React.FC = () => {
         background: 'linear-gradient(180deg, #FEF7ED 0%, #FEFCFA 50%, #FEF7ED 100%)',
       }}
     >
-      {/* Subtle background pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, #8B4513 1px, transparent 0)`,
-          backgroundSize: '32px 32px',
-        }}
-      />
+
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
@@ -224,10 +217,116 @@ export const VehicleShowcase: React.FC = () => {
         >
           <motion.div
             variants={animationVariants.fadeIn}
-            className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full text-sm font-medium text-neutral-700 mb-8 shadow-sm"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-neutral-700 mb-8 will-change-transform overflow-hidden group cursor-pointer relative"
+            style={{
+              background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.8) 0%, rgba(254, 252, 250, 0.65) 50%, rgba(254, 252, 250, 0.75) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%) brightness(110%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%) brightness(110%)',
+              border: '1px solid transparent',
+              borderImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%) 1',
+              boxShadow: `
+                0 1px 3px rgba(139, 69, 19, 0.05),
+                0 4px 12px rgba(139, 69, 19, 0.04),
+                0 8px 24px rgba(139, 69, 19, 0.03),
+                0 16px 48px rgba(0, 0, 0, 0.02),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.05)
+              `,
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden',
+            }}
+            whileHover={{ 
+              scale: 1.015,
+              y: -2,
+              background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.9) 0%, rgba(254, 252, 250, 0.75) 50%, rgba(254, 252, 250, 0.85) 100%)',
+              backdropFilter: 'blur(24px) saturate(200%) brightness(115%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(200%) brightness(115%)',
+              boxShadow: `
+                0 2px 6px rgba(139, 69, 19, 0.08),
+                0 6px 16px rgba(139, 69, 19, 0.06),
+                0 12px 32px rgba(139, 69, 19, 0.04),
+                0 24px 64px rgba(0, 0, 0, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.08)
+              `,
+              transition: { type: "spring", stiffness: 400, damping: 25 }
+            }}
+            whileTap={{ scale: 0.995, y: 0 }}
+            animate={{
+              boxShadow: [
+                `0 1px 3px rgba(139, 69, 19, 0.05), 0 4px 12px rgba(139, 69, 19, 0.04), 0 8px 24px rgba(139, 69, 19, 0.03), 0 16px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.05)`,
+                `0 2px 4px rgba(139, 69, 19, 0.06), 0 5px 14px rgba(139, 69, 19, 0.045), 0 10px 28px rgba(139, 69, 19, 0.035), 0 20px 56px rgba(0, 0, 0, 0.025), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.06)`,
+                `0 1px 3px rgba(139, 69, 19, 0.05), 0 4px 12px rgba(139, 69, 19, 0.04), 0 8px 24px rgba(139, 69, 19, 0.03), 0 16px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.05)`
+              ]
+            }}
+            transition={{
+              boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+              type: "spring", 
+              stiffness: 400, 
+              damping: 25 
+            }}
           >
-            <Zap className="w-4 h-4 text-orange-500" />
-            Limited Time Offers
+            {/* Subtle glass reflection */}
+            <motion.div 
+              className="absolute inset-0 rounded-full opacity-30"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(255, 255, 255, 0.08) 100%)',
+                pointerEvents: 'none'
+              }}
+              animate={{
+                opacity: [0.25, 0.35, 0.25]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+
+            {/* Animated border gradient */}
+            <motion.div 
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3))',
+                mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                maskComposite: 'xor',
+                WebkitMaskComposite: 'xor',
+                padding: '1px',
+                pointerEvents: 'none'
+              }}
+              animate={{
+                background: [
+                  'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%)',
+                  'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.4) 100%)',
+                  'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3) 100%)'
+                ]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            
+            <motion.div
+              className="relative z-10"
+              animate={{ 
+                rotate: [0, 3, -3, 0],
+                scale: [1, 1.02, 0.98, 1]
+              }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <Zap className="w-4 h-4 text-orange-500 drop-shadow-sm" />
+            </motion.div>
+            
+            <span className="relative z-10 tracking-wide font-medium">
+              Limited Time Offers
+            </span>
           </motion.div>
           
           <motion.h2

@@ -1,0 +1,648 @@
+MINT LEASE V4 - COMPLETE DESIGN SYSTEM REFERENCE
+==================================================
+
+This document contains the comprehensive design system used across the Mint Lease v4 
+website, including homepage and inventory page. Use this as reference for consistent 
+styling across all components.
+
+═══════════════════════════════════════════════════════════════════════════════════
+📱 CORE DESIGN PHILOSOPHY
+═══════════════════════════════════════════════════════════════════════════════════
+
+• Premium Automotive Luxury Experience
+• 120fps Optimized Animations
+• Mobile-First Responsive Design  
+• Glassmorphism + 3D Depth Effects
+• Emerald-Gold Color Harmony
+• Light Theme with Warm Neutral Base
+
+═══════════════════════════════════════════════════════════════════════════════════
+🎨 COLOR PALETTE & THEME
+═══════════════════════════════════════════════════════════════════════════════════
+
+PRIMARY COLORS (Luxury Emerald Theme):
+-------------------------------------
+--primary-emerald: #047857         /* Main brand color - trust, premium */
+--primary-emerald-light: #10b981    /* Hover states, accents */
+--primary-emerald-dark: #065f46     /* Deep authority, shadows */
+
+LUXURY ACCENTS (Premium Gold):
+-----------------------------
+--gold-primary: #f59e0b            /* Premium highlights */
+--gold-secondary: #fbbf24          /* Warm accent touches */
+--gold-light: #fef3c7              /* Subtle gold backgrounds */
+
+NEUTRAL PALETTE (Warm Light Theme):
+----------------------------------
+--neutral-50: #FEF7ED              /* Primary background - warm white */
+--neutral-100: #FDF4E7             /* Section backgrounds */
+--neutral-200: #FCF0E1             /* Card backgrounds */
+--neutral-300: #E7D5C7             /* Subtle borders, disabled */
+--neutral-400: #C9B29B             /* Placeholder text */
+--neutral-500: #737373             /* Secondary text */
+--neutral-600: #525252             /* Body text */
+--neutral-700: #404040             /* Emphasized text */
+--neutral-800: #262626             /* Primary text */
+--neutral-900: #171717             /* Headings, strong text */
+
+GRADIENTS:
+----------
+--gradient-primary: linear-gradient(135deg, #047857 0%, #065f46 100%)
+--gradient-luxury: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)
+--gradient-emerald: linear-gradient(135deg, #10b981 0%, #047857 50%, #065f46 100%)
+--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)
+--gradient-radial: radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 70%)
+
+═══════════════════════════════════════════════════════════════════════════════════
+🖋️ TYPOGRAPHY SYSTEM
+═══════════════════════════════════════════════════════════════════════════════════
+
+FONT STACK:
+-----------
+Primary Font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+Monospace: 'JetBrains Mono', 'Fira Code', monospace
+
+HEADING CLASSES:
+---------------
+.heading-luxury {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #047857, #065f46);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-3d-luxury {
+  text-shadow: 
+    0 1px 0 rgba(255,255,255,0.4),
+    0 2px 4px rgba(4, 120, 87, 0.3),
+    0 4px 8px rgba(4, 120, 87, 0.2),
+    0 8px 16px rgba(4, 120, 87, 0.1);
+}
+
+.text-shadow-luxury-emerald {
+  text-shadow: 
+    0 2px 4px rgba(4, 120, 87, 0.3),
+    0 4px 8px rgba(4, 120, 87, 0.2),
+    0 8px 16px rgba(4, 120, 87, 0.1),
+    0 16px 32px rgba(4, 120, 87, 0.05);
+}
+
+SCALE:
+------
+text-xs: 0.75rem (12px)    /* Small labels */
+text-sm: 0.875rem (14px)   /* Secondary text */
+text-base: 1rem (16px)     /* Body text */
+text-lg: 1.125rem (18px)   /* Large body */
+text-xl: 1.25rem (20px)    /* Small headings */
+text-2xl: 1.5rem (24px)    /* Section headings */
+text-3xl: 1.875rem (30px)  /* Page headings */
+text-4xl: 2.25rem (36px)   /* Large headings */
+text-5xl: 3rem (48px)      /* Hero headings */
+text-6xl: 3.75rem (60px)   /* Display headings */
+text-7xl: 4.5rem (72px)    /* Hero display */
+
+FONT WEIGHTS:
+------------
+font-light: 300
+font-normal: 400
+font-medium: 500
+font-semibold: 600
+font-bold: 700
+font-extrabold: 800
+font-black: 900
+
+═══════════════════════════════════════════════════════════════════════════════════
+🪟 GLASSMORPHISM & DEPTH EFFECTS
+═══════════════════════════════════════════════════════════════════════════════════
+
+GLASSMORPHISM VARIABLES:
+-----------------------
+--glass-bg: rgba(255, 255, 255, 0.1)
+--glass-bg-strong: rgba(255, 255, 255, 0.15)
+--glass-border: rgba(255, 255, 255, 0.2)
+--glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37)
+--backdrop-blur: blur(20px)
+--backdrop-blur-strong: blur(40px)
+
+GLASSMORPHISM CLASSES:
+---------------------
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--backdrop-blur-strong);
+  -webkit-backdrop-filter: var(--backdrop-blur-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+LUXURY CARD SYSTEM:
+------------------
+.luxury-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.1));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-xl);
+  box-shadow: 
+    0 8px 16px -4px rgba(0, 0, 0, 0.15),
+    0 20px 40px -8px rgba(0, 0, 0, 0.2),
+    0 40px 64px -16px rgba(0, 0, 0, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+  transform-style: preserve-3d;
+}
+
+.luxury-card:hover {
+  transform: translateY(-12px) translateZ(20px);
+  box-shadow: 
+    0 20px 32px -8px rgba(0, 0, 0, 0.2),
+    0 40px 64px -16px rgba(0, 0, 0, 0.25),
+    0 60px 80px -20px rgba(0, 0, 0, 0.15),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+3D DEPTH SYSTEM:
+---------------
+.depth-3d {
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    0 16px 24px rgba(0, 0, 0, 0.06);
+  transform-style: preserve-3d;
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.depth-3d:hover {
+  transform: translateY(-8px) rotateX(5deg) rotateY(2deg);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    0 24px 48px rgba(0, 0, 0, 0.12),
+    0 48px 80px rgba(0, 0, 0, 0.08);
+}
+
+═══════════════════════════════════════════════════════════════════════════════════
+🎭 SHADOWS & LIGHTING SYSTEM
+═══════════════════════════════════════════════════════════════════════════════════
+
+LUXURY SHADOW LAYERS:
+--------------------
+--shadow-luxury: 0 25px 50px -12px rgba(0, 0, 0, 0.25)
+--shadow-floating: 0 20px 25px -5px rgba(0, 0, 0, 0.1)
+--shadow-hover: 0 35px 60px -12px rgba(0, 0, 0, 0.35)
+--shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)
+--shadow-glow: 0 0 20px rgba(16, 185, 129, 0.3)
+
+SHADOW UTILITY CLASSES:
+----------------------
+.shadow-glow { box-shadow: var(--shadow-glow); }
+.shadow-luxury { box-shadow: var(--shadow-luxury); }
+.shadow-hover { box-shadow: var(--shadow-hover); }
+
+3D SHADOW COMPONENTS:
+--------------------
+.shadow-3d {
+  box-shadow: 
+    0 6px 16px -3px rgba(0, 0, 0, 0.15),
+    0 12px 32px -6px rgba(0, 0, 0, 0.1),
+    0 24px 48px -12px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-3d-hover {
+  box-shadow: 
+    0 8px 20px -3px rgba(0, 0, 0, 0.2),
+    0 16px 36px -6px rgba(0, 0, 0, 0.15),
+    0 32px 60px -12px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-3d-inset {
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+═══════════════════════════════════════════════════════════════════════════════════
+🔘 BUTTON SYSTEM
+═══════════════════════════════════════════════════════════════════════════════════
+
+BUTTON VARIANTS:
+---------------
+
+PRIMARY (Emerald Gradient):
+.btn-primary {
+  background: linear-gradient(135deg, #10b981 0%, #047857 50%, #065f46 100%);
+  color: white;
+  border: 1px solid rgba(6, 95, 70, 0.2);
+  box-shadow: 
+    0 6px 16px -3px rgba(4, 120, 87, 0.3),
+    0 12px 32px -6px rgba(4, 120, 87, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+SECONDARY (Gold Gradient):
+.btn-secondary {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  color: #1f2937;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+OUTLINE (Glass Border):
+.btn-outline {
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  border: 2px solid rgba(4, 120, 87, 0.3);
+  color: #047857;
+}
+
+LUXURY (Premium Glass):
+.btn-luxury {
+  background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(254,243,199,0.2));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #1f2937;
+}
+
+BUTTON SIZES:
+------------
+.btn-sm: px-3 py-1.5 text-sm rounded-lg
+.btn-md: px-4 py-2 text-base rounded-xl
+.btn-lg: px-6 py-3 text-lg rounded-xl
+.btn-xl: px-8 py-4 text-xl rounded-2xl
+
+BUTTON HOVER EFFECTS:
+--------------------
+hover:scale-[1.02] hover:translate-y-[-2px]
+active:scale-[0.98] active:translate-y-[0px]
+
+═══════════════════════════════════════════════════════════════════════════════════
+🎯 FRAMER MOTION ANIMATIONS
+═══════════════════════════════════════════════════════════════════════════════════
+
+SPRING CONFIGURATIONS (120FPS Optimized):
+-----------------------------------------
+
+Ultra-Smooth Config:
+{
+  stiffness: 400,
+  damping: 28,
+  mass: 0.15,
+  restSpeed: 0.01,
+  restDelta: 0.001
+}
+
+Floating Return Config:
+{
+  stiffness: 350,
+  damping: 32,
+  mass: 0.12,
+  restSpeed: 0.005,
+  restDelta: 0.0005
+}
+
+Visual Ultra Config:
+{
+  stiffness: 280,
+  damping: 30,
+  mass: 0.18,
+  restSpeed: 0.008,
+  restDelta: 0.0008
+}
+
+EASING FUNCTIONS:
+----------------
+--ease-luxury: cubic-bezier(0.4, 0.0, 0.2, 1)
+--ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55)
+--ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94)
+
+TRANSITION SPEEDS:
+-----------------
+--transition-fast: 0.15s var(--ease-luxury)
+--transition-medium: 0.3s var(--ease-luxury)
+--transition-slow: 0.5s var(--ease-luxury)
+
+COMMON MOTION VARIANTS:
+----------------------
+
+Button Hover:
+{
+  scale: 1.02,
+  y: -2,
+  rotateX: 2,
+  rotateY: 1,
+  transition: { type: "spring", stiffness: 400, damping: 17 }
+}
+
+Card Hover:
+{
+  scale: 1.01,
+  y: -8,
+  rotateX: 3,
+  transition: { type: "spring", stiffness: 300, damping: 20 }
+}
+
+Fade In Up:
+{
+  initial: { opacity: 0, y: 40 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.6, ease: "easeOut" }
+}
+
+Stagger Children:
+{
+  animate: { transition: { staggerChildren: 0.1 } }
+}
+
+═══════════════════════════════════════════════════════════════════════════════════
+📐 LAYOUT & GRID SYSTEM
+═══════════════════════════════════════════════════════════════════════════════════
+
+CONTAINER SYSTEM:
+----------------
+.container: max-w-7xl mx-auto px-4 sm:px-6 lg:px-8
+.container-wide: max-w-8xl mx-auto px-4 sm:px-6 lg:px-8
+.container-narrow: max-w-4xl mx-auto px-4 sm:px-6 lg:px-8
+
+GRID LAYOUTS:
+------------
+Homepage Hero: grid lg:grid-cols-2 gap-8
+Inventory Grid: grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6
+Feature Grid: grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
+
+SPACING SCALE:
+-------------
+--space-xs: 0.25rem (4px)
+--space-sm: 0.5rem (8px)
+--space-md: 0.75rem (12px)
+--space-lg: 1rem (16px)
+--space-xl: 1.5rem (24px)
+--space-2xl: 2rem (32px)
+--space-3xl: 3rem (48px)
+--space-4xl: 4rem (64px)
+--space-5xl: 6rem (96px)
+
+BORDER RADIUS:
+-------------
+--radius-sm: 0.375rem (6px)
+--radius-md: 0.5rem (8px)
+--radius-lg: 0.75rem (12px)
+--radius-xl: 1rem (16px)
+--radius-2xl: 1.5rem (24px)
+--radius-full: 9999px
+
+═══════════════════════════════════════════════════════════════════════════════════
+📱 RESPONSIVE BREAKPOINTS
+═══════════════════════════════════════════════════════════════════════════════════
+
+TAILWIND BREAKPOINTS:
+--------------------
+sm: 640px   /* Small devices (tablets) */
+md: 768px   /* Medium devices (small laptops) */
+lg: 1024px  /* Large devices (laptops) */
+xl: 1280px  /* Extra large devices (desktops) */
+2xl: 1536px /* 2X large devices (large desktops) */
+
+RESPONSIVE PATTERNS:
+-------------------
+Mobile-First: Start with mobile styles, enhance for larger screens
+Touch-First: 44px minimum touch targets
+Grid Scaling: 1 col → 2 cols → 3 cols → 4 cols
+Text Scaling: text-2xl → text-3xl → text-4xl → text-5xl
+
+MOBILE OPTIMIZATIONS:
+--------------------
+.luxury-card { 
+  padding: 1rem; /* Mobile */
+  padding: 1.5rem; /* md: and up */
+}
+
+Touch targets: min-h-[44px] min-w-[44px]
+Font size scaling: text-sm md:text-base lg:text-lg
+Spacing scaling: p-4 md:p-6 lg:p-8
+
+═══════════════════════════════════════════════════════════════════════════════════
+🎨 COMPONENT PATTERNS
+═══════════════════════════════════════════════════════════════════════════════════
+
+NAVIGATION HEADER:
+-----------------
+- Floating glassmorphism design
+- Scroll-based opacity changes
+- 120fps smooth transforms
+- Mobile hamburger menu
+- Backdrop blur effects
+
+HERO SECTION:
+------------
+- Full viewport height
+- Parallax mouse tracking
+- Interactive particles
+- Typewriter animation
+- 3D depth layers
+- Ultra-smooth springs
+
+VEHICLE CARDS:
+-------------
+- Luxury card base class
+- Hover lift animations
+- Image aspect ratio 4:3
+- Gradient overlays
+- Price emphasis
+- Feature lists with icons
+
+FORM INPUTS:
+-----------
+- Glass background
+- Emerald focus rings
+- Smooth transitions
+- Error state styling
+- Placeholder animations
+
+FILTERS SIDEBAR:
+---------------
+- Material-UI sliders
+- Emerald gradient styling
+- Smooth range interactions
+- Checkbox groups
+- Clear functionality
+
+═══════════════════════════════════════════════════════════════════════════════════
+✨ SPECIAL EFFECTS & ANIMATIONS
+═══════════════════════════════════════════════════════════════════════════════════
+
+FLOATING ANIMATIONS:
+-------------------
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+PULSE GLOW:
+----------
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+}
+
+.pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+TYPEWRITER EFFECT:
+-----------------
+- Character-by-character reveal
+- Blinking cursor animation
+- Word cycling with pauses
+- Smooth character scaling
+- 120fps optimized timing
+
+PARALLAX TRACKING:
+-----------------
+- Mouse position tracking
+- Multiple depth layers
+- Smooth spring animations
+- Performance optimized
+- Reduced motion support
+
+SHIMMER EFFECTS:
+---------------
+- Gradient overlay sweep
+- Button hover enhancement
+- Loading state indication
+- Luxury visual polish
+
+═══════════════════════════════════════════════════════════════════════════════════
+🛠️ MATERIAL-UI THEME (Sliders)
+═══════════════════════════════════════════════════════════════════════════════════
+
+MUI SLIDER THEME:
+----------------
+Primary Color: #047857 (emerald-700)
+Secondary Color: #f59e0b (amber-500)
+
+Slider Styling:
+- Rail: rgba(4, 120, 87, 0.1)
+- Track: emerald gradient
+- Thumb: glass effect with emerald border
+- Active thumb: larger scale with glow
+- Value labels: glass background
+
+Custom Styled Components:
+- StyledSlider with emerald theming
+- Glass morphism integration
+- Smooth 120fps interactions
+- Touch-friendly sizing
+
+═══════════════════════════════════════════════════════════════════════════════════
+🔧 UTILITY CLASSES
+═══════════════════════════════════════════════════════════════════════════════════
+
+3D UTILITY CLASSES:
+------------------
+.btn-3d - 3D button effects
+.card-3d - 3D card depth
+.emerald-3d - Emerald 3D styling
+.gold-3d - Gold 3D styling
+
+TEXT UTILITIES:
+--------------
+.gradient-text - Gradient text effect
+.text-float - Floating text animation
+.text-hover-lift - Hover lift effect
+.text-shadow-luxury - Luxury text shadows
+
+BACKGROUND UTILITIES:
+--------------------
+.bg-gradient-radial - Radial gradients
+.bg-gradient-depth - Depth gradients
+.hero-ultra-3d-bg - Hero background layers
+
+INTERACTION UTILITIES:
+---------------------
+.interactive-zone - Mouse tracking areas
+.hover:scale-[1.02] - Hover scaling
+.transition-all - Smooth transitions
+.transform-gpu - GPU acceleration
+
+═══════════════════════════════════════════════════════════════════════════════════
+📋 IMPLEMENTATION GUIDELINES
+═══════════════════════════════════════════════════════════════════════════════════
+
+PERFORMANCE OPTIMIZATION:
+-------------------------
+1. Use transform-gpu for hardware acceleration
+2. Prefer transforms over position changes
+3. Use will-change sparingly
+4. Implement reduced motion support
+5. Optimize spring configurations for 120fps
+
+ACCESSIBILITY:
+-------------
+1. Maintain color contrast ratios
+2. Provide focus indicators
+3. Support keyboard navigation
+4. Respect reduced motion preferences
+5. Use semantic HTML structure
+
+CONSISTENCY:
+-----------
+1. Use design system variables
+2. Follow component patterns
+3. Maintain animation timings
+4. Use consistent spacing scale
+5. Apply uniform shadow depths
+
+MOBILE CONSIDERATIONS:
+---------------------
+1. Touch-friendly interactions
+2. Appropriate text sizing
+3. Simplified animations
+4. Reduced particle effects
+5. Performance optimizations
+
+═══════════════════════════════════════════════════════════════════════════════════
+🎯 COMPONENT REFERENCE
+═══════════════════════════════════════════════════════════════════════════════════
+
+FILE LOCATIONS:
+--------------
+Theme: /src/app/globals.css
+Components: /src/components/ui/
+Sections: /src/components/sections/
+Layout: /src/components/layout/
+Pages: /src/app/
+
+KEY COMPONENTS:
+--------------
+Button: /src/components/ui/Button.tsx
+Header: /src/components/layout/Header.tsx
+Hero: /src/components/sections/Hero.tsx
+Footer: /src/components/layout/Footer.tsx
+
+STYLE IMPORTS:
+-------------
+import { cn } from '@/lib/utils'
+import { motion } from 'framer-motion'
+import { Button } from '@/components/ui/Button'
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Last Updated: June 2025
+Version: 4.0
+Status: Production Ready
+Performance: 120fps Optimized
+Compatibility: Modern Browsers + Mobile
+
+═══════════════════════════════════════════════════════════════════════════════════ 
