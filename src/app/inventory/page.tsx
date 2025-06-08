@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { PageBackground, SectionBackground } from '@/components/layout/GlobalBackground'
@@ -239,8 +239,8 @@ const consultationButtonVariants = {
   }
 }
 
-const VehicleCard: React.FC<{ 
-  vehicle: MockVehicle; 
+const VehicleCard: React.FC<{
+  vehicle: MockVehicle;
   viewMode: 'grid' | 'list';
   isFavorited: boolean;
   onFavoriteToggle: (id: number) => void;
