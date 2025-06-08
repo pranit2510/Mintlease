@@ -17,7 +17,9 @@ interface FormData {
   lastName: string
   email: string
   phone: string
-  vehicleInterest: string
+  carBrand: string
+  carTrim: string
+  creditScore: string
   timeline: string
 }
 
@@ -31,12 +33,15 @@ export default function LeadPage() {
     lastName: '',
     email: '',
     phone: '',
-    vehicleInterest: '',
+    carBrand: '',
+    carTrim: '',
+    creditScore: '',
     timeline: ''
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [creditScoreError, setCreditScoreError] = useState(false)
 
   // Interactive mouse tracking - matching homepage exactly
   const mouseX = useMotionValue(0)
@@ -478,23 +483,84 @@ export default function LeadPage() {
                   />
                 </div>
                 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-neutral-700 text-sm font-medium mb-2">Car Brand</label>
+                    <input 
+                      type="text" 
+                      value={formData.carBrand}
+                      onChange={(e) => handleInputChange('carBrand', e.target.value)}
+                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                               focus:border-emerald-500 transition-all duration-300"
+                      placeholder="e.g., BMW, Mercedes, Audi"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-neutral-700 text-sm font-medium mb-2">Car Trim/Model</label>
+                    <input 
+                      type="text" 
+                      value={formData.carTrim}
+                      onChange={(e) => handleInputChange('carTrim', e.target.value)}
+                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                               focus:border-emerald-500 transition-all duration-300"
+                      placeholder="e.g., X5, E-Class, A4"
+                      required
+                    />
+                  </div>
+                </div>
+                
                 <div className="mb-6">
-                  <label className="block text-neutral-700 text-sm font-medium mb-2">Vehicle Interest</label>
+                  <label className="block text-neutral-700 text-sm font-medium mb-2">Credit Score</label>
                   <select
-                    value={formData.vehicleInterest}
-                    onChange={(e) => handleInputChange('vehicleInterest', e.target.value)}
+                    value={formData.creditScore}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      handleInputChange('creditScore', value);
+                      // Show error message for non-excellent credit scores
+                      if (value && value !== 'excellent') {
+                        setCreditScoreError(true);
+                      } else {
+                        setCreditScoreError(false);
+                      }
+                    }}
                     className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                              text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
                              focus:border-emerald-500 transition-all duration-300"
                     required
                   >
-                    <option value="">Select vehicle type</option>
-                    <option value="luxury-sedan">Luxury Sedan</option>
-                    <option value="luxury-suv">Luxury SUV</option>
-                    <option value="sports-car">Sports Car</option>
-                    <option value="electric-luxury">Electric Luxury</option>
-                    <option value="other">Other</option>
+                    <option value="">Select your credit score range</option>
+                    <option value="excellent">Excellent (700+)</option>
+                    <option value="good">Good (650-699)</option>
+                    <option value="fair">Fair (600-649)</option>
+                    <option value="building">Building (Below 600)</option>
                   </select>
+                  
+                  {creditScoreError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-[12px]"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-5 h-5 text-amber-600 mt-0.5">
+                          <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-medium text-amber-800 mb-1">
+                            Credit Score Requirements
+                          </h4>
+                          <p className="text-sm text-amber-700">
+                            We appreciate your interest! At this time, our premium vehicle financing program requires a credit score of 700 or higher. We encourage you to continue working on improving your credit score and reach out to us in the future when you meet our requirements.
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
                 
                 <div className="mb-8">
@@ -518,7 +584,7 @@ export default function LeadPage() {
                 
                 <motion.button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || creditScoreError || formData.creditScore !== 'excellent'}
                   whileHover={{ 
                     scale: shouldReduceMotion ? 1 : 1.02, 
                     y: shouldReduceMotion ? 0 : -3 
@@ -533,19 +599,22 @@ export default function LeadPage() {
                     damping: 25,
                     mass: 0.1
                   }}
-                  className="w-full bg-emerald-600 text-white border-0 rounded-full px-10 py-4 text-lg font-medium 
+                  className="w-full text-white border-0 rounded-full px-10 py-4 text-lg font-medium 
                            transition-all duration-300 group relative overflow-hidden"
                   style={{
-                    background: isSubmitting ? '#6b7280' : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                    background: (isSubmitting || creditScoreError || formData.creditScore !== 'excellent') 
+                      ? '#6b7280' 
+                      : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                     boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3), 0 16px 40px -8px rgba(5, 150, 105, 0.2), 0 32px 64px -16px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.1)',
+                    cursor: (isSubmitting || creditScoreError || formData.creditScore !== 'excellent') ? 'not-allowed' : 'pointer'
                   }}
                   onMouseEnter={(e) => {
-                    if (!isSubmitting) {
+                    if (!isSubmitting && !creditScoreError && formData.creditScore === 'excellent') {
                       e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)'
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isSubmitting) {
+                    if (!isSubmitting && !creditScoreError && formData.creditScore === 'excellent') {
                       e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)'
                     }
                   }}
@@ -558,6 +627,10 @@ export default function LeadPage() {
                       </svg>
                       Processing...
                     </span>
+                  ) : creditScoreError || formData.creditScore !== 'excellent' ? (
+                    <span className="flex items-center justify-center relative z-10">
+                      Credit Score Requirements Not Met
+                    </span>
                   ) : (
                     <span className="flex items-center justify-center relative z-10">
                       Get My Quote
@@ -567,7 +640,11 @@ export default function LeadPage() {
                 </motion.button>
 
                 <p className="text-neutral-500 text-sm text-center mt-4">
-                  By submitting, you agree to receive calls from our AI specialist within 5 minutes.
+                  {creditScoreError || formData.creditScore !== 'excellent' ? (
+                    "Please select 'Excellent (700+)' credit score to proceed with your quote request."
+                  ) : (
+                    "By submitting, you agree to receive calls from our specialist within 5 minutes."
+                  )}
                 </p>
               </motion.form>
             </motion.div>
