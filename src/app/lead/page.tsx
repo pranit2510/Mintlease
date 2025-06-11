@@ -63,6 +63,8 @@ export default function LeadPage() {
   const backgroundY = useTransform(springMouseY, [-100, 100], [-10, 10])
   const accentX = useTransform(springMouseX, [-100, 100], [-5, 5])
   const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
+  const bottomLayerX = useTransform(springMouseX, [-100, 100], [-3, 3])
+  const bottomLayerY = useTransform(springMouseY, [-100, 100], [-5, 5])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return
@@ -318,8 +320,8 @@ export default function LeadPage() {
           <motion.div 
             className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-gradient-radial from-orange-100/15 to-transparent blur-3xl"
             style={{
-              x: useTransform(springMouseX, [-100, 100], [-3, 3]),
-              y: useTransform(springMouseY, [-100, 100], [-5, 5]),
+              x: bottomLayerX,
+              y: bottomLayerY,
               willChange: 'transform',
             }}
           />

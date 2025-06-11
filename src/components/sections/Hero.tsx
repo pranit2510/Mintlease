@@ -361,22 +361,22 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 mobile-sm:px-5 mobile-md:px-6 lg:px-8 py-12 mobile-sm:py-16">
         <motion.div
-          className="text-center space-y-10"
+          className="text-center space-y-6 mobile-sm:space-y-8 mobile-md:space-y-10"
           initial="initial"
           animate={controls}
           variants={animationVariants.luxuryStagger}
         >
           {/* Simplified Hero Title with Integrated Typewriter */}
           <motion.div 
-            className="space-y-8"
+            className="space-y-4 mobile-sm:space-y-6 mobile-md:space-y-8"
             variants={animationVariants.premiumSlideUp}
           >
             <motion.div className="space-y-2">
               <motion.h1 
                 ref={titleRef}
-                className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
+                className="text-3xl mobile-sm:text-4xl mobile-md:text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
                 style={{
                   background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
                   WebkitBackgroundClip: 'text',
@@ -384,25 +384,25 @@ export const Hero: React.FC = () => {
                   backgroundClip: 'text',
                 }}
               >
-                Get Your Dream Car
+                Your Dream Car
               </motion.h1>
               
               {/* Integrated Typewriter Effect */}
               <motion.div 
-                className="relative flex items-center justify-center py-6 min-h-[6rem] md:min-h-[7rem] lg:min-h-[8rem]"
+                className="relative flex items-center justify-center py-4 mobile-sm:py-6 min-h-[4rem] mobile-sm:min-h-[5rem] mobile-md:min-h-[6rem] md:min-h-[7rem] lg:min-h-[8rem]"
                 variants={animationVariants.premiumSlideUp}
               >
                 <div className="relative inline-flex items-center justify-center">
                   {/* Enhanced container with 120fps text animation */}
                   <motion.div 
-                    className="relative flex items-center justify-center px-6 py-2"
+                    className="relative flex items-center justify-center px-3 mobile-sm:px-4 mobile-md:px-6 py-2"
                     style={{
                       scale: textScale,
                       willChange: 'transform',
                     }}
                   >
                     <motion.span
-                      className="text-4xl md:text-5xl lg:text-6xl font-semibold whitespace-nowrap"
+                      className="text-xl mobile-sm:text-2xl mobile-md:text-3xl mobile-lg:text-4xl sm:text-5xl lg:text-6xl font-semibold whitespace-nowrap"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
                         WebkitBackgroundClip: 'text',
@@ -443,7 +443,7 @@ export const Hero: React.FC = () => {
             
             <motion.p 
               ref={subtitleRef}
-              className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed"
+              className="text-base mobile-sm:text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed px-2 mobile-sm:px-0"
             >
               Save thousands with our expert negotiation and white-glove delivery service.
             </motion.p>
@@ -477,7 +477,7 @@ export const Hero: React.FC = () => {
               }}
             >
               <motion.button
-                className="bg-emerald-600 text-white border-0 rounded-full px-10 py-5 text-lg font-medium transition-all duration-300 group relative overflow-hidden"
+                className="bg-emerald-600 text-white border-0 rounded-full px-6 mobile-sm:px-8 mobile-md:px-10 py-3 mobile-sm:py-4 mobile-md:py-5 text-base mobile-sm:text-lg font-medium transition-all duration-300 group relative overflow-hidden"
                 style={{
                   background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                 }}
@@ -489,7 +489,7 @@ export const Hero: React.FC = () => {
               >
                 <span className="flex items-center relative z-10">
                   Start Your Journey
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                  <ArrowRight className="ml-2 h-4 w-4 mobile-sm:h-5 mobile-sm:w-5 group-hover:translate-x-1 transition-transform duration-200" />
                 </span>
               </motion.button>
             </motion.div>
@@ -498,89 +498,74 @@ export const Hero: React.FC = () => {
           {/* Subtle Trust Indicators */}
           <motion.div 
             ref={statsRef}
-            className="flex flex-wrap items-center justify-center gap-x-6 sm:gap-x-10 gap-y-4 mt-8 px-4"
+            className="flex flex-wrap items-center justify-center gap-x-4 mobile-sm:gap-x-6 mobile-md:gap-x-8 sm:gap-x-12 gap-y-3 mobile-sm:gap-y-4 mt-6 mobile-sm:mt-8 px-2 mobile-sm:px-4"
             variants={animationVariants.premiumStagger}
           >
-            {/* Deposit */}
-            <motion.div
-              variants={animationVariants.saasCardEntrance}
-              className="flex items-center gap-1.5"
-            >
-              <Shield className="w-3.5 h-3.5 text-emerald-600/60" />
-              <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-semibold text-neutral-800">$499</span>
-                <span className="text-xs text-neutral-500">Refundable</span>
-              </div>
-            </motion.div>
-
-            {/* Separator */}
-            <div className="hidden sm:block w-px h-4 bg-neutral-300/50"></div>
-
             {/* Customers */}
             <motion.div
               variants={animationVariants.saasCardEntrance}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1.5 mobile-sm:gap-2"
             >
-              <Users className="w-3.5 h-3.5 text-emerald-600/60" />
+              <Users className="w-3.5 h-3.5 mobile-sm:w-4 mobile-sm:h-4 text-emerald-600/70" />
               <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-semibold text-neutral-800">2,500+</span>
-                <span className="text-xs text-neutral-500">Customers</span>
+                <span className="text-base mobile-sm:text-lg sm:text-xl font-semibold text-neutral-800">2,500+</span>
+                <span className="text-xs mobile-sm:text-sm text-neutral-500">Customers</span>
               </div>
             </motion.div>
 
             {/* Separator */}
-            <div className="hidden sm:block w-px h-4 bg-neutral-300/50"></div>
+            <div className="hidden mobile-md:block w-px h-4 mobile-sm:h-5 bg-neutral-300/60"></div>
 
             {/* Savings */}
             <motion.div
               variants={animationVariants.saasCardEntrance}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1.5 mobile-sm:gap-2"
             >
-              <DollarSign className="w-3.5 h-3.5 text-amber-600/60" />
+              <DollarSign className="w-3.5 h-3.5 mobile-sm:w-4 mobile-sm:h-4 text-amber-600/70" />
               <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-semibold text-neutral-800">$15M+</span>
-                <span className="text-xs text-neutral-500">Total Saved</span>
+                <span className="text-base mobile-sm:text-lg sm:text-xl font-semibold text-neutral-800">$15M+</span>
+                <span className="text-xs mobile-sm:text-sm text-neutral-500">Total Saved</span>
               </div>
             </motion.div>
 
             {/* Separator */}
-            <div className="hidden sm:block w-px h-4 bg-neutral-300/50"></div>
+            <div className="hidden mobile-md:block w-px h-4 mobile-sm:h-5 bg-neutral-300/60"></div>
 
             {/* Rating */}
             <motion.div
               variants={animationVariants.saasCardEntrance}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1.5 mobile-sm:gap-2"
             >
-              <Star className="w-3.5 h-3.5 text-orange-500/60" />
+              <Star className="w-3.5 h-3.5 mobile-sm:w-4 mobile-sm:h-4 text-orange-500/70" />
               <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-semibold text-neutral-800">5.0</span>
-                <span className="text-xs text-neutral-500">Rating</span>
+                <span className="text-base mobile-sm:text-lg sm:text-xl font-semibold text-neutral-800">5.0</span>
+                <span className="text-xs mobile-sm:text-sm text-neutral-500">Rating</span>
               </div>
             </motion.div>
           </motion.div>
 
           {/* Subtle Brand Carousel */}
           <motion.div
-            className="mt-20 w-full relative"
+            className="mt-12 mobile-sm:mt-16 mobile-md:mt-20 w-full relative"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.0, duration: 1.0 }}
           >
             {/* Minimal Header */}
             <motion.div 
-              className="text-center mb-6"
+              className="text-center mb-4 mobile-sm:mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2.2, duration: 0.8 }}
             >
-              <p className="text-sm text-neutral-400 tracking-widest font-medium">
-                TRUSTED BY LUXURY BRANDS
+              <p className="text-xs mobile-sm:text-sm text-neutral-400 tracking-widest font-medium px-2">
+                DELIVERING LUXURY BRANDS TO YOUR DOORSTEP
               </p>
             </motion.div>
 
             {/* Clean Infinite Carousel with CSS Clipping */}
             <div 
-              className="relative py-6 w-full"
+              className="relative py-4 mobile-sm:py-6 w-full"
               style={{
                 clipPath: 'inset(0 0 0 0)',
                 WebkitClipPath: 'inset(0 0 0 0)'
@@ -596,7 +581,7 @@ export const Hero: React.FC = () => {
                 }}
               >
                 <motion.div
-                  className="flex items-center space-x-12 will-change-transform"
+                  className="flex items-center space-x-6 will-change-transform"
                   style={{
                     width: 'max-content',
                     transform: 'translate3d(0,0,0)',
@@ -617,9 +602,9 @@ export const Hero: React.FC = () => {
                     <div
                       key={`${company}-${index}`}
                       className="flex-shrink-0 text-center"
-                      style={{ minWidth: '140px' }}
+                      style={{ minWidth: '80px' }}
                     >
-                      <span className="text-base font-medium text-neutral-500 tracking-wide hover:text-neutral-700 transition-colors duration-300">
+                      <span className="text-xs mobile-sm:text-sm font-medium text-neutral-500 tracking-wide hover:text-neutral-700 transition-colors duration-300">
                         {company}
                       </span>
                     </div>

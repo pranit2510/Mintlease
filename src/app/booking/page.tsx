@@ -3,10 +3,9 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { motion, useAnimation, useInView, useMotionValue, useSpring, AnimatePresence, useReducedMotion, useTransform } from 'framer-motion'
-import { CalendarDaysIcon, CreditCardIcon, ShieldCheckIcon, SparklesIcon, CheckBadgeIcon, StarIcon, LockClosedIcon, ClockIcon, PhoneIcon, UserGroupIcon, TrophyIcon, DocumentCheckIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/outline'
+import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
+import { CreditCardIcon, ShieldCheckIcon, SparklesIcon, CheckBadgeIcon, StarIcon, LockClosedIcon, ClockIcon, PhoneIcon, TrophyIcon, DocumentCheckIcon } from '@heroicons/react/24/outline'
 import { Star, Users, Trophy } from 'lucide-react'
-import { animationVariants } from '@/lib/utils'
 
 /**
  * Booking Page - Secure Your Approved Vehicle
@@ -51,7 +50,6 @@ export default function BookingPage() {
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [step, setStep] = useState(1)
 
   // Animation variants matching design system
   const containerVariants = {
@@ -746,7 +744,7 @@ export default function BookingPage() {
                       </div>
                       
                       <blockquote className="text-neutral-700 italic leading-relaxed">
-                        "{testimonial.quote}"
+                        &ldquo;{testimonial.quote}&rdquo;
                       </blockquote>
                     </motion.div>
                   ))}
@@ -779,7 +777,7 @@ export default function BookingPage() {
                   className="mt-6 text-neutral-600 text-lg"
                   variants={itemVariants}
                 >
-                  Join thousands of satisfied clients who've saved an average of $8,500+ on their vehicle lease or financing.
+                  Join thousands of satisfied clients who&apos;ve saved an average of $8,500+ on their vehicle lease or financing.
                 </motion.p>
               </motion.div>
             </motion.div>

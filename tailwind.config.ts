@@ -212,9 +212,22 @@ const config: Config = {
         'xl': '40px',
       },
       screens: {
-        'xs': '475px',
-        '3xl': '1680px',
-        '4xl': '2048px',
+        'xs': '375px',      // iPhone SE, small phones
+        'sm': '640px',      // Default Tailwind sm
+        'md': '768px',      // Default Tailwind md
+        'lg': '1024px',     // Default Tailwind lg
+        'xl': '1280px',     // Default Tailwind xl  
+        '2xl': '1536px',    // Default Tailwind 2xl
+        '3xl': '1680px',    // Ultra-wide monitors
+        '4xl': '2048px',    // 4K displays
+        // Mobile-specific breakpoints
+        'mobile-xs': '320px',   // Very small phones
+        'mobile-sm': '375px',   // iPhone SE, iPhone 12 mini
+        'mobile-md': '390px',   // iPhone 12/13/14
+        'mobile-lg': '414px',   // iPhone Plus models
+        'mobile-xl': '428px',   // iPhone Pro Max models
+        'tablet-sm': '768px',   // iPad Mini
+        'tablet-lg': '1024px',  // iPad Pro
       },
       transformStyle: {
         '3d': 'preserve-3d',

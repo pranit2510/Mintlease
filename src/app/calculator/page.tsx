@@ -3,28 +3,24 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { PageBackground, SectionBackground } from '@/components/layout/GlobalBackground'
+
 import { PremiumBadge } from '@/components/ui/PremiumBadge'
-import { motion, useAnimation, useInView, useMotionValue, useSpring, AnimatePresence, useReducedMotion, useTransform } from 'framer-motion'
+import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { animationVariants } from '@/lib/utils'
 import { 
   CalculatorIcon, 
   CurrencyDollarIcon, 
-  ChartBarIcon, 
   CheckCircleIcon, 
-  SparklesIcon, 
   TrophyIcon, 
   ShieldCheckIcon, 
   ArrowTrendingUpIcon,
   ClockIcon,
   StarIcon,
   BuildingStorefrontIcon,
-  UserGroupIcon,
-  DocumentTextIcon,
   PrinterIcon
 } from '@heroicons/react/24/outline'
-import { TrendingUp, Shield, Zap, Award, Users, Globe } from 'lucide-react'
+import { Award, Users } from 'lucide-react'
 
 /**
  * Vehicle Finance/Lease Calculator - Comprehensive Comparison Tool
@@ -67,8 +63,7 @@ export default function CalculatorPage() {
   const accentX = useTransform(springMouseX, [-100, 100], [-2, 2])
   const accentY = useTransform(springMouseY, [-100, 100], [-2, 2])
 
-  // Interactive depth layers
-  const [interactiveIntensity, setInteractiveIntensity] = useState(1)
+
 
   // Calculator state
   const [vehiclePrice, setVehiclePrice] = useState(65000)
@@ -77,9 +72,8 @@ export default function CalculatorPage() {
   const [creditScore, setCreditScore] = useState('excellent')
   const [financeTermMonths, setFinanceTermMonths] = useState(60)
   const [leaseTermMonths, setLeaseTermMonths] = useState(36)
-  const [mileageAllowance, setMileageAllowance] = useState(12000)
-  const [showComparison, setShowComparison] = useState(true)
-  const [scrollY, setScrollY] = useState(0)
+  const [mileageAllowance] = useState(12000)
+
 
   // Credit score mapping to interest rates (Updated for 2024 market)
   const creditScoreRates = {
@@ -122,16 +116,7 @@ export default function CalculatorPage() {
     }
   }, [])
 
-  // Parallax scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      requestAnimationFrame(() => {
-        setScrollY(window.scrollY)
-      })
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+
 
   // Get interest rate based on credit score
   const getInterestRate = () => {
@@ -242,35 +227,7 @@ export default function CalculatorPage() {
   const costs = calculateTotalCosts()
   const comparison = calculateDealershipVsMintLease()
 
-  // Enhanced mouse interaction handlers - matching Hero component
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!containerRef.current) return
-    
-    const rect = containerRef.current.getBoundingClientRect()
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    
-    const x = (e.clientX - rect.left - centerX) / centerX
-    const y = (e.clientY - rect.top - centerY) / centerY
-    
-    mouseX.set(x * 100)
-    mouseY.set(y * 100)
-    
-    // Adjust interactive intensity based on distance from center
-    const distance = Math.sqrt(x * x + y * y)
-    setInteractiveIntensity(Math.min(1 + distance * 0.5, 2))
-  }, [mouseX, mouseY])
 
-  const handleMouseEnter = useCallback(() => {
-    setIsHovering(true)
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    setIsHovering(false)
-    mouseX.set(0)
-    mouseY.set(0)
-    setInteractiveIntensity(1)
-  }, [mouseX, mouseY])
 
   // Enhanced number formatting
   const formatCurrency = (amount: number) => {
@@ -392,10 +349,10 @@ export default function CalculatorPage() {
         </div>
         
         {/* Page Header */}
-        <section className="py-20 relative overflow-hidden z-10">
-          <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        <section className="py-12 mobile-sm:py-16 mobile-md:py-20 relative overflow-hidden z-10">
+          <div className="max-w-6xl mx-auto px-4 mobile-sm:px-5 mobile-md:px-6 lg:px-8">
             <motion.div
-              className="text-center space-y-6"
+              className="text-center space-y-4 mobile-sm:space-y-6"
               initial="initial"
               animate={controls}
               variants={animationVariants.luxuryStagger}
@@ -410,7 +367,7 @@ export default function CalculatorPage() {
               
               <motion.h1 
                 ref={titleRef}
-                className="text-4xl lg:text-6xl font-bold tracking-tight leading-tight"
+                className="text-2xl mobile-sm:text-3xl mobile-md:text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
                 style={{
                   background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
                   WebkitBackgroundClip: 'text',
@@ -427,7 +384,7 @@ export default function CalculatorPage() {
               
               <motion.p 
                 ref={subtitleRef}
-                className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto"
+                className="text-base mobile-sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-2 mobile-sm:px-0"
                 variants={animationVariants.premiumSlideUp}
               >
                 Compare financing and leasing options with our comprehensive calculator. 
@@ -436,17 +393,17 @@ export default function CalculatorPage() {
               
               {/* Trust Indicators */}
               <motion.div
-                className="flex flex-wrap justify-center items-center gap-6 mt-12"
+                className="flex flex-wrap justify-center items-center gap-4 mobile-sm:gap-6 mt-8 mobile-sm:mt-12 px-2"
                 variants={animationVariants.premiumStagger}
               >
                 {keyFeatures.map((feature, index) => (
                 <motion.div
                     key={index}
                     variants={animationVariants.saasCardEntrance}
-                    className="flex items-center gap-3 text-gray-600"
+                    className="flex items-center gap-2 mobile-sm:gap-3 text-gray-600"
                   >
-                    <div style={{ color: '#059669' }}>{feature.icon}</div>
-                    <span className="font-medium text-base">{feature.title}</span>
+                    <div style={{ color: '#059669' }} className="w-4 h-4 mobile-sm:w-5 mobile-sm:h-5">{feature.icon}</div>
+                    <span className="font-medium text-sm mobile-sm:text-base">{feature.title}</span>
                 </motion.div>
                 ))}
               </motion.div>
@@ -454,7 +411,7 @@ export default function CalculatorPage() {
           </div>
         </section>
 
-        <div className="container mx-auto px-4 py-8 relative z-10">
+        <div className="container mx-auto px-3 mobile-sm:px-4 py-6 mobile-sm:py-8 relative z-10">
           <motion.div 
             className="max-w-6xl mx-auto"
             initial="initial"
@@ -466,25 +423,25 @@ export default function CalculatorPage() {
             <motion.div
                ref={calculatorRef}
                variants={animationVariants.saasCardEntrance}
-               className="mb-8"
+               className="mb-6 mobile-sm:mb-8"
              >
                              <div 
-                 className="p-6 rounded-2xl shadow-lg border border-white/20 backdrop-blur-sm"
+                 className="p-4 mobile-sm:p-5 mobile-md:p-6 rounded-2xl shadow-lg border border-white/20 backdrop-blur-sm"
                  style={{ 
                    backgroundColor: '#FEFCFA',
                    boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)'
                  }}
                >
-                  <div className="flex items-center space-x-3 mb-6">
-                   <div className="p-2 rounded-lg" style={{ backgroundColor: '#059669' }}>
-                      <CalculatorIcon className="w-5 h-5 text-white" />
+                  <div className="flex items-center space-x-2 mobile-sm:space-x-3 mb-4 mobile-sm:mb-6">
+                   <div className="p-1.5 mobile-sm:p-2 rounded-lg" style={{ backgroundColor: '#059669' }}>
+                      <CalculatorIcon className="w-4 h-4 mobile-sm:w-5 mobile-sm:h-5 text-white" />
                     </div>
-                    <h2 className="text-xl font-bold text-neutral-800">
+                    <h2 className="text-lg mobile-sm:text-xl font-bold text-neutral-800">
                      Vehicle Details
                     </h2>
                   </div>
 
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 <div className="grid grid-cols-1 mobile-md:grid-cols-2 lg:grid-cols-3 gap-4 mobile-sm:gap-6">
                     {/* Vehicle Price */}
                   <div className="space-y-4">
                     <label className="block text-sm font-semibold text-neutral-700">

@@ -4,12 +4,397 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Premium Font Stack */
-body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* Mint Lease Custom Mobile-First Responsive Design System */
+
+/* Mobile-First Base Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Responsive Typography Scale */
+  h1 {
+    @apply text-2xl mobile-sm:text-3xl mobile-md:text-4xl sm:text-5xl lg:text-6xl font-bold;
+  }
+
+  h2 {
+    @apply text-xl mobile-sm:text-2xl mobile-md:text-3xl sm:text-4xl lg:text-5xl font-semibold;
+  }
+
+  h3 {
+    @apply text-lg mobile-sm:text-xl mobile-md:text-2xl sm:text-3xl lg:text-4xl font-medium;
+  }
+
+  h4 {
+    @apply text-base mobile-sm:text-lg mobile-md:text-xl sm:text-2xl font-medium;
+  }
+
+  h5 {
+    @apply text-sm mobile-sm:text-base mobile-md:text-lg font-medium;
+  }
+
+  h6 {
+    @apply text-sm mobile-sm:text-base font-medium;
+  }
+
+  p {
+    @apply text-sm mobile-sm:text-base leading-relaxed;
+  }
+
+  /* Mobile-optimized button sizes */
+  button {
+    min-height: 44px; /* iOS touch target minimum */
+    min-width: 44px;
+  }
 }
 
-/* ===== DESIGN SYSTEM: MINT LEASE LUXURY AUTO BROKERAGE ===== */
+@layer components {
+  /* Mobile-First Container System */
+  .container-mobile {
+    @apply w-full px-3 mobile-sm:px-4 mobile-md:px-5 sm:px-6 md:px-8 lg:px-12 xl:px-16;
+    @apply mx-auto max-w-screen-2xl;
+  }
+
+  /* Responsive Section Spacing */
+  .section-padding {
+    @apply py-8 mobile-sm:py-12 mobile-md:py-16 sm:py-20 lg:py-24;
+  }
+
+  .section-padding-sm {
+    @apply py-6 mobile-sm:py-8 mobile-md:py-12 sm:py-16;
+  }
+
+  /* Mobile-First Button Styles */
+  .btn-mobile {
+    @apply px-4 mobile-sm:px-6 mobile-md:px-8 py-3 mobile-sm:py-4;
+    @apply text-sm mobile-sm:text-base font-medium;
+    @apply rounded-full transition-all duration-300;
+    @apply min-h-[44px] flex items-center justify-center;
+  }
+
+  .btn-mobile-lg {
+    @apply px-6 mobile-sm:px-8 mobile-md:px-10 py-3 mobile-sm:py-4 mobile-md:py-5;
+    @apply text-base mobile-sm:text-lg font-medium;
+    @apply rounded-full transition-all duration-300;
+    @apply min-h-[48px] flex items-center justify-center;
+  }
+
+  /* Card Responsive Styles */
+  .card-mobile {
+    @apply p-4 mobile-sm:p-5 mobile-md:p-6 lg:p-8;
+    @apply rounded-xl mobile-sm:rounded-2xl;
+    @apply shadow-lg border border-white/20 backdrop-blur-sm;
+  }
+
+  /* Grid Responsive Utilities */
+  .grid-mobile-1 {
+    @apply grid grid-cols-1 gap-4 mobile-sm:gap-6;
+  }
+
+  .grid-mobile-2 {
+    @apply grid grid-cols-1 mobile-md:grid-cols-2 gap-4 mobile-sm:gap-6;
+  }
+
+  .grid-mobile-3 {
+    @apply grid grid-cols-1 mobile-md:grid-cols-2 lg:grid-cols-3 gap-4 mobile-sm:gap-6;
+  }
+
+  .grid-mobile-4 {
+    @apply grid grid-cols-1 mobile-sm:grid-cols-2 lg:grid-cols-4 gap-4 mobile-sm:gap-6;
+  }
+
+  /* Flex Responsive Utilities */
+  .flex-mobile-center {
+    @apply flex flex-col mobile-sm:flex-row items-center justify-center;
+    @apply gap-3 mobile-sm:gap-4 mobile-md:gap-6;
+  }
+
+  .flex-mobile-between {
+    @apply flex flex-col mobile-sm:flex-row items-center justify-between;
+    @apply gap-3 mobile-sm:gap-4;
+  }
+
+  /* Typography Responsive Classes */
+  .heading-mobile {
+    @apply text-2xl mobile-sm:text-3xl mobile-md:text-4xl sm:text-5xl lg:text-6xl;
+    @apply font-bold tracking-tight leading-tight;
+  }
+
+  .subheading-mobile {
+    @apply text-xl mobile-sm:text-2xl mobile-md:text-3xl sm:text-4xl;
+    @apply font-semibold tracking-tight;
+  }
+
+  .body-mobile {
+    @apply text-sm mobile-sm:text-base mobile-md:text-lg;
+    @apply leading-relaxed;
+  }
+
+  .caption-mobile {
+    @apply text-xs mobile-sm:text-sm;
+    @apply text-neutral-500;
+  }
+
+  /* Icon Responsive Sizes */
+  .icon-mobile-sm {
+    @apply w-4 h-4 mobile-sm:w-5 mobile-sm:h-5;
+  }
+
+  .icon-mobile-md {
+    @apply w-5 h-5 mobile-sm:w-6 mobile-sm:h-6;
+  }
+
+  .icon-mobile-lg {
+    @apply w-6 h-6 mobile-sm:w-7 mobile-sm:h-7 mobile-md:w-8 mobile-md:h-8;
+  }
+
+  /* Spacing Responsive Utilities */
+  .space-mobile {
+    @apply space-y-4 mobile-sm:space-y-6 mobile-md:space-y-8;
+  }
+
+  .space-mobile-sm {
+    @apply space-y-2 mobile-sm:space-y-3 mobile-md:space-y-4;
+  }
+
+  .gap-mobile {
+    @apply gap-3 mobile-sm:gap-4 mobile-md:gap-6;
+  }
+
+  .gap-mobile-sm {
+    @apply gap-2 mobile-sm:gap-3 mobile-md:gap-4;
+  }
+
+  /* Mobile Menu Optimized */
+  .mobile-menu-item {
+    @apply block w-full text-left;
+    @apply text-base mobile-sm:text-lg font-medium;
+    @apply py-3 mobile-sm:py-4 px-3 mobile-sm:px-4;
+    @apply rounded-lg transition-all duration-200;
+    @apply min-h-[44px] flex items-center;
+    @apply touch-manipulation cursor-pointer;
+  }
+
+  /* Form Input Mobile Styles */
+  .input-mobile {
+    @apply w-full px-3 mobile-sm:px-4 py-3 mobile-sm:py-4;
+    @apply text-sm mobile-sm:text-base;
+    @apply rounded-lg border border-neutral-300;
+    @apply min-h-[44px];
+    @apply focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500;
+  }
+
+  /* Trust Indicators Mobile */
+  .trust-indicator-mobile {
+    @apply flex items-center gap-2 mobile-sm:gap-3;
+    @apply text-sm mobile-sm:text-base font-medium;
+  }
+
+  /* Carousel Mobile Responsive */
+  .carousel-mobile {
+    @apply py-4 mobile-sm:py-6;
+    @apply space-x-4 mobile-sm:space-x-6;
+  }
+
+  .carousel-item-mobile {
+    @apply flex-shrink-0 text-center;
+    @apply min-w-[80px] mobile-sm:min-w-[100px];
+  }
+
+  .carousel-text-mobile {
+    @apply text-xs mobile-sm:text-sm font-medium;
+    @apply text-neutral-500 tracking-wide;
+  }
+}
+
+@layer utilities {
+  /* Mobile-First Visibility Utilities */
+  .mobile-only {
+    @apply block tablet-lg:hidden;
+  }
+
+  .desktop-only {
+    @apply hidden tablet-lg:block;
+  }
+
+  .tablet-up {
+    @apply hidden tablet-sm:block;
+  }
+
+  .mobile-lg-up {
+    @apply hidden mobile-lg:block;
+  }
+
+  /* Touch Optimization */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .touch-target-lg {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Mobile-Safe Animations */
+  .animate-mobile-safe {
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-mobile-safe {
+      @apply transition-none;
+    }
+  }
+
+  /* Mobile Scroll Optimization */
+  .scroll-mobile {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Performance Optimizations */
+  .gpu-accelerated {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  /* Mobile Layout Utilities */
+  .mobile-stack {
+    @apply flex flex-col space-y-4 mobile-sm:space-y-6;
+  }
+
+  .mobile-inline {
+    @apply flex flex-col mobile-sm:flex-row mobile-sm:items-center mobile-sm:space-x-4 space-y-2 mobile-sm:space-y-0;
+  }
+
+  /* Mobile-First Text Alignment */
+  .text-mobile-center {
+    @apply text-center mobile-md:text-left;
+  }
+
+  .text-mobile-left {
+    @apply text-left;
+  }
+
+  /* Mobile Image Optimization */
+  .img-mobile-responsive {
+    @apply w-full h-auto max-w-full;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Mobile Video Optimization */
+  .video-mobile-responsive {
+    @apply w-full h-auto aspect-video;
+    object-fit: cover;
+  }
+}
+
+/* Premium 3D Effects - Mobile Optimized */
+.heading-luxury {
+  background: linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-3d-luxury {
+  text-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Mobile-Safe Shadows */
+@media (max-width: 640px) {
+  .shadow-luxury {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .shadow-3d,
+  .shadow-3d-lg,
+  .shadow-3d-xl {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Mobile-First Animation Delays */
+@media (max-width: 768px) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-scale-in {
+    animation-delay: 0s !important;
+    animation-duration: 0.3s !important;
+  }
+}
+
+/* Accessibility Improvements for Mobile */
+@media (max-width: 768px) {
+  /* Larger focus outlines on mobile */
+  *:focus {
+    outline: 2px solid #059669;
+    outline-offset: 2px;
+  }
+
+  /* Better contrast for mobile */
+  .text-neutral-400 {
+    @apply text-neutral-500;
+  }
+  
+  .text-neutral-500 {
+    @apply text-neutral-600;
+  }
+}
+
+/* Dark mode mobile optimizations */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  body {
+    background-color: #1a1a1a;
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2) {
+  .text-3d-luxury {
+    text-shadow: 
+      0 0.5px 0 rgba(255, 255, 255, 0.8),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* Mobile landscape specific styles */
+@media (max-height: 500px) and (orientation: landscape) {
+  .section-padding {
+    @apply py-4;
+  }
+  
+  .hero-section {
+    min-height: 100vh;
+  }
+}
+
+/* Print styles for mobile */
+@media print {
+  .mobile-only,
+  .desktop-only {
+    display: none !important;
+  }
+  
+  * {
+    color: black !important;
+    background: white !important;
+  }
+}
+
+/* Premium Font Stack */
 
 :root {
   /* Primary Colors - Luxury Emerald Theme */

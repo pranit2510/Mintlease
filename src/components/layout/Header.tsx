@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring, useTransform, useMotionValueEvent, useVelocity } from 'framer-motion'
-import { Menu, X, Phone, Mail, MapPin } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { cn } from '@/lib/utils'
+import { Menu, X } from 'lucide-react'
+
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 
@@ -423,11 +422,11 @@ export const Header: React.FC = () => {
           
 
           
-          <div className="mx-auto max-w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-            <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20">
+          <div className="mx-auto max-w-full px-3 mobile-sm:px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+            <div className="flex items-center justify-between h-14 mobile-sm:h-16 sm:h-18 lg:h-20">
               {/* Logo */}
               <motion.div
-                className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0"
+                className="flex items-center gap-1.5 mobile-sm:gap-2 sm:gap-3 lg:gap-4 flex-shrink-0"
                 whileHover={{ 
                   scale: shouldReduceMotion ? 1 : 1.02,
                   y: shouldReduceMotion ? 0 : -2,
@@ -442,7 +441,7 @@ export const Header: React.FC = () => {
                 }}
               >
                 <motion.div 
-                  className="w-16 h-10 sm:w-18 sm:h-11 lg:w-20 lg:h-12 flex items-center justify-center relative flex-shrink-0"
+                  className="w-12 h-8 mobile-sm:w-14 mobile-sm:h-9 mobile-md:w-16 mobile-md:h-10 sm:w-18 sm:h-11 lg:w-20 lg:h-12 flex items-center justify-center relative flex-shrink-0"
                   style={{
                     willChange: 'transform',
                     transformStyle: 'preserve-3d',
@@ -547,17 +546,17 @@ export const Header: React.FC = () => {
                     <circle cx="22" cy="33" r="1.5" fill="#8B9DB8" opacity="0.8" />
                   </svg>
                 </motion.div>
-                <div className="hidden sm:block">
-                  <h1 className="text-base sm:text-lg lg:text-xl heading-luxury text-3d-luxury whitespace-nowrap">Mint Lease</h1>
-                  <p className="text-xs text-neutral-600 dark:text-neutral-400 -mt-1 hidden md:block">Premium Auto Brokerage</p>
+                <div className="hidden mobile-md:block">
+                  <h1 className="text-sm mobile-lg:text-base sm:text-lg lg:text-xl heading-luxury text-3d-luxury whitespace-nowrap">Mint Lease</h1>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400 -mt-1 hidden tablet-sm:block">Premium Auto Brokerage</p>
                 </div>
-                <div className="block sm:hidden">
-                  <h1 className="text-base font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent whitespace-nowrap">Mint Lease</h1>
+                <div className="block mobile-md:hidden">
+                  <h1 className="text-sm mobile-sm:text-base font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent whitespace-nowrap">Mint Lease</h1>
                 </div>
               </motion.div>
 
               {/* Desktop Navigation */}
-              <nav className="hidden lg:flex items-center gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 ml-4 lg:ml-6 xl:ml-8 2xl:ml-12 flex-shrink-0">
+              <nav className="hidden tablet-lg:flex items-center gap-4 lg:gap-6 xl:gap-8 2xl:gap-10 ml-4 lg:ml-6 xl:ml-8 2xl:ml-12 flex-shrink-0">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -790,7 +789,7 @@ export const Header: React.FC = () => {
               </nav>
 
               {/* CTA Button & Mobile Menu */}
-              <div className="flex items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mr-1 sm:mr-2 lg:mr-4">
+              <div className="flex items-center gap-2 mobile-sm:gap-3 sm:gap-4 md:gap-6 lg:gap-8 mr-1 mobile-sm:mr-2 lg:mr-4">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ 
@@ -857,7 +856,7 @@ export const Header: React.FC = () => {
                 
                 {/* Mobile Menu Button - Improved Responsiveness */}
                 <motion.div
-                  className="lg:hidden p-3 sm:p-3.5 rounded-lg border-2 bg-emerald-50 dark:bg-emerald-900 border-emerald-300 dark:border-emerald-600 backdrop-blur-sm relative overflow-hidden touch-manipulation select-none shadow-lg focus:outline-none focus:ring-0 cursor-pointer flex-shrink-0"
+                  className="tablet-lg:hidden p-2.5 mobile-sm:p-3 sm:p-3.5 rounded-lg border-2 bg-emerald-50 dark:bg-emerald-900 border-emerald-300 dark:border-emerald-600 backdrop-blur-sm relative overflow-hidden touch-manipulation select-none shadow-lg focus:outline-none focus:ring-0 cursor-pointer flex-shrink-0"
                   onClick={toggleMobileMenu}
                   role="button"
                   tabIndex={0}
@@ -907,7 +906,7 @@ export const Header: React.FC = () => {
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
                       >
-                        <X className="w-6 h-6 text-emerald-700 dark:text-emerald-300" />
+                        <X className="w-5 h-5 mobile-sm:w-6 mobile-sm:h-6 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -918,7 +917,7 @@ export const Header: React.FC = () => {
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
                       >
-                        <Menu className="w-6 h-6 text-emerald-700 dark:text-emerald-300" />
+                        <Menu className="w-5 h-5 mobile-sm:w-6 mobile-sm:h-6 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -948,12 +947,12 @@ export const Header: React.FC = () => {
               id="mobile-menu"
               role="navigation"
               aria-label="Mobile navigation menu"
-              className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl lg:hidden"
+              className="fixed z-50 bg-gradient-to-br from-emerald-50/98 via-white/95 to-emerald-100/98 dark:from-emerald-950/98 dark:via-neutral-900/95 dark:to-emerald-900/98 backdrop-blur-md border border-emerald-200/40 dark:border-emerald-700/40 overflow-hidden shadow-lg shadow-emerald-200/20 dark:shadow-emerald-900/20 rounded-xl tablet-lg:hidden"
               style={{
-                top: '90px', // Fixed position instead of dynamic
-                left: '16px',
-                right: '16px',
-                maxHeight: 'calc(100vh - 120px)',
+                top: '80px', // Adjusted for smaller header on mobile
+                left: '12px', // Tighter margins on small screens
+                right: '12px',
+                maxHeight: 'calc(100vh - 100px)',
                 overflowY: 'auto',
                 willChange: 'transform, opacity',
                 zIndex: 9999,
@@ -963,7 +962,7 @@ export const Header: React.FC = () => {
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >
-              <div className="p-6 space-y-2">
+              <div className="p-4 mobile-sm:p-5 mobile-md:p-6 space-y-1 mobile-sm:space-y-2">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -981,7 +980,7 @@ export const Header: React.FC = () => {
                         handleNavClick(item.href);
                       }
                     }}
-                    className="block w-full text-left text-lg font-medium transition-all duration-200 py-4 px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
+                    className="block w-full text-left text-base mobile-sm:text-lg font-medium transition-all duration-200 py-3 mobile-sm:py-4 px-3 mobile-sm:px-4 rounded-lg border-b border-emerald-200/20 dark:border-emerald-700/20 last:border-b-0 relative overflow-hidden group cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
                     style={{ color: '#64748B', zIndex: 10, position: 'relative', outline: 'none', border: 'none', background: 'transparent' }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -1015,7 +1014,7 @@ export const Header: React.FC = () => {
                 ))}
                 
                 {/* Mobile Menu Actions */}
-                <div className="pt-6 border-t border-emerald-200/30 space-y-4">
+                <div className="pt-4 mobile-sm:pt-6 border-t border-emerald-200/30 space-y-3 mobile-sm:space-y-4">
                   {/* Primary CTA */}
                   <motion.div 
                     className="w-full"
@@ -1038,7 +1037,7 @@ export const Header: React.FC = () => {
                           handleNavClick('/lead');
                         }
                       }}
-                      className="w-full bg-emerald-600 text-white border-0 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 group relative overflow-hidden cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
+                      className="w-full bg-emerald-600 text-white border-0 rounded-full px-6 mobile-sm:px-8 py-3 mobile-sm:py-4 text-base mobile-sm:text-lg font-medium transition-all duration-300 group relative overflow-hidden cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
                       style={{
                         background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                         boxShadow: '0 6px 16px -3px rgba(5, 150, 105, 0.3), 0 12px 32px -6px rgba(5, 150, 105, 0.2)',
@@ -1073,7 +1072,7 @@ export const Header: React.FC = () => {
                         handleNavClick('/inventory');
                       }
                     }}
-                    className="w-full border-2 border-emerald-600 text-emerald-600 bg-transparent rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 hover:bg-emerald-600 hover:text-white cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
+                    className="w-full border-2 border-emerald-600 text-emerald-600 bg-transparent rounded-full px-6 mobile-sm:px-8 py-3 mobile-sm:py-4 text-base mobile-sm:text-lg font-medium transition-all duration-300 hover:bg-emerald-600 hover:text-white cursor-pointer touch-manipulation focus:outline-none focus:ring-0"
                     style={{
                       outline: 'none',
                     }}
@@ -1084,9 +1083,9 @@ export const Header: React.FC = () => {
                   </motion.div>
 
                   {/* Contact Info */}
-                  <div className="pt-4 text-center">
-                    <p className="text-sm text-neutral-600 mb-2">Questions? Call us:</p>
-                    <a href="tel:1-555-MINT-LEASE" className="text-lg font-semibold text-emerald-600 hover:text-emerald-700">
+                  <div className="pt-3 mobile-sm:pt-4 text-center">
+                    <p className="text-xs mobile-sm:text-sm text-neutral-600 mb-2">Questions? Call us:</p>
+                    <a href="tel:1-555-MINT-LEASE" className="text-base mobile-sm:text-lg font-semibold text-emerald-600 hover:text-emerald-700">
                       1-555-MINT-LEASE
                     </a>
                     <p className="text-xs text-neutral-500 mt-1">Available 7 days a week</p>

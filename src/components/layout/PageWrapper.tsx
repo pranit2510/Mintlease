@@ -59,6 +59,8 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
   const backgroundY = useTransform(springMouseY, [-100, 100], [-10, 10])
   const accentX = useTransform(springMouseX, [-100, 100], [-5, 5])
   const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
+  const particleX = useTransform(springMouseX, [-100, 100], [10, -10])
+  const particleY = useTransform(springMouseY, [-100, 100], [5, -5])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!enableParallax || !containerRef.current) return
@@ -187,8 +189,8 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
               <motion.div
                 className="absolute bottom-0 left-0 w-[40%] h-[40%] blur-2xl opacity-30"
                 style={enableParallax ? {
-                  x: useTransform(springMouseX, [-100, 100], [10, -10]),
-                  y: useTransform(springMouseY, [-100, 100], [5, -5]),
+                  x: particleX,
+                  y: particleY,
                   willChange: 'transform',
                 } : {}}
               >
