@@ -422,8 +422,8 @@ export const Header: React.FC = () => {
           
 
           
-          <div className="mx-auto max-w-full px-3 mobile-sm:px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-            <div className="flex items-center justify-between h-14 mobile-sm:h-16 sm:h-18 lg:h-20">
+          <div className="mx-auto max-w-full px-3 mobile-sm:px-4 mobile-md:px-5 sm:px-6 md:px-8 lg:px-12 xl:px-16 container-mobile">
+            <div className="flex items-center justify-between h-14 mobile-sm:h-16 mobile-md:h-16 sm:h-18 lg:h-20 header-mobile-height">
               {/* Logo */}
               <motion.div
                 className="flex items-center gap-1.5 mobile-sm:gap-2 sm:gap-3 lg:gap-4 flex-shrink-0"

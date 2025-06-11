@@ -361,7 +361,7 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 mobile-sm:px-5 mobile-md:px-6 lg:px-8 py-12 mobile-sm:py-16">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 mobile-sm:px-5 mobile-md:px-5 mobile-lg:px-6 lg:px-8 py-12 mobile-sm:py-16 container-mobile">
         <motion.div
           className="text-center space-y-6 mobile-sm:space-y-8 mobile-md:space-y-10"
           initial="initial"
@@ -376,7 +376,7 @@ export const Hero: React.FC = () => {
             <motion.div className="space-y-2">
               <motion.h1 
                 ref={titleRef}
-                className="text-3xl mobile-sm:text-4xl mobile-md:text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
+                className="text-3xl mobile-sm:text-4xl mobile-md:text-4xl mobile-lg:text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
                 style={{
                   background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
                   WebkitBackgroundClip: 'text',
@@ -498,7 +498,7 @@ export const Hero: React.FC = () => {
           {/* Subtle Trust Indicators */}
           <motion.div 
             ref={statsRef}
-            className="flex flex-wrap items-center justify-center gap-x-4 mobile-sm:gap-x-6 mobile-md:gap-x-8 sm:gap-x-12 gap-y-3 mobile-sm:gap-y-4 mt-6 mobile-sm:mt-8 px-2 mobile-sm:px-4"
+            className="flex flex-wrap items-center justify-center gap-x-4 mobile-sm:gap-x-6 mobile-md:gap-x-6 mobile-lg:gap-x-8 sm:gap-x-12 gap-y-3 mobile-sm:gap-y-4 mt-6 mobile-sm:mt-8 px-2 mobile-sm:px-4 trust-indicators-390"
             variants={animationVariants.premiumStagger}
           >
             {/* Customers */}
@@ -558,8 +558,8 @@ export const Hero: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 2.2, duration: 0.8 }}
             >
-              <p className="text-xs mobile-sm:text-sm text-neutral-400 tracking-widest font-medium px-2">
-                DELIVERING LUXURY BRANDS TO YOUR DOORSTEP
+              <p className="text-xs mobile-sm:text-sm text-neutral-300 tracking-wide font-normal px-2">
+                Delivering luxury brands & more
               </p>
             </motion.div>
 
@@ -601,10 +601,10 @@ export const Hero: React.FC = () => {
                   {[...companyNames, ...companyNames].map((company, index) => (
                     <div
                       key={`${company}-${index}`}
-                      className="flex-shrink-0 text-center"
+                      className="flex-shrink-0 text-center carousel-item-mobile"
                       style={{ minWidth: '80px' }}
                     >
-                      <span className="text-xs mobile-sm:text-sm font-medium text-neutral-500 tracking-wide hover:text-neutral-700 transition-colors duration-300">
+                      <span className="text-xs mobile-sm:text-sm font-medium text-neutral-500 tracking-wide hover:text-neutral-700 transition-colors duration-300 carousel-text-mobile">
                         {company}
                       </span>
                     </div>
