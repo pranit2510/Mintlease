@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { PremiumBadge } from '@/components/ui/PremiumBadge'
 import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
 import { ArrowRight, Phone, Clock, Shield, Star, Users, CheckCircle, Sparkles, Award, DollarSign } from 'lucide-react'
 import { animationVariants } from '@/lib/utils'
+import { redirect } from 'next/navigation'
 
 /**
  * Lead Capture Page - Premium Contact Form
@@ -26,6 +27,7 @@ interface FormData {
 
 export default function LeadPage() {
   const containerRef = useRef<HTMLElement>(null)
+  const formRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.3 })
   const shouldReduceMotion = useReducedMotion()
 
@@ -43,6 +45,9 @@ export default function LeadPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [creditScoreError, setCreditScoreError] = useState(false)
+  const [redirectTimer, setRedirectTimer] = useState(0)
+  
+  // Auto-scroll disabled - users stay at top of page
 
   // Interactive mouse tracking - matching homepage exactly
   const mouseX = useMotionValue(0)
@@ -88,13 +93,31 @@ export default function LeadPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault() // Prevent default form submission
     setIsSubmitting(true)
     
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      
       setShowSuccess(true)
+      
+      // Start countdown for redirect to homepage
+      setRedirectTimer(5)
+      const countdown = setInterval(() => {
+        setRedirectTimer(prev => {
+          if (prev <= 1) {
+            clearInterval(countdown)
+            window.location.href = '/' // Redirect to homepage to shop around
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+      
     } catch (error) {
       console.error('Lead submission error:', error)
     } finally {
@@ -218,6 +241,18 @@ export default function LeadPage() {
               Thank you for choosing Mint Lease. Our luxury vehicle specialist will contact you shortly.
             </motion.p>
             
+            {/* Redirect countdown */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="bg-emerald-50 rounded-[16px] p-4 border border-emerald-200 mb-8"
+            >
+              <p className="text-emerald-700 text-center font-medium">
+                Redirecting to homepage in {redirectTimer} seconds to browse our inventory...
+              </p>
+            </motion.div>
+            
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -249,7 +284,7 @@ export default function LeadPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.6 }}
-              className="flex gap-4"
+              className="flex flex-col sm:flex-row gap-4"
             >
               <motion.button
                 whileHover={{ scale: 1.02, y: -2 }}
@@ -275,11 +310,15 @@ export default function LeadPage() {
               <motion.button
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => window.location.href = '/'}
+                onClick={() => {
+                  // Clear the redirect timer and go home immediately
+                  setRedirectTimer(0)
+                  window.location.href = '/'
+                }}
                 className="flex-1 bg-white border-2 border-emerald-600 text-emerald-600 rounded-full px-6 py-3 font-medium 
                          hover:bg-emerald-50 transition-all duration-300"
               >
-                Back to Home
+                Skip - Go to Home
               </motion.button>
             </motion.div>
           </motion.div>
@@ -327,11 +366,11 @@ export default function LeadPage() {
           />
         </div>
 
-        {/* Page Header */}
-        <section className="py-20 relative overflow-hidden z-10">
-          <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        {/* Page Header - Mobile Optimized */}
+        <section className="py-12 md:py-20 relative overflow-hidden z-10">
+          <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
             <motion.div
-              className="text-center space-y-6"
+              className="text-center space-y-4 md:space-y-6"
               initial="initial"
               animate={isInView ? "visible" : "initial"}
               variants={animationVariants.luxuryStagger}
@@ -346,7 +385,7 @@ export default function LeadPage() {
             
             <motion.h1 
               variants={animationVariants.premiumSlideUp}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-6"
+              className="text-3xl md:text-5xl lg:text-7xl font-bold tracking-tight leading-tight mb-4 md:mb-6"
               style={{
                 background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
                 WebkitBackgroundClip: 'text',
@@ -367,26 +406,26 @@ export default function LeadPage() {
             
             <motion.p 
               variants={animationVariants.premiumSlideUp}
-              className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed mb-8"
+              className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed mb-6 md:mb-8 px-2"
             >
               Experience luxury auto brokerage. Our AI specialist will call you within 5 minutes to begin your premium vehicle journey.
             </motion.p>
 
-              {/* Trust indicators */}
+              {/* Trust indicators - Mobile Optimized */}
               <motion.div
                 variants={animationVariants.premiumStagger}
-                className="flex flex-wrap justify-center gap-6"
+                className="flex flex-wrap justify-center gap-3 md:gap-6"
               >
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
                     key={index}
                     variants={animationVariants.saasCardEntrance}
                     whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 
-                             border border-white/40 shadow-lg"
+                    className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-3 md:px-4 py-2 
+                             border border-white/40 shadow-lg text-xs md:text-sm"
                   >
                     <span className={indicator.color}>{indicator.icon}</span>
-                    <span className="text-neutral-700 text-sm font-medium">{indicator.text}</span>
+                    <span className="text-neutral-700 font-medium">{indicator.text}</span>
                   </motion.div>
                 ))}
               </motion.div>
@@ -394,49 +433,29 @@ export default function LeadPage() {
           </div>
         </section>
 
-        {/* Content Section */}
-        <section className="pb-20 relative z-10">
-          <div className="max-w-6xl mx-auto px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* Value Propositions */}
-            <motion.div variants={animationVariants.premiumSlideUp} className="space-y-8">
-              <h2 className="text-3xl font-bold text-neutral-900 mb-8">Why Choose Mint Lease?</h2>
-              
-              {valueProps.map((prop, index) => (
-                <motion.div
-                  key={index}
-                  variants={animationVariants.saasCardEntrance}
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  className="bg-[#FEFCFA] rounded-[16px] p-6 border border-white/40
-                           shadow-[0_4px_20px_rgba(139,69,19,0.08)] hover:shadow-[0_8px_32px_rgba(139,69,19,0.12)]
-                           transition-all duration-300"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 ${prop.color} bg-opacity-10 rounded-[12px] flex items-center justify-center`}>
-                      <span className={prop.color}>{prop.icon}</span>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-neutral-900 mb-2">{prop.title}</h3>
-                      <p className="text-neutral-600 leading-relaxed">{prop.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Premium Form */}
-            <motion.div variants={animationVariants.premiumSlideUp}>
+        {/* Content Section - Mobile First */}
+        <section className="pb-12 md:pb-20 relative z-10">
+          <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+            
+            {/* Premium Form - Show first on mobile, second on desktop */}
+            <motion.div 
+              ref={formRef}
+              variants={animationVariants.premiumSlideUp} 
+              className="order-1 lg:order-2"
+              id="quote-form"
+            >
               <motion.form
                 onSubmit={handleSubmit}
-                className="bg-[#FEFCFA] rounded-[20px] p-8 border border-white/40
+                className="bg-[#FEFCFA] rounded-[20px] p-6 md:p-8 border border-white/40
                           shadow-[0_8px_32px_rgba(139,69,19,0.12),0_16px_64px_rgba(139,69,19,0.06)]"
               >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-neutral-900 mb-2">Start Your Journey</h3>
-                  <p className="text-neutral-600">Get your personalized quote in minutes</p>
+                <div className="text-center mb-6 md:mb-8">
+                  <h3 className="text-xl md:text-2xl font-bold text-neutral-900 mb-2">Start Your Journey</h3>
+                  <p className="text-neutral-600 text-sm md:text-base">Get your personalized quote in minutes</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
                   <div>
                     <label className="block text-neutral-700 text-sm font-medium mb-2">First Name</label>
                     <input 
@@ -445,7 +464,7 @@ export default function LeadPage() {
                       onChange={(e) => handleInputChange('firstName', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                                text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
+                               focus:border-emerald-500 transition-all duration-300 text-base"
                       placeholder="Enter first name"
                       required
                     />
@@ -458,14 +477,14 @@ export default function LeadPage() {
                       onChange={(e) => handleInputChange('lastName', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                                text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
+                               focus:border-emerald-500 transition-all duration-300 text-base"
                       placeholder="Enter last name"
                       required
                     />
                   </div>
                 </div>
                 
-                <div className="mb-6">
+                <div className="mb-4 md:mb-6">
                   <label className="block text-neutral-700 text-sm font-medium mb-2">Email Address</label>
                   <input 
                     type="email" 
@@ -473,13 +492,13 @@ export default function LeadPage() {
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                              text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300"
+                             focus:border-emerald-500 transition-all duration-300 text-base"
                     placeholder="your.email@example.com"
                     required
                   />
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-4 md:mb-6">
                   <label className="block text-neutral-700 text-sm font-medium mb-2">Phone Number</label>
                   <input 
                     type="tel" 
@@ -487,13 +506,13 @@ export default function LeadPage() {
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                              text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300"
+                             focus:border-emerald-500 transition-all duration-300 text-base"
                     placeholder="(555) 123-4567"
                     required
                   />
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
                   <div>
                     <label className="block text-neutral-700 text-sm font-medium mb-2">Car Brand</label>
                     <input 
@@ -502,7 +521,7 @@ export default function LeadPage() {
                       onChange={(e) => handleInputChange('carBrand', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                                text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
+                               focus:border-emerald-500 transition-all duration-300 text-base"
                       placeholder="e.g., BMW, Mercedes, Audi"
                       required
                     />
@@ -515,14 +534,14 @@ export default function LeadPage() {
                       onChange={(e) => handleInputChange('carTrim', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                                text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300"
+                               focus:border-emerald-500 transition-all duration-300 text-base"
                       placeholder="e.g., X5, E-Class, A4"
                       required
                     />
                   </div>
                 </div>
                 
-                <div className="mb-6">
+                <div className="mb-4 md:mb-6">
                   <label className="block text-neutral-700 text-sm font-medium mb-2">Credit Score</label>
                   <select
                     value={formData.creditScore}
@@ -538,7 +557,7 @@ export default function LeadPage() {
                     }}
                     className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                              text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300"
+                             focus:border-emerald-500 transition-all duration-300 text-base"
                     required
                   >
                     <option value="">Select your credit score range</option>
@@ -573,14 +592,14 @@ export default function LeadPage() {
                   )}
                 </div>
                 
-                <div className="mb-8">
+                <div className="mb-6 md:mb-8">
                   <label className="block text-neutral-700 text-sm font-medium mb-2">Timeline</label>
                   <select
                     value={formData.timeline}
                     onChange={(e) => handleInputChange('timeline', e.target.value)}
                     className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
                              text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300"
+                             focus:border-emerald-500 transition-all duration-300 text-base"
                     required
                   >
                     <option value="">When do you need a vehicle?</option>
@@ -609,7 +628,7 @@ export default function LeadPage() {
                     damping: 25,
                     mass: 0.1
                   }}
-                  className="w-full text-white border-0 rounded-full px-10 py-4 text-lg font-medium 
+                  className="w-full text-white border-0 rounded-full px-8 md:px-10 py-3 md:py-4 text-base md:text-lg font-medium 
                            transition-all duration-300 group relative overflow-hidden"
                   style={{
                     background: (isSubmitting || creditScoreError || formData.creditScore !== 'excellent') 
@@ -649,7 +668,7 @@ export default function LeadPage() {
                   )}
                 </motion.button>
 
-                <p className="text-neutral-500 text-sm text-center mt-4">
+                <p className="text-neutral-500 text-xs md:text-sm text-center mt-4">
                   {creditScoreError || formData.creditScore !== 'excellent' ? (
                     "Our financing specialists will review your information and explore available options for you."
                   ) : (
@@ -657,6 +676,32 @@ export default function LeadPage() {
                   )}
                 </p>
               </motion.form>
+            </motion.div>
+            
+            {/* Value Propositions - Show second on mobile, first on desktop */}
+            <motion.div variants={animationVariants.premiumSlideUp} className="space-y-6 md:space-y-8 order-2 lg:order-1">
+              <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-6 md:mb-8">Why Choose Mint Lease?</h2>
+              
+              {valueProps.map((prop, index) => (
+                <motion.div
+                  key={index}
+                  variants={animationVariants.saasCardEntrance}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  className="bg-[#FEFCFA] rounded-[16px] p-4 md:p-6 border border-white/40
+                           shadow-[0_4px_20px_rgba(139,69,19,0.08)] hover:shadow-[0_8px_32px_rgba(139,69,19,0.12)]
+                           transition-all duration-300"
+                >
+                  <div className="flex items-start gap-3 md:gap-4">
+                    <div className={`w-10 h-10 md:w-12 md:h-12 ${prop.color} bg-opacity-10 rounded-[12px] flex items-center justify-center flex-shrink-0`}>
+                      <span className={prop.color}>{prop.icon}</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg md:text-xl font-bold text-neutral-900 mb-1 md:mb-2">{prop.title}</h3>
+                      <p className="text-neutral-600 leading-relaxed text-sm md:text-base">{prop.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
             </div>
           </div>
