@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 interface GlobalBackgroundProps {
@@ -32,6 +32,13 @@ export const GlobalBackground: React.FC<GlobalBackgroundProps> = ({
   children,
   className = ''
 }) => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Fix hydration issues by detecting client-side mounting
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const getBackgroundClass = () => {
     switch (variant) {
       case 'hero':
@@ -61,16 +68,18 @@ export const GlobalBackground: React.FC<GlobalBackgroundProps> = ({
       {/* Interactive Background Layers */}
       <motion.div 
         className="mint-background-layer-1"
-        initial={{ opacity: 0 }}
+        initial={isMounted ? { opacity: 0 } : { opacity: 1 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
+        suppressHydrationWarning
       />
       
       <motion.div 
         className="mint-background-layer-2"
-        initial={{ opacity: 0 }}
+        initial={isMounted ? { opacity: 0 } : { opacity: 1 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.2 }}
+        suppressHydrationWarning
       />
 
       {/* Content */}

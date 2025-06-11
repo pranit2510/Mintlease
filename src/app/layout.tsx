@@ -204,77 +204,69 @@ export default function RootLayout({
             })
           }}
         />
-      </head>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              try {
-                var theme = localStorage.getItem('theme');
-                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                }
-              } catch (e) {}
-            })();
-          `
-        }}
-      />
-      <body className={`antialiased overflow-x-hidden max-w-full ${inter.variable} ${sourceSerif.variable} font-sans mint-background`}>
-        {/* Emergency visibility fix script */}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            // Force visibility after page load
-            if (typeof window !== 'undefined') {
-              window.addEventListener('load', function() {
-                // Remove all opacity 0 styles
-                document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach(function(el) {
-                  el.style.opacity = '1';
-                  el.style.visibility = 'visible';
-                });
-                
-                // Fix header specifically
-                const header = document.querySelector('header');
-                if (header) {
-                  header.style.opacity = '1';
-                  header.style.transform = 'none';
-                  header.style.visibility = 'visible';
-                }
-                
-                // Fix all divs that might be hidden
-                document.querySelectorAll('div[style*="opacity"], section[style*="opacity"]').forEach(function(el) {
-                  if (parseFloat(window.getComputedStyle(el).opacity) < 0.1) {
-                    el.style.opacity = '1';
+
+        {/* Theme script - runs before body render */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
                   }
+                } catch (e) {}
+              })();
+            `
+          }}
+        />
+
+        {/* Emergency visibility fix script */}
+        <script
+          async
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Force visibility after page load
+              if (typeof window !== 'undefined') {
+                window.addEventListener('load', function() {
+                  // Remove all opacity 0 styles
+                  document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach(function(el) {
+                    el.style.opacity = '1';
+                    el.style.visibility = 'visible';
+                  });
+                  
+                  // Fix header specifically
+                  const header = document.querySelector('header');
+                  if (header) {
+                    header.style.opacity = '1';
+                    header.style.transform = 'none';
+                    header.style.visibility = 'visible';
+                  }
+                  
+                  // Fix all divs that might be hidden
+                  document.querySelectorAll('div[style*="opacity"], section[style*="opacity"]').forEach(function(el) {
+                    if (parseFloat(window.getComputedStyle(el).opacity) < 0.1) {
+                      el.style.opacity = '1';
+                    }
+                  });
+                  
+                  console.log('Forced visibility fix applied');
                 });
                 
-                console.log('Forced visibility fix applied');
-              });
-              
-              // Also run after a short delay in case of late rendering
-              setTimeout(function() {
-                document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach(function(el) {
-                  el.style.opacity = '1';
-                });
-              }, 100);
-            }
-          `
-        }} />
-        
-        {/* Skip to main content for accessibility */}
-        <a 
-          href="#main-content" 
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-emerald text-white px-4 py-2 rounded-lg z-50"
-        >
-          Skip to main content
-        </a>
-        
-        {/* Main app content with global background */}
-        <div id="main-content" className="min-h-screen relative">
-          {children}
-        </div>
-        
+                // Also run after a short delay in case of late rendering
+                setTimeout(function() {
+                  document.querySelectorAll('[style*="opacity: 0"], [style*="opacity:0"]').forEach(function(el) {
+                    el.style.opacity = '1';
+                  });
+                }, 100);
+              }
+            `
+          }}
+        />
+
         {/* Performance monitoring script */}
         <script
+          async
           dangerouslySetInnerHTML={{
             __html: `
               // Critical performance monitoring
@@ -294,6 +286,20 @@ export default function RootLayout({
             `
           }}
         />
+      </head>
+      <body className={`antialiased overflow-x-hidden max-w-full ${inter.variable} ${sourceSerif.variable} font-sans mint-background`}>
+        {/* Skip to main content for accessibility */}
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-emerald text-white px-4 py-2 rounded-lg z-50"
+        >
+          Skip to main content
+        </a>
+        
+        {/* Main app content with global background */}
+        <div id="main-content" className="min-h-screen relative">
+          {children}
+        </div>
       </body>
     </html>
   );

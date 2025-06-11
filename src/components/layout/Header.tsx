@@ -14,10 +14,16 @@ import Link from 'next/link'
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isRouterReady, setIsRouterReady] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const shouldReduceMotion = useReducedMotion()
   const lastScrollTime = useRef(0)
   const router = useRouter()
   const pathname = usePathname()
+
+  // Fix hydration issues by detecting client-side mounting
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Check if router is ready for navigation
   useEffect(() => {
@@ -345,7 +351,7 @@ export const Header: React.FC = () => {
       {/* 120fps Optimized Dynamic Navigation Header */}
       <motion.header
         className="fixed z-50 w-full"
-        initial={{ y: -100, opacity: 0 }}
+        initial={isMounted ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }}
         animate={{ 
           y: 0, 
           opacity: 1,
@@ -362,6 +368,7 @@ export const Header: React.FC = () => {
           x: 0,
           willChange: 'transform',
         }}
+        suppressHydrationWarning
       >
         <motion.div
           className="relative overflow-hidden backdrop-blur-xl"
@@ -396,6 +403,7 @@ export const Header: React.FC = () => {
               borderRadius: borderRadius,
               willChange: 'opacity',
             }}
+            suppressHydrationWarning
           />
           
           {/* Enhanced Premium Depth Layer - Middle */}
@@ -407,6 +415,7 @@ export const Header: React.FC = () => {
               borderRadius: borderRadius,
               willChange: 'opacity',
             }}
+            suppressHydrationWarning
           />
           
           {/* Enhanced Premium Inner Glow */}
@@ -418,6 +427,7 @@ export const Header: React.FC = () => {
               borderRadius: useTransform(borderRadius, (value) => Math.max(0, value - 2)),
               willChange: 'opacity',
             }}
+            suppressHydrationWarning
           />
           
 
@@ -591,6 +601,7 @@ export const Header: React.FC = () => {
                         zIndex: 1,
                         pointerEvents: 'none', // Don't interfere with button clicks
                       }}
+                      suppressHydrationWarning
                     />
                     
                     {/* Div with button behavior - ABOVE background */}
@@ -612,7 +623,7 @@ export const Header: React.FC = () => {
                       data-navbar-button="true"
                       className="relative text-neutral-600 dark:text-neutral-400 font-medium px-3 md:px-4 lg:px-6 xl:px-8 py-3 md:py-4 w-full h-full cursor-pointer touch-manipulation focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-none border-0 border-none ring-0 ring-offset-0"
                       variants={{
-                        initial: { opacity: 0, y: -8 },
+                        initial: isMounted ? { opacity: 0, y: -8 } : { opacity: 1, y: 0 },
                         animate: { opacity: 1, y: 0 },
                         hover: { 
                           scale: shouldReduceMotion ? 1 : 1.01,
@@ -642,6 +653,7 @@ export const Header: React.FC = () => {
                         WebkitAppearance: 'none',
                         MozAppearance: 'none'
                       } as React.CSSProperties}
+                      suppressHydrationWarning
                     >
                       {item.label}
                     </motion.div>
@@ -684,6 +696,7 @@ export const Header: React.FC = () => {
                           restDelta: 0.0001,
                           delay: 0
                         }}
+                        suppressHydrationWarning
                       />
                       
                       {/* Right border - Flowing cascade */}
@@ -716,6 +729,7 @@ export const Header: React.FC = () => {
                           restDelta: 0.0001,
                           delay: 0.03
                         }}
+                        suppressHydrationWarning
                       />
                       
                       {/* Bottom border - Elegant continuation */}
@@ -749,6 +763,7 @@ export const Header: React.FC = () => {
                           restDelta: 0.0001,
                           delay: 0.06
                         }}
+                        suppressHydrationWarning
                       />
                       
                       {/* Left border - Perfect completion */}
@@ -782,6 +797,7 @@ export const Header: React.FC = () => {
                           restDelta: 0.0001,
                           delay: 0.09
                         }}
+                        suppressHydrationWarning
                       />
                     </motion.div>
                   </motion.div>
@@ -791,7 +807,7 @@ export const Header: React.FC = () => {
               {/* CTA Button & Mobile Menu */}
               <div className="flex items-center gap-2 mobile-sm:gap-3 sm:gap-4 md:gap-6 lg:gap-8 mr-1 mobile-sm:mr-2 lg:mr-4">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={isMounted ? { opacity: 0, scale: 0.9 } : { opacity: 1, scale: 1 }}
                   animate={{ 
                     opacity: 1, 
                     scale: 1,
@@ -805,6 +821,7 @@ export const Header: React.FC = () => {
                     scale: 0.98,
                     y: 0
                   }}
+                  suppressHydrationWarning
                 >
                   <motion.div
                     whileHover={{ 
@@ -900,22 +917,24 @@ export const Header: React.FC = () => {
                     {isMobileMenuOpen ? (
                       <motion.div
                         key="close"
-                        initial={{ rotate: -90, opacity: 0 }}
+                        initial={isMounted ? { rotate: -90, opacity: 0 } : { rotate: 0, opacity: 1 }}
                         animate={{ rotate: 0, opacity: 1 }}
                         exit={{ rotate: 90, opacity: 0 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
+                        suppressHydrationWarning
                       >
                         <X className="w-5 h-5 mobile-sm:w-6 mobile-sm:h-6 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
                     ) : (
                       <motion.div
                         key="menu"
-                        initial={{ rotate: 90, opacity: 0 }}
+                        initial={isMounted ? { rotate: 90, opacity: 0 } : { rotate: 0, opacity: 1 }}
                         animate={{ rotate: 0, opacity: 1 }}
                         exit={{ rotate: -90, opacity: 0 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="relative z-10"
+                        suppressHydrationWarning
                       >
                         <Menu className="w-5 h-5 mobile-sm:w-6 mobile-sm:h-6 text-emerald-700 dark:text-emerald-300" />
                       </motion.div>
