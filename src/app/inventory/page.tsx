@@ -9,8 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { MagnifyingGlassIcon, FunnelIcon, Squares2X2Icon, ListBulletIcon, XMarkIcon, ChevronDownIcon, CheckIcon, HeartIcon as HeartIconOutline } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartIconSolid, ShareIcon } from '@heroicons/react/24/solid'
 import { Shield, DollarSign, Truck } from 'lucide-react'
-import { Slider, Box, Typography, ThemeProvider, createTheme } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { Slider } from '@mui/material'
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<
@@ -578,57 +577,8 @@ const VehicleCard: React.FC<{
   )
 })
 
-// Custom Material UI theme for luxury aesthetic
-const luxuryTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#047857', // emerald-700
-    },
-    secondary: {
-      main: '#f59e0b', // amber-500
-    },
-  },
-})
-
-// Styled Material UI Slider for luxury aesthetic
-const LuxurySlider = styled(Slider)(({ theme }) => ({
-  color: '#047857',
-  height: 8,
-  margin: '16px 0', // Add vertical margin to ensure thumb visibility
-  '& .MuiSlider-track': {
-    border: 'none',
-    background: 'linear-gradient(45deg, #047857, #059669)',
-    borderRadius: 4,
-  },
-  '& .MuiSlider-rail': {
-    background: 'rgba(5, 150, 105, 0.1)',
-    borderRadius: 4,
-  },
-  '& .MuiSlider-thumb': {
-    height: 24,
-    width: 24,
-    backgroundColor: '#fff',
-    border: '3px solid #047857',
-    boxShadow: '0 4px 12px rgba(5, 150, 105, 0.25)',
-    '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-      boxShadow: '0 0 0 8px rgba(5, 150, 105, 0.15)',
-      border: '3px solid #059669',
-    },
-    '&:before': {
-      display: 'none',
-    },
-  },
-  '& .MuiSlider-valueLabel': {
-    lineHeight: 1.2,
-    fontSize: 12,
-    background: 'linear-gradient(45deg, #047857, #059669)',
-    padding: '6px 12px',
-    borderRadius: '8px',
-    '&:before': {
-      color: '#047857',
-    },
-  },
-}))
+// Add display name for VehicleCard
+VehicleCard.displayName = 'VehicleCard'
 
 // Luxury Range Slider Component
 const RangeSlider: React.FC<{
@@ -676,66 +626,85 @@ const RangeSlider: React.FC<{
       }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
-      <div className="space-y-2 sm:space-y-4">
-        <div className="flex flex-col gap-1">
-          <Typography
-            variant="subtitle2"
-            className="text-slate-700 font-semibold text-sm sm:text-base"
-          >
-            {label}
-          </Typography>
-          <Typography
-            variant="body2"
-            className="text-emerald-600 font-semibold text-right text-xs sm:text-base"
-          >
-            {formatValue(value[0])} - {formatValue(value[1])}
-          </Typography>
-        </div>
-        
-        <ThemeProvider theme={luxuryTheme}>
-          <Box sx={{ 
-            px: { xs: 1, sm: 3 }, 
-            py: 1, 
-            width: '100%', 
-            maxWidth: '100%', 
-            overflow: 'visible',
-            '& .MuiSlider-thumb': {
-              width: { xs: 20, sm: 24 },
-              height: { xs: 20, sm: 24 }
-            },
-            '& .MuiSlider-rail': {
-              height: { xs: 6, sm: 8 }
-            },
+      <div className="flex justify-between items-center mb-2 sm:mb-4">
+        <label className="text-sm sm:text-base font-semibold text-slate-800">{label}</label>
+        <span className="text-xs sm:text-sm text-slate-600 font-medium">
+          {formatValue(value[0])} - {formatValue(value[1])}
+        </span>
+      </div>
+      <div className="px-2 sm:px-4">
+        <Slider
+          value={value}
+          onChange={handleChange}
+          valueLabelDisplay="auto"
+          valueLabelFormat={formatValue}
+          min={min}
+          max={max}
+          step={step}
+          sx={{
+            color: '#10b981',
+            height: 6,
             '& .MuiSlider-track': {
-              height: { xs: 6, sm: 8 }
-            }
-          }}>
-            <LuxurySlider
-              value={value}
-              onChange={handleChange}
-              valueLabelDisplay="auto"
-              valueLabelFormat={formatValue}
-              min={min}
-              max={max}
-              step={step}
-              disableSwap
-            />
-          </Box>
-        </ThemeProvider>
-        
-        <div className="flex justify-between text-xs sm:text-sm text-neutral-500">
-          <span>{formatValue(min)}</span>
-          <span>{formatValue(max)}</span>
-        </div>
+              border: 'none',
+              background: 'linear-gradient(90deg, #10b981, #059669)',
+            },
+            '& .MuiSlider-thumb': {
+              height: 20,
+              width: 20,
+              backgroundColor: '#fff',
+              border: '3px solid #10b981',
+              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+              '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+                boxShadow: '0 0 0 8px rgba(16, 185, 129, 0.16)',
+                border: '3px solid #059669',
+              },
+              '&:before': {
+                display: 'none',
+              },
+            },
+            '& .MuiSlider-valueLabel': {
+              lineHeight: 1.2,
+              fontSize: 12,
+              background: 'unset',
+              padding: 0,
+              width: 32,
+              height: 32,
+              borderRadius: '50% 50% 50% 0',
+              backgroundColor: '#10b981',
+              transformOrigin: 'bottom left',
+              transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
+              '&:before': { display: 'none' },
+              '&.MuiSlider-valueLabelOpen': {
+                transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
+              },
+              '& > *': {
+                transform: 'rotate(45deg)',
+              },
+            },
+          }}
+        />
       </div>
     </motion.div>
   )
 }
 
+// Add display name
+RangeSlider.displayName = 'RangeSlider'
+
 // Filter Sidebar Component
 const FilterSidebar: React.FC<{
-  filters: any;
-  updateFilter: (key: string, value: any) => void;
+  filters: {
+    priceRange: [number, number];
+    msrpRange: [number, number];
+    yearRange: [number, number];
+    makes: string[];
+    models: string[];
+    mileageRange: [number, number];
+    locations: string[];
+    features: string[];
+    availableOnly: boolean;
+  };
+  updateFilter: (key: string, value: unknown) => void;
   clearAllFilters: () => void;
   uniqueMakes: string[];
   uniqueModels: string[];
@@ -744,16 +713,6 @@ const FilterSidebar: React.FC<{
   filteredVehicles: MockVehicle[];
   setIsFilterOpen?: (open: boolean) => void;
 }> = React.memo(({ filters, updateFilter, clearAllFilters, uniqueMakes, uniqueModels, uniqueLocations, allFeatures, filteredVehicles, setIsFilterOpen }) => {
-  
-  // Enhanced number formatting
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
 
   const CheckboxList: React.FC<{
     label: string;
@@ -838,6 +797,9 @@ const FilterSidebar: React.FC<{
       </div>
     )
   }
+
+  // Add display name
+  CheckboxList.displayName = 'CheckboxList'
 
   return (
     <motion.div
@@ -1040,22 +1002,35 @@ const FilterSidebar: React.FC<{
           </motion.div>
         </div>
 
-        {/* Mobile Apply Button */}
-        <div className="lg:hidden pt-3 sm:pt-6 border-t border-slate-200/50 sticky bottom-0 bg-gradient-to-t from-white/95 to-transparent backdrop-blur-sm">
+        {/* Mobile Apply Button - Enhanced */}
+        <div className="lg:hidden pt-6 border-t border-slate-200/30 sticky bottom-0 z-10"
+          style={{
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%)',
+            backdropFilter: 'blur(16px) saturate(150%)',
+          }}
+        >
           <motion.button
-                         onClick={() => {
-               if (typeof window !== 'undefined' && window.innerWidth < 1024 && setIsFilterOpen) {
-                 setTimeout(() => setIsFilterOpen(false), 100)
-               }
-             }}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3.5 px-6 rounded-xl shadow-md transition-all min-h-[48px] touch-manipulation flex items-center justify-center gap-2 text-sm"
-            whileHover={{ scale: 1.01 }}
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.innerWidth < 1024 && setIsFilterOpen) {
+                setIsFilterOpen(false)
+              }
+            }}
+            className="w-full text-white font-semibold py-4 px-6 rounded-2xl shadow-lg transition-all min-h-[52px] touch-manipulation flex items-center justify-center gap-3 text-base"
+            style={{
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              boxShadow: '0 8px 32px rgba(16, 185, 129, 0.3), 0 4px 16px rgba(16, 185, 129, 0.2)',
+            }}
+            whileHover={{ 
+              scale: 1.02,
+              y: -2,
+              boxShadow: '0 12px 40px rgba(16, 185, 129, 0.4), 0 6px 20px rgba(16, 185, 129, 0.25)',
+            }}
             whileTap={{ scale: 0.98 }}
           >
             <span>Apply Filters</span>
-            <span className="text-xs bg-white/25 px-2 py-0.5 rounded-full font-semibold">
+            <div className="bg-white/20 px-3 py-1 rounded-full font-bold text-sm backdrop-blur-sm">
               {filteredVehicles.length}
-            </span>
+            </div>
           </motion.button>
         </div>
       </div>
@@ -1064,6 +1039,9 @@ const FilterSidebar: React.FC<{
     </motion.div>
   )
 })
+
+// Add display name for FilterSidebar
+FilterSidebar.displayName = 'FilterSidebar'
 
 function InventoryPageContent() {
   // Test Tailwind
@@ -1074,30 +1052,28 @@ function InventoryPageContent() {
   // Mobile-responsive filter sidebar state
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [filteredVehicles, setFilteredVehicles] = useState(mockVehicles)
-  const [scrollY, setScrollY] = useState(0)
   // Centralized favorites state management
   const [favoriteVehicles, setFavoriteVehicles] = useState<Set<number>>(new Set())
   
-  // Parallax scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      requestAnimationFrame(() => {
-        setScrollY(window.scrollY)
-      })
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-  
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{
+    priceRange: [number, number];
+    msrpRange: [number, number];
+    yearRange: [number, number];
+    makes: string[];
+    models: string[];
+    mileageRange: [number, number];
+    locations: string[];
+    features: string[];
+    availableOnly: boolean;
+  }>({
     priceRange: [0, 2000],
     msrpRange: [20000, 150000],
     yearRange: [2024, 2025],
-    makes: [] as string[],
-    models: [] as string[],
+    makes: [],
+    models: [],
     mileageRange: [5000, 20000],
-    locations: [] as string[],
-    features: [] as string[],
+    locations: [],
+    features: [],
     availableOnly: false
   })
 
@@ -1107,7 +1083,7 @@ function InventoryPageContent() {
   const uniqueLocations = useMemo(() => [...new Set(mockVehicles.map(v => v.location))].sort(), [])
   const allFeatures = useMemo(() => [...new Set(mockVehicles.flatMap(v => v.features))].sort(), [])
 
-  const updateFilter = useCallback((key: string, value: any) => {
+  const updateFilter = useCallback((key: string, value: unknown) => {
     setFilters(prev => ({ ...prev, [key]: value }))
     // Auto-close mobile filter after selection for better UX
     if (typeof window !== 'undefined' && window.innerWidth < 1024 && key !== 'priceRange' && key !== 'msrpRange' && key !== 'yearRange' && key !== 'mileageRange') {
@@ -1310,75 +1286,126 @@ function InventoryPageContent() {
           <div className="flex flex-col lg:flex-row gap-6 relative">
             {/* Mobile Filter Button */}
             <div className="lg:hidden mb-6">
-                                <motion.button
-                    onClick={() => setIsFilterOpen(true)}
-                    className="flex items-center gap-2 px-6 py-4 bg-emerald-600 text-white rounded-full font-medium shadow-lg hover:bg-emerald-700 transition-colors min-h-[44px] touch-manipulation"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <FunnelIcon className="w-5 h-5" />
-                    Filters
-                  </motion.button>
+              <motion.button
+                onClick={() => setIsFilterOpen(true)}
+                className="flex items-center gap-3 px-6 py-4 bg-white/90 backdrop-blur-sm text-slate-700 rounded-2xl font-medium shadow-lg hover:shadow-xl border border-slate-200/50 transition-all duration-300 min-h-[44px] touch-manipulation"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.90) 100%)',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1)',
+                }}
+                whileHover={{ 
+                  scale: 1.02,
+                  y: -2,
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.15)',
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <FunnelIcon className="w-5 h-5 text-emerald-600" />
+                <span>Filter & Sort</span>
+                <div className="ml-auto bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full font-semibold">
+                  {filteredVehicles.length}
+                </div>
+              </motion.button>
             </div>
 
-            {/* Filter Sidebar - Desktop sticky, Mobile overlay */}
+            {/* Filter Sidebar - Desktop sticky, Mobile side drawer */}
             <div className={`
               lg:w-80 lg:flex-shrink-0 lg:h-full
               ${isFilterOpen ? 'fixed inset-0 z-50 lg:relative lg:inset-auto' : 'hidden lg:block'}
             `}>
-              {/* Mobile Backdrop */}
+              {/* Mobile Backdrop with blur */}
               <AnimatePresence>
                 {isFilterOpen && (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+                    animate={{ opacity: 1, backdropFilter: 'blur(8px)' }}
+                    exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="fixed inset-0 bg-black/20 z-40 lg:hidden"
                     onClick={() => setIsFilterOpen(false)}
                   />
                 )}
               </AnimatePresence>
               
-              {/* Sidebar Content */}
-              <motion.div 
-                initial={{ x: isFilterOpen ? -100 : 0, opacity: isFilterOpen ? 0 : 1 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -100, opacity: 0 }}
-                className={`
-                  lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:overflow-x-hidden
-                  ${isFilterOpen ? 'fixed left-0 top-0 bottom-0 w-80 max-w-[90vw] z-50 overflow-y-auto' : ''}
-                `}
-              >
-                                 {/* Mobile Close Button */}
-                 {isFilterOpen && (
-                   <div className="lg:hidden p-4 border-b border-neutral-200 bg-white sticky top-0 z-10 shadow-sm">
-                     <motion.button
-                       onClick={() => setIsFilterOpen(false)}
-                       className="flex items-center gap-2 text-neutral-600 hover:text-neutral-800 p-2 -m-2 min-h-[44px] touch-manipulation rounded-lg"
-                       whileHover={{ scale: 1.05 }}
-                       whileTap={{ scale: 0.95 }}
-                     >
-                       <XMarkIcon className="w-6 h-6" />
-                       <span className="font-medium">Close Filters</span>
-                     </motion.button>
-                   </div>
-                 )}
-                
-                <FilterSidebar
-                  filters={filters}
-                  updateFilter={updateFilter}
-                  clearAllFilters={() => {
-                    clearAllFilters()
-                    if (typeof window !== 'undefined' && window.innerWidth < 1024) setIsFilterOpen(false)
-                  }}
-                  uniqueMakes={uniqueMakes}
-                  uniqueModels={uniqueModels}
-                  uniqueLocations={uniqueLocations}
-                  allFeatures={allFeatures}
-                  filteredVehicles={filteredVehicles}
-                  setIsFilterOpen={setIsFilterOpen}
-                />
-              </motion.div>
+              {/* Sidebar Content - Slide from left */}
+              <AnimatePresence>
+                {(isFilterOpen || typeof window === 'undefined' || window.innerWidth >= 1024) && (
+                  <motion.div 
+                    initial={{ x: typeof window !== 'undefined' && window.innerWidth < 1024 ? -400 : 0, opacity: 1 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: typeof window !== 'undefined' && window.innerWidth < 1024 ? -400 : 0, opacity: 0 }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 300, 
+                      damping: 30, 
+                      mass: 0.8,
+                      duration: 0.4
+                    }}
+                    className={`
+                      lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:overflow-x-hidden
+                      ${isFilterOpen ? 'fixed left-0 top-0 bottom-0 w-96 max-w-[85vw] z-50 overflow-y-auto' : ''}
+                    `}
+                    style={{
+                      background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                        'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.96) 100%)' :
+                        'transparent',
+                      backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                        'blur(20px) saturate(180%)' : 
+                        'none',
+                      WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                        'blur(20px) saturate(180%)' : 
+                        'none',
+                      boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
+                        '4px 0 32px rgba(0, 0, 0, 0.12), 8px 0 64px rgba(0, 0, 0, 0.08)' :
+                        'none',
+                    }}
+                  >
+                    {/* Mobile Header with improved close button */}
+                    {isFilterOpen && (
+                      <div className="lg:hidden sticky top-0 z-20 p-6 border-b border-slate-200/30"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%)',
+                          backdropFilter: 'blur(12px) saturate(150%)',
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold text-slate-800">Filter Vehicles</h3>
+                            <p className="text-sm text-slate-500 mt-1">
+                              {filteredVehicles.length} vehicles match your criteria
+                            </p>
+                          </div>
+                          <motion.button
+                            onClick={() => setIsFilterOpen(false)}
+                            className="p-2 rounded-xl bg-slate-100/60 hover:bg-slate-200/60 text-slate-600 hover:text-slate-800 transition-all duration-200 backdrop-blur-sm"
+                            whileHover={{ scale: 1.05, rotate: 90 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <XMarkIcon className="w-6 h-6" />
+                          </motion.button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <FilterSidebar
+                      filters={filters}
+                      updateFilter={updateFilter}
+                      clearAllFilters={() => {
+                        clearAllFilters()
+                        if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                          setTimeout(() => setIsFilterOpen(false), 200)
+                        }
+                      }}
+                      uniqueMakes={uniqueMakes}
+                      uniqueModels={uniqueModels}
+                      uniqueLocations={uniqueLocations}
+                      allFeatures={allFeatures}
+                      filteredVehicles={filteredVehicles}
+                      setIsFilterOpen={setIsFilterOpen}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Main Content Area */}
