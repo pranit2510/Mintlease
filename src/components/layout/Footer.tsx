@@ -51,7 +51,6 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
     { label: "How It Works", href: "#how-it-works" },
     { label: "Inventory", href: "/inventory" },
     { label: "Calculator", href: "/calculator" },
-    { label: "Get Quote", href: "/lead" },
     { label: "Get a Quote", href: "/lead" }
   ]
 

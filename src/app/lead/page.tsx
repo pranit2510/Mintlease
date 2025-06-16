@@ -353,19 +353,23 @@ export default function LeadPage() {
           </motion.div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Form Section */}
-          <motion.div
-            className="order-2 lg:order-1"
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            suppressHydrationWarning
-          >
-            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20">
-              <h2 className="text-2xl font-bold text-neutral-800 mb-6">
+        {/* Form Section - Full Width Priority */}
+        <motion.div
+          className="max-w-2xl mx-auto mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          suppressHydrationWarning
+        >
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-neutral-800 mb-3">
                 Get Your Free Quote
               </h2>
+              <p className="text-neutral-600">
+                Fill out the form below and we'll contact you within 5 minutes
+              </p>
+            </div>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -531,41 +535,45 @@ export default function LeadPage() {
             </div>
           </motion.div>
 
-          {/* Value Propositions */}
-          <motion.div
-            className="order-1 lg:order-2"
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            suppressHydrationWarning
-          >
-            <div className="space-y-8">
-              {valueProps.map((prop, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/40"
-                  whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
-                  transition={{ duration: 0.2 }}
-                  suppressHydrationWarning
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className={`${prop.color} bg-white rounded-xl p-3 shadow-sm`}>
-                      {prop.icon}
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-neutral-800 mb-2">
-                        {prop.title}
-                      </h3>
-                      <p className="text-neutral-600 leading-relaxed">
-                        {prop.description}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+        {/* Value Propositions - Secondary Section */}
+        <motion.div
+          className="max-w-6xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          suppressHydrationWarning
+        >
+          <div className="text-center mb-12">
+            <h3 className="text-2xl font-bold text-neutral-800 mb-4">
+              Why Choose Mint Lease?
+            </h3>
+            <p className="text-neutral-600 max-w-2xl mx-auto">
+              We provide premium auto brokerage services that save you time, money, and hassle
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {valueProps.map((prop, index) => (
+              <motion.div
+                key={index}
+                className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/40 text-center"
+                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+                transition={{ duration: 0.2 }}
+                suppressHydrationWarning
+              >
+                <div className={`${prop.color} bg-white rounded-xl p-3 shadow-sm w-fit mx-auto mb-4`}>
+                  {prop.icon}
+                </div>
+                <h4 className="text-lg font-semibold text-neutral-800 mb-2">
+                  {prop.title}
+                </h4>
+                <p className="text-neutral-600 text-sm leading-relaxed">
+                  {prop.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </motion.main>
     </>

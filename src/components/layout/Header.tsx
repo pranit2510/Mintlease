@@ -8,15 +8,15 @@ import { PremiumBadge } from '@/components/ui/PremiumBadge'
 
 /**
  * Premium Header Component - Luxury Navigation with Advanced Interactions
- * Features: Floating navbar, ultra-smooth animations, intelligent scroll behavior
+ * Features: Blended resting state, ultra-smooth animations, intelligent scroll behavior
  */
 
 // Ultra-smooth spring configuration for premium feel
 const ultraSmoothConfig = {
   type: "spring" as const,
-  stiffness: 400,
-  damping: 30,
-  mass: 0.8,
+  stiffness: 350,
+  damping: 35,
+  mass: 0.6,
   restSpeed: 0.01,
   restDelta: 0.01
 }
@@ -24,11 +24,19 @@ const ultraSmoothConfig = {
 // Floating return animation with enhanced easing
 const floatingReturnConfig = {
   type: "spring" as const,
-  stiffness: 300,
-  damping: 25,
-  mass: 0.5,
+  stiffness: 280,
+  damping: 28,
+  mass: 0.4,
   restSpeed: 0.1,
   restDelta: 0.01
+}
+
+// Gentle hover animations
+const gentleHoverConfig = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 25,
+  mass: 0.3
 }
 
 // Navigation items with luxury styling
@@ -45,17 +53,20 @@ export function Header() {
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isRouterReady, setIsRouterReady] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const shouldReduceMotion = useReducedMotion()
   
   // Scroll tracking for floating navbar effect
   const scrollY = useMotionValue(0)
   const scrollYSpring = useSpring(scrollY, ultraSmoothConfig)
   
-  // Enhanced navbar transformations
-  const navbarY = useTransform(scrollYSpring, [0, 100], [0, -8])
-  const navbarScale = useTransform(scrollYSpring, [0, 100], [1, 0.98])
-  const navbarBlur = useTransform(scrollYSpring, [0, 100], [0, 20])
-  const navbarOpacity = useTransform(scrollYSpring, [0, 100], [0.95, 0.98])
+  // Enhanced navbar transformations with blended resting state
+  const navbarY = useTransform(scrollYSpring, [0, 50, 150], [0, -2, -8])
+  const navbarScale = useTransform(scrollYSpring, [0, 100, 200], [1, 0.995, 0.985])
+  const navbarBlur = useTransform(scrollYSpring, [0, 50, 150], [8, 12, 20])
+  const navbarOpacity = useTransform(scrollYSpring, [0, 50, 150], [0.7, 0.85, 0.95])
+  const borderOpacity = useTransform(scrollYSpring, [0, 50, 150], [0.1, 0.15, 0.25])
+  const shadowIntensity = useTransform(scrollYSpring, [0, 100], [0.1, 0.4])
 
   // Router ready detection
   useEffect(() => {
@@ -245,13 +256,15 @@ export function Header() {
 
   return (
     <>
-      {/* Premium Floating Header */}
+      {/* Premium Floating Header with Blended Resting State */}
       <motion.header
         className="fixed top-0 left-0 right-0 z-[9999] px-4 pt-4"
         style={{
           y: navbarY,
           scale: navbarScale,
         }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
         suppressHydrationWarning
       >
         <motion.nav
@@ -262,122 +275,204 @@ export function Header() {
           }}
           suppressHydrationWarning
         >
-          <div className="glass-strong rounded-2xl border border-white/20 bg-white/80 px-6 py-4 shadow-2xl backdrop-blur-xl">
-            <div className="flex items-center justify-between">
-              {/* Logo Section */}
+          {/* Enhanced Glass Container with Dynamic Styling */}
+          <motion.div 
+            className="relative rounded-2xl bg-white/60 px-6 py-4 backdrop-blur-xl transition-all duration-700 ease-out"
+            style={{
+              borderColor: `rgba(255, 255, 255, ${borderOpacity.get()})`,
+              boxShadow: `0 8px 32px rgba(0, 0, 0, ${shadowIntensity.get()}), 0 1px 0 rgba(255, 255, 255, 0.2) inset`,
+            }}
+            animate={{
+              backgroundColor: isHovered 
+                ? 'rgba(255, 255, 255, 0.9)' 
+                : scrollY.get() > 50 
+                  ? 'rgba(255, 255, 255, 0.8)' 
+                  : 'rgba(255, 255, 255, 0.6)',
+              borderWidth: isHovered ? '1px' : scrollY.get() > 50 ? '1px' : '0.5px',
+            }}
+            transition={ultraSmoothConfig}
+            suppressHydrationWarning
+          >
+            {/* Subtle gradient overlay for depth */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+            
+            <div className="relative flex items-center justify-between">
+              {/* Logo Section with Enhanced Animation */}
               <motion.div
                 className="flex items-center space-x-3"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                transition={gentleHoverConfig}
                 suppressHydrationWarning
               >
                 <button
                   onClick={() => handleNavigation('/')}
-                  className="flex items-center space-x-3 transition-all duration-300 hover:opacity-80"
+                  className="group flex items-center space-x-3 transition-all duration-300 hover:opacity-90"
                   data-navbar-button="true"
                   suppressHydrationWarning
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg">
+                  <motion.div 
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 shadow-lg"
+                    whileHover={{ 
+                      rotate: [0, -1, 1, 0],
+                      scale: 1.05,
+                      boxShadow: "0 8px 20px rgba(16, 185, 129, 0.3)"
+                    }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                  >
                     <span className="text-lg font-bold text-white">M</span>
-                  </div>
-                  <div className="hidden sm:block">
-                    <h1 className="text-xl font-bold text-neutral-800">Mint Lease</h1>
-                    <p className="text-xs text-neutral-600">Premium Auto Brokerage</p>
+                  </motion.div>
+                  <div className="ml-3">
+                    <h1 className="text-lg sm:text-xl font-bold text-neutral-800 group-hover:text-emerald-700 transition-colors duration-300">Mint Lease</h1>
+                    <p className="hidden sm:block text-xs text-neutral-600 group-hover:text-neutral-700 transition-colors duration-300">Premium Auto Brokerage</p>
                   </div>
                 </button>
               </motion.div>
 
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-1" suppressHydrationWarning>
+              {/* Desktop Navigation with Enhanced Effects */}
+              <div className="hidden md:flex items-center space-x-0.5" suppressHydrationWarning>
                 {navigationItems.map((item, index) => (
                   <motion.button
                     key={item.name}
                     onClick={() => handleNavigation(item.href)}
-                    className={`group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    className={`group relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-500 ${
                       pathname === item.href
-                        ? 'bg-emerald-100 text-emerald-700 shadow-sm'
-                        : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900'
+                        ? 'bg-emerald-100/80 text-emerald-700 shadow-sm backdrop-blur-sm'
+                        : 'text-neutral-700 hover:bg-white/60 hover:text-neutral-900 hover:shadow-sm'
                     }`}
-                    whileHover={{ scale: 1.05, y: -1 }}
+                    whileHover={{ 
+                      scale: 1.05, 
+                      y: -1,
+                      backgroundColor: pathname === item.href ? 'rgba(209, 250, 229, 0.9)' : 'rgba(255, 255, 255, 0.8)'
+                    }}
                     whileTap={{ scale: 0.95 }}
+                    transition={gentleHoverConfig}
                     data-navbar-button="true"
                     suppressHydrationWarning
                   >
                     <span className="relative z-10">{item.name}</span>
                     {pathname === item.href && (
                       <motion.div
-                        className="absolute inset-0 rounded-xl bg-emerald-50 border border-emerald-200"
-                        layoutId="activeTab"
+                        className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200/50"
+                        layoutId="activeTab" 
                         transition={ultraSmoothConfig}
                         suppressHydrationWarning
                       />
                     )}
+                    
+                    {/* Hover glow effect */}
+                    <motion.div
+                      className="absolute inset-0 rounded-xl bg-white/40 opacity-0"
+                      whileHover={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      suppressHydrationWarning
+                    />
                   </motion.button>
                 ))}
               </div>
 
-              {/* CTA Button */}
+              {/* Enhanced CTA Button */}
               <div className="hidden md:block" suppressHydrationWarning>
                 <motion.button
                   onClick={() => handleNavigation('/lead')}
-                  className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl"
-                  whileHover={{ scale: 1.05, y: -1 }}
+                  className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-500 hover:shadow-xl"
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -1,
+                    boxShadow: "0 12px 24px rgba(16, 185, 129, 0.4)"
+                  }}
                   whileTap={{ scale: 0.95 }}
+                  transition={gentleHoverConfig}
                   data-navbar-button="true"
                   suppressHydrationWarning
                 >
                   <span className="relative z-10">Get Started</span>
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-emerald-700 to-emerald-800"
+                    className="absolute inset-0 bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900"
                     initial={{ x: '100%' }}
                     whileHover={{ x: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    suppressHydrationWarning
+                  />
+                  
+                  {/* Shimmer effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+                    initial={{ x: '-100%' }}
+                    whileHover={{ x: '200%' }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
                     suppressHydrationWarning
                   />
                 </motion.button>
               </div>
 
-              {/* Mobile Menu Button */}
+              {/* Enhanced Mobile Menu Button */}
               <motion.button
                 onClick={toggleMobileMenu}
-                className="md:hidden rounded-xl bg-neutral-100 p-2 text-neutral-700 transition-colors hover:bg-neutral-200"
+                className="md:hidden rounded-xl bg-white/60 p-2.5 text-neutral-700 transition-all duration-300 hover:bg-white/80 hover:shadow-md backdrop-blur-sm"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                transition={gentleHoverConfig}
                 data-navbar-button="true"
                 suppressHydrationWarning
               >
-                {isMobileMenuOpen ? (
-                  <XMarkIcon className="h-6 w-6" />
-                ) : (
-                  <Bars3Icon className="h-6 w-6" />
-                )}
+                <motion.div
+                  animate={{ rotate: isMobileMenuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {isMobileMenuOpen ? (
+                    <XMarkIcon className="h-6 w-6" />
+                  ) : (
+                    <Bars3Icon className="h-6 w-6" />
+                  )}
+                </motion.div>
               </motion.button>
             </div>
-          </div>
+          </motion.div>
         </motion.nav>
       </motion.header>
 
-      {/* Mobile Menu - Ultra Simple Implementation for Next.js 15 */}
+      {/* Enhanced Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[9998] md:hidden">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50"
+        <motion.div 
+          className="fixed inset-0 z-[9998] md:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {/* Enhanced Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
           />
 
-          {/* Menu Panel */}
-          <div className="absolute top-20 right-4 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-gray-200">
+          {/* Enhanced Menu Panel */}
+          <motion.div 
+            className="absolute top-20 right-4 w-80 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20"
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
             <div className="p-6">
-              {/* Mobile Navigation Items */}
+              {/* Mobile Navigation Items with Enhanced Styling */}
               <div className="space-y-3">
-                {navigationItems.map((item) => (
-                  <div key={item.name}>
+                {navigationItems.map((item, index) => (
+                  <motion.div 
+                    key={item.name}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.3 }}
+                  >
                     <button
                       onClick={() => handleNavigation(item.href)}
-                      className={`w-full text-left p-4 rounded-xl border transition-colors ${
+                      className={`w-full text-left p-4 rounded-xl border transition-all duration-300 ${
                         pathname === item.href
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                          : 'bg-white border-gray-100 text-gray-800 hover:bg-gray-50'
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm'
+                          : 'bg-white/60 border-gray-100 text-gray-800 hover:bg-white/80 hover:shadow-md backdrop-blur-sm'
                       }`}
                     >
                       <div className="font-semibold text-base mb-1">
@@ -387,22 +482,27 @@ export function Header() {
                         {item.description}
                       </div>
                     </button>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
-              {/* Mobile CTA */}
-              <div className="mt-6">
+              {/* Enhanced Mobile CTA */}
+              <motion.div 
+                className="mt-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.3 }}
+              >
                 <button
                   onClick={() => handleNavigation('/lead')}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-6 rounded-xl transition-colors"
+                  className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Get Started Today
                 </button>
-              </div>
+              </motion.div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </>
   )
