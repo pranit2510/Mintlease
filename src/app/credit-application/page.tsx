@@ -146,6 +146,7 @@ export default function CreditApplicationPage() {
   const [formState, dispatch] = useReducer(formReducer, initialState)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Interactive mouse tracking - matching homepage exactly
   const mouseX = useMotionValue(0)
@@ -168,6 +169,11 @@ export default function CreditApplicationPage() {
   const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
   const bottomLayerX = useTransform(springMouseX, [-100, 100], [-3, 3])
   const bottomLayerY = useTransform(springMouseY, [-100, 100], [-5, 5])
+
+  // Client-side mounting detection
+  React.useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return
@@ -248,24 +254,25 @@ export default function CreditApplicationPage() {
         <main 
           className="min-h-screen flex items-center justify-center overflow-hidden"
           style={{ backgroundColor: '#FEF7ED' }}
+          suppressHydrationWarning
         >
           {/* Homepage-style background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <motion.div 
               className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
-              style={{
+              style={isMounted ? {
                 x: backgroundX,
                 y: backgroundY,
                 willChange: 'transform',
-              }}
+              } : {}}
             />
             <motion.div 
               className="absolute top-0 right-0 w-[60%] h-[60%] bg-gradient-radial from-amber-50/25 to-transparent blur-3xl"
-              style={{
+              style={isMounted ? {
                 x: accentX,
                 y: accentY,
                 willChange: 'transform',
-              }}
+              } : {}}
             />
           </div>
 
@@ -385,80 +392,117 @@ export default function CreditApplicationPage() {
         className="pt-20 relative min-h-screen overflow-hidden"
         style={{ backgroundColor: '#FEF7ED' }}
         onMouseMove={handleMouseMove}
+        suppressHydrationWarning
       >
         {/* Homepage-style background with mouse tracking */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div 
             className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
-            style={{
+            style={isMounted ? {
               x: backgroundX,
               y: backgroundY,
               willChange: 'transform',
-            }}
+            } : {}}
           />
           <motion.div 
             className="absolute top-0 right-0 w-[60%] h-[60%] bg-gradient-radial from-amber-50/25 to-transparent blur-3xl"
-            style={{
+            style={isMounted ? {
               x: accentX,
               y: accentY,
               willChange: 'transform',
-            }}
+            } : {}}
           />
           <motion.div 
             className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-gradient-radial from-orange-100/15 to-transparent blur-3xl"
-            style={{
+            style={isMounted ? {
               x: bottomLayerX,
               y: bottomLayerY,
               willChange: 'transform',
-            }}
+            } : {}}
           />
         </div>
 
         {/* Page Header */}
         <section className="py-20 relative overflow-hidden z-10">
           <div className="max-w-4xl mx-auto px-6 lg:px-8">
-            <motion.div
-              className="text-center space-y-6"
-              initial="initial"
-              animate={isInView ? "visible" : "initial"}
-              variants={animationVariants.luxuryStagger}
-            >
-              <motion.div
-                variants={animationVariants.premiumSlideUp}
-              >
-                <PremiumBadge icon={CreditCard}>
-                  Credit Application
-                </PremiumBadge>
-              </motion.div>
-            
-            <motion.h1 
-              variants={animationVariants.premiumSlideUp}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-6"
-              style={{
-                background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Credit
-              <span className="block" style={{
-                background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>
-                Application
-              </span>
-            </motion.h1>
-            
-              <motion.p 
-                variants={animationVariants.premiumSlideUp}
-                className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed"
-              >
-                Secure your luxury vehicle financing with our streamlined credit application process.
-              </motion.p>
-            </motion.div>
+            <div className="text-center space-y-6" suppressHydrationWarning>
+              {isMounted ? (
+                <motion.div
+                  className="text-center space-y-6"
+                  initial="initial"
+                  animate={isInView ? "visible" : "initial"}
+                  variants={animationVariants.luxuryStagger}
+                >
+                  <motion.div
+                    variants={animationVariants.premiumSlideUp}
+                  >
+                    <PremiumBadge icon={CreditCard}>
+                      Credit Application
+                    </PremiumBadge>
+                  </motion.div>
+                
+                <motion.h1 
+                  variants={animationVariants.premiumSlideUp}
+                  className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-6"
+                  style={{
+                    background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  Credit
+                  <span className="block" style={{
+                    background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}>
+                    Application
+                  </span>
+                </motion.h1>
+                
+                  <motion.p 
+                    variants={animationVariants.premiumSlideUp}
+                    className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed"
+                  >
+                    Secure your luxury vehicle financing with our streamlined credit application process.
+                  </motion.p>
+                </motion.div>
+              ) : (
+                <>
+                  <div>
+                    <PremiumBadge icon={CreditCard}>
+                      Credit Application
+                    </PremiumBadge>
+                  </div>
+                
+                <h1 
+                  className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-6"
+                  style={{
+                    background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  Credit
+                  <span className="block" style={{
+                    background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}>
+                    Application
+                  </span>
+                </h1>
+                
+                  <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+                    Secure your luxury vehicle financing with our streamlined credit application process.
+                  </p>
+                </>
+              )}
+            </div>
           </div>
         </section>
 
@@ -466,48 +510,88 @@ export default function CreditApplicationPage() {
         <section className="pb-20 relative z-10">
           <div className="max-w-4xl mx-auto px-6 lg:px-8">
             {/* Progress Steps */}
-            <motion.div
-              initial="initial"
-              animate={isInView ? "visible" : "initial"}
-              variants={animationVariants.luxuryStagger}
-              className="mb-12"
-            >
-            <div className="flex items-center justify-between max-w-2xl mx-auto">
-              {steps.map((step, index) => (
-                <div key={step.id} className="flex items-center">
-                  <motion.div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300
-                               ${formState.currentStep >= step.id 
-                                 ? `${step.bgColor} border-transparent text-white shadow-[0_4px_12px_-2px_rgba(5,150,105,0.3)]` 
-                                 : 'bg-white border-neutral-300 text-neutral-400'}`}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {step.icon}
-                  </motion.div>
-                  
-                  {index < steps.length - 1 && (
-                    <div className={`w-16 h-1 mx-2 rounded-full transition-all duration-300
-                                   ${formState.currentStep > step.id ? 'bg-emerald-600' : 'bg-neutral-200'}`} />
-                  )}
+            <div className="mb-12" suppressHydrationWarning>
+              {isMounted ? (
+                <motion.div
+                  initial="initial"
+                  animate={isInView ? "visible" : "initial"}
+                  variants={animationVariants.luxuryStagger}
+                  className="mb-12"
+                >
+                <div className="flex items-center justify-center max-w-full mx-auto px-4 overflow-x-auto">
+                  <div className="flex items-center min-w-max">
+                    {steps.map((step, index) => (
+                      <div key={step.id} className="flex items-center">
+                        <motion.div
+                          className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 flex-shrink-0
+                                     ${formState.currentStep >= step.id 
+                                       ? `${step.bgColor} border-transparent text-white shadow-[0_4px_12px_-2px_rgba(5,150,105,0.3)]` 
+                                       : 'bg-white border-neutral-300 text-neutral-400'}`}
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          <span className="text-sm sm:text-sm md:text-base">{step.icon}</span>
+                        </motion.div>
+                        
+                        {index < steps.length - 1 && (
+                          <div className={`w-10 sm:w-12 md:w-16 h-1 mx-1.5 sm:mx-2 rounded-full transition-all duration-300 flex-shrink-0
+                                         ${formState.currentStep > step.id ? 'bg-emerald-600' : 'bg-neutral-200'}`} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
+                
+                <div className="text-center mt-4 sm:mt-6 px-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-neutral-900">
+                    {steps[formState.currentStep - 1]?.title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-600 mt-1">
+                    Step {formState.currentStep} of {steps.length}
+                  </p>
+                </div>
+              </motion.div>
+              ) : (
+                <>
+                <div className="flex items-center justify-center max-w-full mx-auto px-4 overflow-x-auto">
+                  <div className="flex items-center min-w-max">
+                    {steps.map((step, index) => (
+                      <div key={step.id} className="flex items-center">
+                        <div
+                          className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 flex-shrink-0
+                                     ${formState.currentStep >= step.id 
+                                       ? `${step.bgColor} border-transparent text-white shadow-[0_4px_12px_-2px_rgba(5,150,105,0.3)]` 
+                                       : 'bg-white border-neutral-300 text-neutral-400'}`}
+                        >
+                          <span className="text-sm sm:text-sm md:text-base">{step.icon}</span>
+                        </div>
+                        
+                        {index < steps.length - 1 && (
+                          <div className={`w-10 sm:w-12 md:w-16 h-1 mx-1.5 sm:mx-2 rounded-full transition-all duration-300 flex-shrink-0
+                                         ${formState.currentStep > step.id ? 'bg-emerald-600' : 'bg-neutral-200'}`} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="text-center mt-4 sm:mt-6 px-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-neutral-900">
+                    {steps[formState.currentStep - 1]?.title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-600 mt-1">
+                    Step {formState.currentStep} of {steps.length}
+                  </p>
+                </div>
+                </>
+              )}
             </div>
-            
-            <div className="text-center mt-6">
-              <h3 className="text-xl font-bold text-neutral-900">
-                {steps[formState.currentStep - 1]?.title}
-              </h3>
-              <p className="text-neutral-600 mt-1">
-                Step {formState.currentStep} of {steps.length}
-              </p>
-            </div>
-          </motion.div>
 
           {/* Form Content */}
           <motion.div
             variants={animationVariants.premiumSlideUp}
-            className="bg-[#FEFCFA] rounded-[20px] p-8 border border-white/40
+            className="bg-[#FEFCFA] rounded-[20px] p-4 sm:p-6 md:p-8 border border-white/40
                        shadow-[0_8px_32px_rgba(139,69,19,0.12),0_16px_64px_rgba(139,69,19,0.06)]"
+            suppressHydrationWarning
           >
             {/* Step 1: Personal Information */}
             {formState.currentStep === 1 && (
@@ -518,6 +602,7 @@ export default function CreditApplicationPage() {
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
+                suppressHydrationWarning
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -616,6 +701,7 @@ export default function CreditApplicationPage() {
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
+                suppressHydrationWarning
               >
                 <div>
                   <label className="block text-neutral-700 text-sm font-medium mb-2">Street Address</label>
@@ -689,6 +775,7 @@ export default function CreditApplicationPage() {
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
+                suppressHydrationWarning
               >
                 <div>
                   <label className="block text-neutral-700 text-sm font-medium mb-2">Employment Status</label>
@@ -777,6 +864,7 @@ export default function CreditApplicationPage() {
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
+                suppressHydrationWarning
               >
                 <div>
                   <label className="block text-neutral-700 text-sm font-medium mb-2">Do you have a Co-Applicant?</label>
@@ -864,6 +952,7 @@ export default function CreditApplicationPage() {
                 whileTap={{ scale: formState.currentStep === 1 ? 1 : 0.98 }}
                 className="flex items-center px-6 py-3 text-neutral-600 bg-white border border-neutral-300 rounded-full
                          hover:bg-neutral-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                suppressHydrationWarning
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Previous
@@ -888,6 +977,7 @@ export default function CreditApplicationPage() {
                   }}
                   className="flex items-center bg-emerald-600 text-white border-0 rounded-full px-8 py-3 font-medium 
                            transition-all duration-300 group"
+                  suppressHydrationWarning
                   style={{
                     background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                     boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3)',
@@ -922,6 +1012,7 @@ export default function CreditApplicationPage() {
                   }}
                   className="flex items-center bg-emerald-600 text-white border-0 rounded-full px-8 py-3 font-medium 
                            transition-all duration-300 group"
+                  suppressHydrationWarning
                   style={{
                     background: isSubmitting ? '#6b7280' : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                     boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3)',

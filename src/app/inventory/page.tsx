@@ -11,6 +11,21 @@ import { HeartIcon as HeartIconSolid, ShareIcon } from '@heroicons/react/24/soli
 import { Shield, DollarSign, Truck } from 'lucide-react'
 import { Slider } from '@mui/material'
 
+// Safe Motion Wrapper to prevent hydration errors
+const SafeMotionDiv = ({ children, ...props }: any) => {
+  const [isMounted, setIsMounted] = useState(false)
+  
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+  
+  if (!isMounted) {
+    return <div {...props} suppressHydrationWarning>{children}</div>
+  }
+  
+  return <motion.div {...props}>{children}</motion.div>
+}
+
 // Error Boundary Component
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -580,7 +595,7 @@ const VehicleCard: React.FC<{
 // Add display name for VehicleCard
 VehicleCard.displayName = 'VehicleCard'
 
-// Luxury Range Slider Component
+// Hydration-Safe Range Slider Component
 const RangeSlider: React.FC<{
   label: string;
   min: number;
@@ -592,6 +607,12 @@ const RangeSlider: React.FC<{
   step?: number;
   formatLabel?: (value: number) => string;
 }> = ({ label, min, max, value, onChange, prefix = '', suffix = '', step = 1, formatLabel }) => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const handleChange = (_: Event, newValue: number | number[]) => {
     onChange(newValue as [number, number])
   }
@@ -601,28 +622,88 @@ const RangeSlider: React.FC<{
     return `${prefix}${val.toLocaleString()}${suffix}`
   }
 
+  if (!isMounted) {
+    return (
+      <div 
+        className="rounded-[8px] sm:rounded-2xl p-3 sm:p-6 transition-all duration-300"
+        style={{ 
+          overflowX: 'hidden', 
+          overflowY: 'visible',
+          background: 'rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(16, 185, 129, 0.1)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        }}
+        suppressHydrationWarning
+      >
+        <div className="flex justify-between items-center mb-2 sm:mb-4">
+          <label className="text-sm sm:text-base font-semibold text-slate-800">{label}</label>
+          <span className="text-xs sm:text-sm text-slate-600 font-medium">
+            {formatValue(value[0])} - {formatValue(value[1])}
+          </span>
+        </div>
+        <div 
+          className="px-2 sm:px-4" 
+          style={{ 
+            paddingTop: '20px', 
+            paddingBottom: '20px', 
+            overflow: 'visible', 
+            position: 'relative'
+          }}
+        >
+          <Slider
+            value={value}
+            onChange={handleChange}
+            valueLabelDisplay="off"
+            min={min}
+            max={max}
+            step={step}
+            sx={{
+              color: '#10b981',
+              height: 6,
+              marginTop: '16px',
+              marginBottom: '16px',
+              overflow: 'visible',
+              '& .MuiSlider-track': {
+                border: 'none',
+                background: 'linear-gradient(90deg, #10b981, #059669)',
+              },
+              '& .MuiSlider-thumb': {
+                height: 20,
+                width: 20,
+                backgroundColor: '#fff',
+                border: '3px solid #10b981',
+                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                zIndex: 100,
+                '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+                  boxShadow: '0 0 0 8px rgba(16, 185, 129, 0.16)',
+                  border: '3px solid #059669',
+                },
+                '&:before': {
+                  display: 'none',
+                },
+              },
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <motion.div
       className="rounded-[8px] sm:rounded-2xl p-3 sm:p-6 transition-all duration-300"
       style={{ 
         overflowX: 'hidden', 
         overflowY: 'visible',
-        background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-          'linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.6) 100%)' :
-          'rgba(255, 255, 255, 0.6)',
-        backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-          'blur(8px)' : 
-          'blur(16px)',
-        border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-          '1px solid rgba(226, 232, 240, 0.5)' : 
-          '1px solid rgba(16, 185, 129, 0.1)',
-        boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
-          '0 1px 3px rgba(0, 0, 0, 0.04)' :
-          '0 4px 20px rgba(0, 0, 0, 0.08)',
+        background: 'rgba(255, 255, 255, 0.6)',
+        backdropFilter: 'blur(16px)',
+        border: '1px solid rgba(16, 185, 129, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
       }}
       whileHover={{ 
-        y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -2 : 0, 
-        scale: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 1.01 : 1 
+        y: -2, 
+        scale: 1.01 
       }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
@@ -632,18 +713,28 @@ const RangeSlider: React.FC<{
           {formatValue(value[0])} - {formatValue(value[1])}
         </span>
       </div>
-      <div className="px-2 sm:px-4">
+      <div 
+        className="px-2 sm:px-4" 
+        style={{ 
+          paddingTop: '20px', 
+          paddingBottom: '20px', 
+          overflow: 'visible', 
+          position: 'relative'
+        }}
+      >
         <Slider
           value={value}
           onChange={handleChange}
-          valueLabelDisplay="auto"
-          valueLabelFormat={formatValue}
+          valueLabelDisplay="off"
           min={min}
           max={max}
           step={step}
           sx={{
             color: '#10b981',
             height: 6,
+            marginTop: '16px',
+            marginBottom: '16px',
+            overflow: 'visible',
             '& .MuiSlider-track': {
               border: 'none',
               background: 'linear-gradient(90deg, #10b981, #059669)',
@@ -654,31 +745,13 @@ const RangeSlider: React.FC<{
               backgroundColor: '#fff',
               border: '3px solid #10b981',
               boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+              zIndex: 100,
               '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
                 boxShadow: '0 0 0 8px rgba(16, 185, 129, 0.16)',
                 border: '3px solid #059669',
               },
               '&:before': {
                 display: 'none',
-              },
-            },
-            '& .MuiSlider-valueLabel': {
-              lineHeight: 1.2,
-              fontSize: 12,
-              background: 'unset',
-              padding: 0,
-              width: 32,
-              height: 32,
-              borderRadius: '50% 50% 50% 0',
-              backgroundColor: '#10b981',
-              transformOrigin: 'bottom left',
-              transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
-              '&:before': { display: 'none' },
-              '&.MuiSlider-valueLabelOpen': {
-                transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
-              },
-              '& > *': {
-                transform: 'rotate(45deg)',
               },
             },
           }}
@@ -736,37 +809,20 @@ const FilterSidebar: React.FC<{
         <label className="text-sm sm:text-base font-semibold text-slate-800">{label}</label>
         <div className="space-y-2 sm:space-y-3">
           {displayOptions.map((option) => (
-            <motion.div
+            <SafeMotionDiv
               key={option}
               className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-4 rounded-[8px] sm:rounded-[12px] cursor-pointer will-change-transform overflow-hidden min-h-[44px] touch-manipulation"
               onClick={() => toggleOption(option)}
               style={{
-                background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-                  'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.5) 100%)' :
-                  'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)',
-                backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-                  'blur(4px) saturate(110%)' : 
-                  'blur(8px) saturate(150%)',
-                WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-                  'blur(4px) saturate(110%)' : 
-                  'blur(8px) saturate(150%)',
-                border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-                  '1px solid rgba(226, 232, 240, 0.6)' : 
-                  '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
-                  '0 1px 2px rgba(0, 0, 0, 0.04)' :
-                  '0 1px 3px rgba(139, 69, 19, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)',
+                backdropFilter: 'blur(8px) saturate(150%)',
+                WebkitBackdropFilter: 'blur(8px) saturate(150%)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 1px 3px rgba(139, 69, 19, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 transform: 'translateZ(0)',
                 backfaceVisibility: 'hidden'
               }}
-              whileHover={{ 
-                y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -1 : 0,
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%)',
-                boxShadow: '0 2px 8px rgba(139, 69, 19, 0.08), 0 4px 16px rgba(139, 69, 19, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
-                transition: { type: "spring", stiffness: 400, damping: 25 }
-              }}
-              whileTap={{ scale: 0.98, y: 0 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              suppressHydrationWarning
             >
               <div className={`w-4 h-4 sm:w-6 sm:h-6 rounded border transition-all will-change-transform flex-shrink-0 flex items-center justify-center ${
               selected.includes(option) 
@@ -782,7 +838,7 @@ const FilterSidebar: React.FC<{
                 )}
               </div>
               <span className="text-sm sm:text-base text-slate-700 select-none truncate flex-1 font-medium" style={{ minWidth: 0 }}>{option}</span>
-            </motion.div>
+            </SafeMotionDiv>
           ))}
           {options.length > 5 && (
             <button
@@ -802,7 +858,7 @@ const FilterSidebar: React.FC<{
   CheckboxList.displayName = 'CheckboxList'
 
   return (
-    <motion.div
+    <SafeMotionDiv
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ 
@@ -811,52 +867,28 @@ const FilterSidebar: React.FC<{
         damping: 30,
         mass: 0.5
       }}
-      whileHover={{ 
-        y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -4 : 0,
-        boxShadow: typeof window !== 'undefined' && window.innerWidth >= 1024 ? '0 8px 32px rgba(139, 69, 19, 0.12), 0 16px 64px rgba(139, 69, 19, 0.06)' : '0 2px 12px rgba(139, 69, 19, 0.06)',
-        transition: { duration: 0.3, ease: "easeOut" }
-      }}
-      className="w-full rounded-[16px] lg:rounded-[24px] will-change-transform overflow-hidden lg:h-fit"
+      className="w-full rounded-[16px] lg:rounded-[24px] will-change-transform overflow-visible lg:h-fit"
       style={{
-        background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-          'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%)' :
-          'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
-        backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-          'blur(12px) saturate(130%)' : 
-          'blur(20px) saturate(180%)',
-        WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-          'blur(12px) saturate(130%)' : 
-          'blur(20px) saturate(180%)',
-        border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-          '1px solid rgba(226, 232, 240, 0.4)' : 
-          '1px solid rgba(255, 255, 255, 0.2)',
-        boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
-          '0 4px 16px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.06)' :
-          '0 2px 12px rgba(139, 69, 19, 0.06), 0 4px 24px rgba(139, 69, 19, 0.03), 0 8px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+        background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 2px 12px rgba(139, 69, 19, 0.06), 0 4px 24px rgba(139, 69, 19, 0.03), 0 8px 48px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         transform: 'translateZ(0)',
         backfaceVisibility: 'hidden',
         contain: 'layout style paint',
         isolation: 'isolate'
       }}
+      suppressHydrationWarning
     >
       {/* Header */}
       <div className="sticky top-0 p-3 sm:p-6 z-10 border-b border-neutral-100/50"
         style={{
-          background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-            'linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.88) 100%)' :
-            'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
-          backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-            'blur(8px) saturate(120%)' : 
-            'blur(12px) saturate(180%)',
-          WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-            'blur(8px) saturate(120%)' : 
-            'blur(12px) saturate(180%)',
-          borderBottom: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-            '1px solid rgba(226, 232, 240, 0.3)' : 
-            '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
-            '0 1px 3px rgba(0, 0, 0, 0.04)' :
-            '0 1px 0 rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          background: 'linear-gradient(135deg, rgba(254, 252, 250, 0.98) 0%, rgba(254, 252, 250, 0.92) 100%)',
+          backdropFilter: 'blur(12px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 1px 0 rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         }}
       >
         <div className="mb-3 sm:mb-6">
@@ -877,7 +909,7 @@ const FilterSidebar: React.FC<{
               backfaceVisibility: 'hidden'
             }}
             whileHover={{ 
-              y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? -1 : 0,
+              y: -1,
               transition: { type: "spring", stiffness: 400, damping: 25 }
             }}
             whileTap={{ scale: 0.98, y: 0 }}
@@ -972,22 +1004,15 @@ const FilterSidebar: React.FC<{
         {/* Availability */}
         <div className="space-y-2 sm:space-y-4">
           <label className="text-sm sm:text-base font-semibold text-slate-800">Availability</label>
-          <motion.div
+          <SafeMotionDiv
             className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-4 rounded-[8px] sm:rounded-lg cursor-pointer transition-colors min-h-[44px] touch-manipulation"
             onClick={() => updateFilter('availableOnly', !filters.availableOnly)}
             style={{
-              background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-                'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.5) 100%)' :
-                'transparent',
-              border: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
-                '1px solid rgba(226, 232, 240, 0.6)' : 
-                'none',
-              boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
-                '0 1px 2px rgba(0, 0, 0, 0.04)' :
-                'none'
+              background: 'transparent',
+              border: 'none',
+              boxShadow: 'none'
             }}
-            whileHover={{ scale: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 1.02 : 1 }}
-            whileTap={{ scale: 0.98 }}
+            suppressHydrationWarning
           >
             <div className={`w-4 h-4 sm:w-6 sm:h-6 rounded border flex items-center justify-center transition-all flex-shrink-0 ${
               filters.availableOnly 
@@ -999,7 +1024,7 @@ const FilterSidebar: React.FC<{
               )}
             </div>
             <span className="text-sm sm:text-base text-slate-700 select-none font-medium">Available Only</span>
-          </motion.div>
+          </SafeMotionDiv>
         </div>
 
         {/* Mobile Apply Button - Enhanced */}
@@ -1011,7 +1036,7 @@ const FilterSidebar: React.FC<{
         >
           <motion.button
             onClick={() => {
-              if (typeof window !== 'undefined' && window.innerWidth < 1024 && setIsFilterOpen) {
+              if (setIsFilterOpen) {
                 setIsFilterOpen(false)
               }
             }}
@@ -1036,7 +1061,7 @@ const FilterSidebar: React.FC<{
       </div>
 
 
-    </motion.div>
+    </SafeMotionDiv>
   )
 })
 
@@ -1054,6 +1079,30 @@ function InventoryPageContent() {
   const [filteredVehicles, setFilteredVehicles] = useState(mockVehicles)
   // Centralized favorites state management
   const [favoriteVehicles, setFavoriteVehicles] = useState<Set<number>>(new Set())
+  // Client-side hydration fix
+  const [isMobile, setIsMobile] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+  const [animationsReady, setAnimationsReady] = useState(false)
+
+  // Fix hydration issues by detecting client-side rendering
+  useEffect(() => {
+    setIsClient(true)
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 1024)
+    }
+    checkIsMobile()
+    window.addEventListener('resize', checkIsMobile)
+    
+    // Delay animations until after hydration
+    const timer = setTimeout(() => {
+      setAnimationsReady(true)
+    }, 100)
+    
+    return () => {
+      window.removeEventListener('resize', checkIsMobile)
+      clearTimeout(timer)
+    }
+  }, [])
   
   const [filters, setFilters] = useState<{
     priceRange: [number, number];
@@ -1085,10 +1134,7 @@ function InventoryPageContent() {
 
   const updateFilter = useCallback((key: string, value: unknown) => {
     setFilters(prev => ({ ...prev, [key]: value }))
-    // Auto-close mobile filter after selection for better UX
-    if (typeof window !== 'undefined' && window.innerWidth < 1024 && key !== 'priceRange' && key !== 'msrpRange' && key !== 'yearRange' && key !== 'mileageRange') {
-      setTimeout(() => setIsFilterOpen(false), 300)
-    }
+    // Note: Removed auto-close behavior to allow users to select multiple filters before applying
   }, [])
 
   const clearAllFilters = useCallback(() => {
@@ -1164,6 +1210,29 @@ function InventoryPageContent() {
     setFilteredVehicles(filtered)
   }, [searchQuery, sortBy, filters])
 
+  // Calculate active filters count (excluding default values)
+  const getActiveFiltersCount = useCallback(() => {
+    let count = 0
+    
+    // Count only non-default filter values
+    if (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 2000) count++
+    if (filters.msrpRange[0] !== 20000 || filters.msrpRange[1] !== 150000) count++
+    if (filters.yearRange[0] !== 2024 || filters.yearRange[1] !== 2025) count++
+    if (filters.mileageRange[0] !== 5000 || filters.mileageRange[1] !== 20000) count++
+    if (filters.makes.length > 0) count++
+    if (filters.models.length > 0) count++
+    if (filters.locations.length > 0) count++
+    if (filters.features.length > 0) count++
+    if (filters.availableOnly) count++
+    if (searchQuery.trim()) count++
+    
+    return count
+  }, [filters, searchQuery])
+
+  const activeFiltersCount = getActiveFiltersCount()
+
+  // Manage body scroll when filter is open on mobile - removed conflicting overflow management
+
   return (
     <PageBackground>
       <Header />
@@ -1172,7 +1241,7 @@ function InventoryPageContent() {
 
         
         {/* Page Header */}
-        <section className="py-20 relative overflow-hidden z-10">
+        <section className="py-8 sm:py-12 lg:py-20 relative overflow-hidden z-10">
           {/* Animated background gradient */}
           <motion.div
             className="absolute inset-0 opacity-50"
@@ -1204,7 +1273,7 @@ function InventoryPageContent() {
                 stiffness: 100,
                 damping: 15
               }}
-              className="text-center mb-16"
+              className="text-center mb-8 sm:mb-12 lg:mb-16"
               style={{
                 transform: 'translateZ(0)',
                 willChange: 'transform, opacity',
@@ -1222,30 +1291,18 @@ function InventoryPageContent() {
                 200+ Premium Vehicles Available
               </PremiumBadge>
               
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 lg:mb-8 leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-7xl font-black mb-4 sm:mb-6 lg:mb-8 leading-tight">
                 <span className="text-neutral-800">Luxury Vehicle </span>
                 <span className="text-emerald-600">Inventory</span>
               </h1>
               
-              <p className="text-lg sm:text-xl lg:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
+              <p className="text-base sm:text-lg lg:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
                 Browse our curated selection of premium vehicles. Each comes with our professional 
                 negotiation service and <span className="font-semibold text-emerald-600">guaranteed savings</span>.
               </p>
               
               {/* Trust Indicators */}
-              <motion.div
-                className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 mt-12"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true, amount: 0.5 }}
-                variants={{
-                  initial: { opacity: 0 },
-                  animate: { 
-                    opacity: 1,
-                    transition: { staggerChildren: 0.1 }
-                  }
-                }}
-              >
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 mt-6 sm:mt-8 lg:mt-12">
                 <motion.div
                   variants={{
                     initial: { opacity: 0, y: 20 },
@@ -1276,16 +1333,16 @@ function InventoryPageContent() {
                   <Truck className="w-5 h-5 text-emerald-600" />
                   <span className="font-medium text-sm sm:text-base">Home Delivery</span>
                 </motion.div>
-              </motion.div>
+              </div>
             </motion.div>
           </div>
         </section>
 
         {/* Main Content Area with Responsive Layout */}
-        <div className="container mx-auto px-4 relative pb-32">
+        <div className="container mx-auto px-4 relative pb-16 sm:pb-24 lg:pb-32">
           <div className="flex flex-col lg:flex-row gap-6 relative">
             {/* Mobile Filter Button */}
-            <div className="lg:hidden mb-6">
+            <div className="lg:hidden mb-4 sm:mb-6">
               <motion.button
                 onClick={() => setIsFilterOpen(true)}
                 className="flex items-center gap-3 px-6 py-4 bg-white/90 backdrop-blur-sm text-slate-700 rounded-2xl font-medium shadow-lg hover:shadow-xl border border-slate-200/50 transition-all duration-300 min-h-[44px] touch-manipulation"
@@ -1302,9 +1359,11 @@ function InventoryPageContent() {
               >
                 <FunnelIcon className="w-5 h-5 text-emerald-600" />
                 <span>Filter & Sort</span>
-                <div className="ml-auto bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full font-semibold">
-                  {filteredVehicles.length}
-                </div>
+                {activeFiltersCount > 0 && (
+                  <div className="ml-auto bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded-full font-semibold">
+                    {activeFiltersCount}
+                  </div>
+                )}
               </motion.button>
             </div>
 
@@ -1321,19 +1380,23 @@ function InventoryPageContent() {
                     animate={{ opacity: 1, backdropFilter: 'blur(8px)' }}
                     exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/20 z-40 lg:hidden touch-none"
                     onClick={() => setIsFilterOpen(false)}
+                    style={{ 
+                      overscrollBehavior: 'contain',
+                      WebkitOverflowScrolling: 'touch'
+                    }}
                   />
                 )}
               </AnimatePresence>
               
               {/* Sidebar Content - Slide from left */}
               <AnimatePresence>
-                {(isFilterOpen || typeof window === 'undefined' || window.innerWidth >= 1024) && (
+                {(isFilterOpen || !isClient || !isMobile) && (
                   <motion.div 
-                    initial={{ x: typeof window !== 'undefined' && window.innerWidth < 1024 ? -400 : 0, opacity: 1 }}
+                    initial={{ x: isClient && isMobile ? -400 : 0, opacity: 1 }}
                     animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: typeof window !== 'undefined' && window.innerWidth < 1024 ? -400 : 0, opacity: 0 }}
+                    exit={{ x: isClient && isMobile ? -400 : 0, opacity: 0 }}
                     transition={{ 
                       type: "spring", 
                       stiffness: 300, 
@@ -1346,19 +1409,20 @@ function InventoryPageContent() {
                       ${isFilterOpen ? 'fixed left-0 top-0 bottom-0 w-96 max-w-[85vw] z-50 overflow-y-auto' : ''}
                     `}
                     style={{
-                      background: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                      background: isClient && isMobile ? 
                         'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.96) 100%)' :
                         'transparent',
-                      backdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                      backdropFilter: isClient && isMobile ? 
                         'blur(20px) saturate(180%)' : 
                         'none',
-                      WebkitBackdropFilter: typeof window !== 'undefined' && window.innerWidth < 1024 ? 
+                      WebkitBackdropFilter: isClient && isMobile ? 
                         'blur(20px) saturate(180%)' : 
                         'none',
-                      boxShadow: typeof window !== 'undefined' && window.innerWidth < 1024 ?
+                      boxShadow: isClient && isMobile ?
                         '4px 0 32px rgba(0, 0, 0, 0.12), 8px 0 64px rgba(0, 0, 0, 0.08)' :
                         'none',
                     }}
+                    suppressHydrationWarning
                   >
                     {/* Mobile Header with improved close button */}
                     {isFilterOpen && (
@@ -1372,7 +1436,7 @@ function InventoryPageContent() {
                           <div>
                             <h3 className="text-lg font-semibold text-slate-800">Filter Vehicles</h3>
                             <p className="text-sm text-slate-500 mt-1">
-                              {filteredVehicles.length} vehicles match your criteria
+                              {activeFiltersCount > 0 ? `${activeFiltersCount} filters active • ` : ''}{filteredVehicles.length} vehicles found
                             </p>
                           </div>
                           <motion.button
@@ -1390,12 +1454,7 @@ function InventoryPageContent() {
                     <FilterSidebar
                       filters={filters}
                       updateFilter={updateFilter}
-                      clearAllFilters={() => {
-                        clearAllFilters()
-                        if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-                          setTimeout(() => setIsFilterOpen(false), 200)
-                        }
-                      }}
+                      clearAllFilters={clearAllFilters}
                       uniqueMakes={uniqueMakes}
                       uniqueModels={uniqueModels}
                       uniqueLocations={uniqueLocations}

@@ -164,8 +164,8 @@ export default function OfflinePage() {
                 </div>
                 <h3 className="font-semibold text-neutral-800 mb-2">Call Us Directly</h3>
                 <p className="text-sm text-neutral-600">
-                  <a href="tel:+1-555-MINT-LEASE" className="text-blue-600 hover:underline">
-                    (555) MINT-LEASE
+                  <a href="tel:+15165491999" className="text-blue-600 hover:underline">
+                    +1 (516) 549-1999
                   </a>
                 </p>
               </div>
@@ -176,8 +176,8 @@ export default function OfflinePage() {
                 </div>
                 <h3 className="font-semibold text-neutral-800 mb-2">Email Us</h3>
                 <p className="text-sm text-neutral-600">
-                  <a href="mailto:info@mintlease.com" className="text-purple-600 hover:underline">
-                    info@mintlease.com
+                  <a href="mailto:sales@mintleaseus.com" className="text-purple-600 hover:underline">
+                    sales@mintleaseus.com
                   </a>
                 </p>
               </div>

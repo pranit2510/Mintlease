@@ -69,16 +69,18 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
+      { url: '/mint-lease-logo.svg', sizes: '180x180', type: 'image/svg+xml' },
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
       {
         rel: 'mask-icon',
-        url: '/safari-pinned-tab.svg',
+        url: '/mint-lease-logo.svg',
         color: '#047857',
       },
     ],
@@ -114,7 +116,11 @@ export default function RootLayout({
             /* Ensure header is visible */
             header {
               opacity: 1 !important;
-              transform: none !important;
+              z-index: 9999 !important;
+              position: fixed !important;
+              top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
             }
             /* Ensure main content is visible */
             main {
@@ -177,18 +183,18 @@ export default function RootLayout({
               "name": "Mint Lease",
               "description": "Premium auto brokerage service delivering luxury vehicles",
               "url": "https://mintlease.com",
-              "logo": "https://mintlease.com/logo.png",
+              "logo": "https://mintlease.com/mint-lease-logo.svg",
               "contactPoint": {
                 "@type": "ContactPoint",
-                "telephone": "+1-555-MINT-LEASE",
+                "telephone": "+1-516-549-1999",
                 "contactType": "customer service",
                 "availableLanguage": ["English"],
-                "areaServed": "US"
+                "areaServed": "East Coast US"
               },
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": "New York",
-                "addressRegion": "NY",
+                "addressLocality": "East Coast",
+                "addressRegion": "Multiple States",
                 "addressCountry": "US"
               },
               "sameAs": [

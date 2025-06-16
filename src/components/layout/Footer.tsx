@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react'
 
@@ -8,24 +8,35 @@ import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react'
  * Footer Component with Contact Information
  * Features: Contact details, quick links, social proof
  */
-export const Footer: React.FC = () => {
+interface FooterProps {
+  className?: string
+}
+
+export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
+  // Fix hydration issues by detecting client-side mounting
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const contactInfo = [
     {
       icon: <Phone className="w-5 h-5" />,
       title: "Call Us",
-      value: "(555) MINT-LEASE",
-      href: "tel:+15556468532"
+      value: "+1 (516) 549-1999",
+      href: "tel:+15165491999"
     },
     {
       icon: <Mail className="w-5 h-5" />,
       title: "Email Us", 
-      value: "hello@mintlease.com",
-      href: "mailto:hello@mintlease.com"
+      value: "sales@mintleaseus.com",
+      href: "mailto:sales@mintleaseus.com"
     },
     {
       icon: <MapPin className="w-5 h-5" />,
       title: "Service Area",
-      value: "NYC Metro Area",
+      value: "East Coast",
       href: "#"
     },
     {
@@ -52,10 +63,11 @@ export const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={isMounted ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
+              suppressHydrationWarning
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-gradient-emerald rounded-xl flex items-center justify-center">
@@ -85,10 +97,11 @@ export const Footer: React.FC = () => {
           {/* Quick Links */}
           <div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={isMounted ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
+              suppressHydrationWarning
             >
               <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-3">
@@ -118,10 +131,11 @@ export const Footer: React.FC = () => {
           {/* Contact Info */}
           <div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={isMounted ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
+              suppressHydrationWarning
             >
               <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
               <div className="space-y-4">
@@ -144,8 +158,6 @@ export const Footer: React.FC = () => {
             </motion.div>
           </div>
         </div>
-
-
 
         {/* Bottom Bar */}
         <div className="border-t border-neutral-700 pt-8">

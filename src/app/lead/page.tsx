@@ -1,13 +1,10 @@
 'use client'
 
 import React, { useState, useRef, useCallback, useEffect } from 'react'
+import { motion, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
+import { ArrowRight, Phone, Clock, Shield, Star, Users, CheckCircle, Award, DollarSign } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
-import { Footer } from '@/components/layout/Footer'
-import { PremiumBadge } from '@/components/ui/PremiumBadge'
-import { motion, useAnimation, useInView, useMotionValue, useSpring, useReducedMotion, useTransform } from 'framer-motion'
-import { ArrowRight, Phone, Clock, Shield, Star, Users, CheckCircle, Sparkles, Award, DollarSign } from 'lucide-react'
-import { animationVariants } from '@/lib/utils'
-import { redirect } from 'next/navigation'
 
 /**
  * Lead Capture Page - Premium Contact Form
@@ -26,10 +23,11 @@ interface FormData {
 }
 
 export default function LeadPage() {
+  const router = useRouter()
   const containerRef = useRef<HTMLElement>(null)
-  const formRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.3 })
   const shouldReduceMotion = useReducedMotion()
+  const [isMounted, setIsMounted] = useState(false)
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -44,11 +42,8 @@ export default function LeadPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
-  const [creditScoreError, setCreditScoreError] = useState(false)
   const [redirectTimer, setRedirectTimer] = useState(0)
   
-  // Auto-scroll disabled - users stay at top of page
-
   // Interactive mouse tracking - matching homepage exactly
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
@@ -66,10 +61,11 @@ export default function LeadPage() {
   // Transform values for parallax - matching homepage exactly
   const backgroundX = useTransform(springMouseX, [-100, 100], [-20, 20])
   const backgroundY = useTransform(springMouseY, [-100, 100], [-10, 10])
-  const accentX = useTransform(springMouseX, [-100, 100], [-5, 5])
-  const accentY = useTransform(springMouseY, [-100, 100], [-8, 8])
-  const bottomLayerX = useTransform(springMouseX, [-100, 100], [-3, 3])
-  const bottomLayerY = useTransform(springMouseY, [-100, 100], [-5, 5])
+
+  // Client-side mounting detection
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return
@@ -93,7 +89,14 @@ export default function LeadPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault() // Prevent default form submission
+    e.preventDefault()
+    
+    // Validate credit score requirement - allow Excellent and Good credit
+    if (!formData.creditScore || (formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good')) {
+      alert('Our premium service requires good credit (700+) to ensure the best financing terms and vehicle access.')
+      return
+    }
+    
     setIsSubmitting(true)
     
     try {
@@ -111,7 +114,7 @@ export default function LeadPage() {
         setRedirectTimer(prev => {
           if (prev <= 1) {
             clearInterval(countdown)
-            window.location.href = '/' // Redirect to homepage to shop around
+            router.push('/')
             return 0
           }
           return prev - 1
@@ -180,535 +183,391 @@ export default function LeadPage() {
   if (showSuccess) {
     return (
       <>
+        {/* Navigation Header */}
         <Header />
+        
         <main 
-          className="min-h-screen flex items-center justify-center overflow-hidden"
+          className="min-h-screen flex items-center justify-center overflow-hidden pt-32"
           style={{ backgroundColor: '#FEF7ED' }}
         >
-          {/* Homepage-style background */}
-          <div className="absolute inset-0 z-0 overflow-hidden">
-            <motion.div 
-              className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
-              style={{
-                x: backgroundX,
-                y: backgroundY,
-                willChange: 'transform',
-              }}
-            />
-            <motion.div 
-              className="absolute top-0 right-0 w-[60%] h-[60%] bg-gradient-radial from-amber-50/25 to-transparent blur-3xl"
-              style={{
-                x: accentX,
-                y: accentY,
-                willChange: 'transform',
-              }}
-            />
-          </div>
+        {/* Homepage-style background */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
+            style={isMounted ? {
+              x: backgroundX,
+              y: backgroundY,
+            } : {}}
+            suppressHydrationWarning
+          />
+        </div>
 
+        <div className="relative z-10 text-center max-w-2xl mx-auto px-6">
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 bg-[#FEFCFA] rounded-[20px] p-12 text-center max-w-2xl w-full mx-4
-                       shadow-[0_8px_32px_rgba(139,69,19,0.12),0_16px_64px_rgba(139,69,19,0.06)]"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+            className="bg-white/90 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/20"
+            suppressHydrationWarning
           >
-            {/* Success icon */}
-            <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.3, duration: 0.8, type: "spring", stiffness: 400 }}
-              className="w-20 h-20 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8
-                         shadow-[0_8px_20px_-4px_rgba(5,150,105,0.3)]"
-            >
-              <CheckCircle className="w-10 h-10 text-white" />
-            </motion.div>
+            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-8">
+              <CheckCircle className="w-10 h-10 text-emerald-600" />
+            </div>
             
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-3xl font-bold text-neutral-900 mb-4"
-            >
-              We'll Call You in 5 Minutes!
-            </motion.h2>
+            <h1 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-6">
+              Thank You!
+            </h1>
             
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className="text-lg text-neutral-600 mb-8"
-            >
-              Thank you for choosing Mint Lease. Our luxury vehicle specialist will contact you shortly.
-            </motion.p>
+            <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
+              Your request has been submitted successfully. Our premium auto specialists will contact you within 5 minutes to discuss your luxury vehicle needs.
+            </p>
             
-            {/* Redirect countdown */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="bg-emerald-50 rounded-[16px] p-4 border border-emerald-200 mb-8"
-            >
-              <p className="text-emerald-700 text-center font-medium">
-                Redirecting to homepage in {redirectTimer} seconds to browse our inventory...
-              </p>
-            </motion.div>
+            <div className="bg-emerald-50 rounded-2xl p-6 mb-8">
+              <p className="text-emerald-800 font-semibold mb-2">What happens next?</p>
+              <ul className="text-emerald-700 text-left space-y-2">
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                  Personal consultation call within 5 minutes
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                  Custom vehicle search based on your preferences
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                  Exclusive pricing and financing options
+                </li>
+              </ul>
+            </div>
             
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
-            >
-              <div className="bg-emerald-50 rounded-[16px] p-6 border border-emerald-100">
-                <div className="flex items-center justify-center gap-3 mb-3">
-                  <Phone className="w-5 h-5 text-emerald-600" />
-                  <span className="font-semibold text-neutral-900">Quick Response</span>
-                </div>
-                <p className="text-neutral-600 text-sm">
-                  Expect a call within <strong className="text-emerald-600">5 minutes</strong>
-                </p>
-              </div>
-              
-              <div className="bg-amber-50 rounded-[16px] p-6 border border-amber-100">
-                <div className="flex items-center justify-center gap-3 mb-3">
-                  <Sparkles className="w-5 h-5 text-amber-600" />
-                  <span className="font-semibold text-neutral-900">Premium Service</span>
-                </div>
-                <p className="text-neutral-600 text-sm">
-                  White glove <strong className="text-amber-600">concierge service</strong>
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4"
-            >
-              <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => window.location.href = '/inventory'}
-                className="flex-1 bg-emerald-600 text-white border-0 rounded-full px-6 py-3 font-medium 
-                         transition-all duration-300 group"
-                style={{
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)'
-                }}
-              >
-                Browse Inventory
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  // Clear the redirect timer and go home immediately
-                  setRedirectTimer(0)
-                  window.location.href = '/'
-                }}
-                className="flex-1 bg-white border-2 border-emerald-600 text-emerald-600 rounded-full px-6 py-3 font-medium 
-                         hover:bg-emerald-50 transition-all duration-300"
-              >
-                Skip - Go to Home
-              </motion.button>
-            </motion.div>
+            <p className="text-neutral-500 text-sm">
+              Redirecting to homepage in {redirectTimer} seconds...
+            </p>
           </motion.div>
-        </main>
-        <Footer />
+        </div>
+      </main>
       </>
     )
   }
 
   return (
     <>
+      {/* Navigation Header */}
       <Header />
       
-      <main 
+      <motion.main
         ref={containerRef}
-        className="pt-20 relative min-h-screen overflow-hidden"
+        className="min-h-screen pt-32 pb-16 overflow-hidden"
         style={{ backgroundColor: '#FEF7ED' }}
         onMouseMove={handleMouseMove}
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        suppressHydrationWarning
       >
-        {/* Homepage-style background with mouse tracking */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
-            style={{
-              x: backgroundX,
-              y: backgroundY,
-              willChange: 'transform',
-            }}
-          />
-          <motion.div 
-            className="absolute top-0 right-0 w-[60%] h-[60%] bg-gradient-radial from-amber-50/25 to-transparent blur-3xl"
-            style={{
-              x: accentX,
-              y: accentY,
-              willChange: 'transform',
-            }}
-          />
-          <motion.div 
-            className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-gradient-radial from-orange-100/15 to-transparent blur-3xl"
-            style={{
-              x: bottomLayerX,
-              y: bottomLayerY,
-              willChange: 'transform',
-            }}
-          />
-        </div>
+      {/* Dynamic Background Layers - Matching Homepage */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-amber-50/20 to-emerald-50/10"
+          style={isMounted ? {
+            x: backgroundX,
+            y: backgroundY,
+          } : {}}
+          suppressHydrationWarning
+        />
+        
+        <motion.div 
+          className="absolute top-1/4 left-1/4 w-64 h-64 bg-orange-200/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          suppressHydrationWarning
+        />
+        
+        <motion.div 
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-200/25 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.25, 0.4, 0.25],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+          suppressHydrationWarning
+        />
+      </div>
 
-        {/* Page Header - Mobile Optimized */}
-        <section className="py-12 md:py-20 relative overflow-hidden z-10">
-          <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-            <motion.div
-              className="text-center space-y-4 md:space-y-6"
-              initial="initial"
-              animate={isInView ? "visible" : "initial"}
-              variants={animationVariants.luxuryStagger}
-            >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        {/* Header Section */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          suppressHydrationWarning
+        >
+          <motion.h1 
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 heading-luxury text-neutral-800"
+            suppressHydrationWarning
+          >
+            Get Your Dream Car
+            <span className="block bg-gradient-to-r from-emerald-600 via-emerald-500 to-orange-500 bg-clip-text text-transparent">
+              Delivered Today
+            </span>
+          </motion.h1>
+          
+          <motion.p 
+            className="text-lg md:text-xl text-neutral-600 max-w-3xl mx-auto mb-8 leading-relaxed"
+            suppressHydrationWarning
+          >
+            Skip the dealership hassle. Our premium concierge service finds, negotiates, and delivers 
+            luxury vehicles directly to your door. Save thousands while enjoying white-glove service.
+          </motion.p>
+
+          {/* Trust Indicators */}
+          <motion.div 
+            className="flex flex-wrap justify-center gap-6 mb-12"
+            suppressHydrationWarning
+          >
+            {trustIndicators.map((indicator, index) => (
               <motion.div
-                variants={animationVariants.premiumSlideUp}
+                key={index}
+                className="bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-neutral-700 border border-white/40 flex items-center space-x-2"
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+                transition={{ duration: 0.2 }}
+                suppressHydrationWarning
               >
-                <PremiumBadge icon={Sparkles}>
-                  Premium Quote Request
-                </PremiumBadge>
+                <span className={indicator.color}>{indicator.icon}</span>
+                <span>{indicator.text}</span>
               </motion.div>
-            
-            <motion.h1 
-              variants={animationVariants.premiumSlideUp}
-              className="text-3xl md:text-5xl lg:text-7xl font-bold tracking-tight leading-tight mb-4 md:mb-6"
-              style={{
-                background: 'linear-gradient(135deg, #000000 0%, #1f2937 50%, #059669 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Get Your Premium
-              <span className="block" style={{
-                background: 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>
-                Quote Today
-              </span>
-            </motion.h1>
-            
-            <motion.p 
-              variants={animationVariants.premiumSlideUp}
-              className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed mb-6 md:mb-8 px-2"
-            >
-              Experience luxury auto brokerage. Our AI specialist will call you within 5 minutes to begin your premium vehicle journey.
-            </motion.p>
+            ))}
+          </motion.div>
+        </motion.div>
 
-              {/* Trust indicators - Mobile Optimized */}
-              <motion.div
-                variants={animationVariants.premiumStagger}
-                className="flex flex-wrap justify-center gap-3 md:gap-6"
-              >
-                {trustIndicators.map((indicator, index) => (
-                  <motion.div
-                    key={index}
-                    variants={animationVariants.saasCardEntrance}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-3 md:px-4 py-2 
-                             border border-white/40 shadow-lg text-xs md:text-sm"
-                  >
-                    <span className={indicator.color}>{indicator.icon}</span>
-                    <span className="text-neutral-700 font-medium">{indicator.text}</span>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Content Section - Mobile First */}
-        <section className="pb-12 md:pb-20 relative z-10">
-          <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
-            
-            {/* Premium Form - Show first on mobile, second on desktop */}
-            <motion.div 
-              ref={formRef}
-              variants={animationVariants.premiumSlideUp} 
-              className="order-1 lg:order-2"
-              id="quote-form"
-            >
-              <motion.form
-                onSubmit={handleSubmit}
-                className="bg-[#FEFCFA] rounded-[20px] p-6 md:p-8 border border-white/40
-                          shadow-[0_8px_32px_rgba(139,69,19,0.12),0_16px_64px_rgba(139,69,19,0.06)]"
-              >
-                <div className="text-center mb-6 md:mb-8">
-                  <h3 className="text-xl md:text-2xl font-bold text-neutral-900 mb-2">Start Your Journey</h3>
-                  <p className="text-neutral-600 text-sm md:text-base">Get your personalized quote in minutes</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Form Section */}
+          <motion.div
+            className="order-2 lg:order-1"
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            suppressHydrationWarning
+          >
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20">
+              <h2 className="text-2xl font-bold text-neutral-800 mb-6">
+                Get Your Free Quote
+              </h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">First Name</label>
-                    <input 
-                      type="text" 
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      First Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
                       value={formData.firstName}
                       onChange={(e) => handleInputChange('firstName', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300 text-base"
-                      placeholder="Enter first name"
-                      required
+                      className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
+                      placeholder="John"
                     />
                   </div>
+                  
                   <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">Last Name</label>
-                    <input 
-                      type="text" 
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      Last Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
                       value={formData.lastName}
                       onChange={(e) => handleInputChange('lastName', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300 text-base"
-                      placeholder="Enter last name"
-                      required
+                      className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
+                      placeholder="Doe"
                     />
                   </div>
                 </div>
-                
-                <div className="mb-4 md:mb-6">
-                  <label className="block text-neutral-700 text-sm font-medium mb-2">Email Address</label>
-                  <input 
-                    type="email" 
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    required
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                             text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300 text-base"
-                    placeholder="your.email@example.com"
-                    required
+                    className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
+                    placeholder="john@example.com"
                   />
                 </div>
 
-                <div className="mb-4 md:mb-6">
-                  <label className="block text-neutral-700 text-sm font-medium mb-2">Phone Number</label>
-                  <input 
-                    type="tel" 
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    required
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
-                    className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                             text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300 text-base"
+                    className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                     placeholder="(555) 123-4567"
-                    required
                   />
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">Car Brand</label>
-                    <input 
-                      type="text" 
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      Preferred Brand
+                    </label>
+                    <select
                       value={formData.carBrand}
                       onChange={(e) => handleInputChange('carBrand', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300 text-base"
-                      placeholder="e.g., BMW, Mercedes, Audi"
-                      required
-                    />
+                      className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
+                    >
+                      <option value="">Select Brand</option>
+                      <option value="BMW">BMW</option>
+                      <option value="Mercedes-Benz">Mercedes-Benz</option>
+                      <option value="Audi">Audi</option>
+                      <option value="Lexus">Lexus</option>
+                      <option value="Tesla">Tesla</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
+                  
                   <div>
-                    <label className="block text-neutral-700 text-sm font-medium mb-2">Car Trim/Model</label>
-                    <input 
-                      type="text" 
-                      value={formData.carTrim}
-                      onChange={(e) => handleInputChange('carTrim', e.target.value)}
-                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                               text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                               focus:border-emerald-500 transition-all duration-300 text-base"
-                      placeholder="e.g., X5, E-Class, A4"
-                      required
-                    />
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      Timeline
+                    </label>
+                    <select
+                      value={formData.timeline}
+                      onChange={(e) => handleInputChange('timeline', e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
+                    >
+                      <option value="">Select Timeline</option>
+                      <option value="ASAP">ASAP</option>
+                      <option value="1-2 weeks">1-2 weeks</option>
+                      <option value="1 month">1 month</option>
+                      <option value="2-3 months">2-3 months</option>
+                    </select>
                   </div>
                 </div>
-                
-                <div className="mb-4 md:mb-6">
-                  <label className="block text-neutral-700 text-sm font-medium mb-2">Credit Score</label>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Credit Score Range *
+                  </label>
                   <select
-                    value={formData.creditScore}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      handleInputChange('creditScore', value);
-                      // Show error message for non-excellent credit scores
-                      if (value && value !== 'excellent') {
-                        setCreditScoreError(true);
-                      } else {
-                        setCreditScoreError(false);
-                      }
-                    }}
-                    className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                             text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300 text-base"
                     required
+                    value={formData.creditScore}
+                    onChange={(e) => handleInputChange('creditScore', e.target.value)}
+                    className={`w-full px-4 py-3 rounded-xl border transition-all duration-200 ${
+                      formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good'
+                        ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20' 
+                        : 'border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
+                    }`}
                   >
-                    <option value="">Select your credit score range</option>
-                    <option value="excellent">Excellent (700+)</option>
-                    <option value="good">Good (650-699)</option>
-                    <option value="fair">Fair (600-649)</option>
-                    <option value="building">Building (Below 600)</option>
+                    <option value="">Select Credit Score Range</option>
+                    <option value="Excellent">Excellent (750+)</option>
+                    <option value="Good">Good (700-749)</option>
+                    <option value="Fair">Fair (650-699)</option>
+                    <option value="Poor">Poor (Below 650)</option>
                   </select>
-                  
-                  {creditScoreError && (
+                  {formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good' && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-[12px]"
+                      className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="w-5 h-5 text-amber-600 mt-0.5">
-                          <svg viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium text-amber-800 mb-1">
-                            Credit Score Requirements
-                          </h4>
-                          <p className="text-sm text-amber-700">
-                            We appreciate your interest! At this time, our premium vehicle financing program requires a credit score of 700 or higher. We encourage you to continue working on improving your credit score and reach out to us in the future when you meet our requirements.
-                          </p>
-                        </div>
-                      </div>
+                      <p className="text-sm text-red-700 font-medium">
+                        ⚠️ Premium Service Requirement
+                      </p>
+                      <p className="text-sm text-red-600 mt-1">
+                        Our exclusive luxury vehicle program is currently available only to clients with good credit (700+). 
+                        This ensures the best financing terms and premium vehicle access.
+                      </p>
                     </motion.div>
                   )}
                 </div>
-                
-                <div className="mb-6 md:mb-8">
-                  <label className="block text-neutral-700 text-sm font-medium mb-2">Timeline</label>
-                  <select
-                    value={formData.timeline}
-                    onChange={(e) => handleInputChange('timeline', e.target.value)}
-                    className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
-                             text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
-                             focus:border-emerald-500 transition-all duration-300 text-base"
-                    required
-                  >
-                    <option value="">When do you need a vehicle?</option>
-                    <option value="asap">ASAP</option>
-                    <option value="1-2-weeks">1-2 weeks</option>
-                    <option value="1-month">Within a month</option>
-                    <option value="3-months">Within 3 months</option>
-                    <option value="just-browsing">Just browsing</option>
-                  </select>
-                </div>
-                
+
                 <motion.button
                   type="submit"
-                  disabled={isSubmitting || creditScoreError || formData.creditScore !== 'excellent'}
-                  whileHover={{ 
-                    scale: shouldReduceMotion ? 1 : 1.02, 
-                    y: shouldReduceMotion ? 0 : -3 
-                  }}
-                  whileTap={{ 
-                    scale: shouldReduceMotion ? 1 : 0.98,
-                    y: 0
-                  }}
-                  transition={{ 
-                    type: "spring",
-                    stiffness: 400,
-                    damping: 25,
-                    mass: 0.1
-                  }}
-                  className="w-full text-white border-0 rounded-full px-8 md:px-10 py-3 md:py-4 text-base md:text-lg font-medium 
-                           transition-all duration-300 group relative overflow-hidden"
-                  style={{
-                    background: (isSubmitting || creditScoreError || formData.creditScore !== 'excellent') 
-                      ? '#6b7280' 
-                      : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                    boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3), 0 16px 40px -8px rgba(5, 150, 105, 0.2), 0 32px 64px -16px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.1)',
-                    cursor: (isSubmitting || creditScoreError || formData.creditScore !== 'excellent') ? 'not-allowed' : 'pointer'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSubmitting && !creditScoreError && formData.creditScore === 'excellent') {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSubmitting && !creditScoreError && formData.creditScore === 'excellent') {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)'
-                    }
-                  }}
+                  disabled={isSubmitting || (!!formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good')}
+                  className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2 ${
+                    formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good'
+                      ? 'bg-gray-400 text-gray-600 opacity-50'
+                      : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-xl disabled:opacity-50'
+                  }`}
+                  whileHover={(formData.creditScore === 'Excellent' || formData.creditScore === 'Good' || !formData.creditScore) ? { scale: 1.02, y: -2 } : undefined}
+                  whileTap={(formData.creditScore === 'Excellent' || formData.creditScore === 'Good' || !formData.creditScore) ? { scale: 0.98 } : undefined}
+                  suppressHydrationWarning
                 >
                   {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Processing...
-                    </span>
-                  ) : creditScoreError || formData.creditScore !== 'excellent' ? (
-                    <span className="flex items-center justify-center relative z-10">
-                      Complete Application
-                    </span>
+                    <span>Submitting...</span>
+                  ) : formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good' ? (
+                    <>
+                      <span>Good Credit Required</span>
+                      <Shield className="w-5 h-5" />
+                    </>
                   ) : (
-                    <span className="flex items-center justify-center relative z-10">
-                      Get My Quote
-                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-                    </span>
+                    <>
+                      <span>Get My Free Quote</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </>
                   )}
                 </motion.button>
+              </form>
+            </div>
+          </motion.div>
 
-                <p className="text-neutral-500 text-xs md:text-sm text-center mt-4">
-                  {creditScoreError || formData.creditScore !== 'excellent' ? (
-                    "Our financing specialists will review your information and explore available options for you."
-                  ) : (
-                    "By submitting, you agree to receive calls from our specialist within 5 minutes."
-                  )}
-                </p>
-              </motion.form>
-            </motion.div>
-            
-            {/* Value Propositions - Show second on mobile, first on desktop */}
-            <motion.div variants={animationVariants.premiumSlideUp} className="space-y-6 md:space-y-8 order-2 lg:order-1">
-              <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-6 md:mb-8">Why Choose Mint Lease?</h2>
-              
+          {/* Value Propositions */}
+          <motion.div
+            className="order-1 lg:order-2"
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            suppressHydrationWarning
+          >
+            <div className="space-y-8">
               {valueProps.map((prop, index) => (
                 <motion.div
                   key={index}
-                  variants={animationVariants.saasCardEntrance}
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  className="bg-[#FEFCFA] rounded-[16px] p-4 md:p-6 border border-white/40
-                           shadow-[0_4px_20px_rgba(139,69,19,0.08)] hover:shadow-[0_8px_32px_rgba(139,69,19,0.12)]
-                           transition-all duration-300"
+                  className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/40"
+                  whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+                  transition={{ duration: 0.2 }}
+                  suppressHydrationWarning
                 >
-                  <div className="flex items-start gap-3 md:gap-4">
-                    <div className={`w-10 h-10 md:w-12 md:h-12 ${prop.color} bg-opacity-10 rounded-[12px] flex items-center justify-center flex-shrink-0`}>
-                      <span className={prop.color}>{prop.icon}</span>
+                  <div className="flex items-start space-x-4">
+                    <div className={`${prop.color} bg-white rounded-xl p-3 shadow-sm`}>
+                      {prop.icon}
                     </div>
                     <div>
-                      <h3 className="text-lg md:text-xl font-bold text-neutral-900 mb-1 md:mb-2">{prop.title}</h3>
-                      <p className="text-neutral-600 leading-relaxed text-sm md:text-base">{prop.description}</p>
+                      <h3 className="text-xl font-semibold text-neutral-800 mb-2">
+                        {prop.title}
+                      </h3>
+                      <p className="text-neutral-600 leading-relaxed">
+                        {prop.description}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
               ))}
-            </motion.div>
             </div>
-          </div>
-        </section>
-      </main>
-      
-      <Footer />
+          </motion.div>
+        </div>
+      </div>
+    </motion.main>
     </>
   )
 } 

@@ -1,0 +1,26 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simplified sports car outline for favicon -->
+  <g stroke="#E5E7EB" stroke-width="1.5" fill="none">
+    <!-- Main car body -->
+    <path d="M4 20c-1 0-2-1-2-2v-1c0-1 0.5-2 1.5-3l2-2c1-1 2.5-1.5 4-1.5h13c2 0 3 0.5 4 1.5l2 2c1 1 1.5 2 1.5 3v1c0 1-1 2-2 2"/>
+    
+    <!-- Roof line -->
+    <path d="M8 8c2-2 4-2 8-2h4c4 0 6 0 8 2l2 3c1 1 1 2 1 3v2"/>
+    
+    <!-- Windows -->
+    <path d="M12 10h2v4h-2z"/>
+    <path d="M16 10h2v4h-2z"/>
+    
+    <!-- Wheels -->
+    <circle cx="10" cy="20" r="3"/>
+    <circle cx="22" cy="20" r="3"/>
+    <circle cx="10" cy="20" r="1.5"/>
+    <circle cx="22" cy="20" r="1.5"/>
+    
+    <!-- Body line -->
+    <path d="M6 16h20"/>
+    
+    <!-- Spoiler -->
+    <path d="M24 10h3l1 2h-4z"/>
+  </g>
+</svg> 

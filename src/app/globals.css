@@ -557,6 +557,9 @@ body {
   overflow-x: hidden !important;
   max-width: 100vw !important;
   position: relative;
+  /* Ensure proper mobile scrolling */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: none;
 }
 
 /* Force overflow-x hidden on html and body to prevent horizontal scroll */

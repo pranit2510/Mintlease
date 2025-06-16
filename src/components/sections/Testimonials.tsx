@@ -107,77 +107,86 @@ const TestimonialCard: React.FC<{
 }> = ({ testimonial, index, isActive }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Fix hydration issues by detecting client-side mounting
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={isMounted ? { opacity: 0, scale: 0.98 } : { opacity: isActive ? 1 : 0.5, scale: 1 }}
       animate={{ 
-        opacity: isActive ? 1 : 0.7, 
-        scale: isActive ? 1 : 0.95,
+        opacity: isActive ? 1 : 0.5, 
+        scale: 1,
         x: `${index * 100}%`
       }}
-      transition={{ duration: 0.5, ease: 'easeInOut' }}
+      transition={{ duration: 0.6, ease: 'easeInOut' }}
       className={`absolute inset-0 w-full ${isActive ? 'z-10' : 'z-0'}`}
+      suppressHydrationWarning
     >
       <div 
-        className="bg-[#FEFCFA] rounded-[20px] p-8 lg:p-10 h-full flex flex-col"
+        className="bg-[#FEFCFA] rounded-[12px] lg:rounded-[16px] p-4 sm:p-6 lg:p-8 h-full flex flex-col min-h-0"
         style={{
           boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
         }}
       >
-        {/* Quote Icon */}
-        <div className="mb-6">
-          <div className="w-12 h-12 text-emerald-600/30">
+        {/* Quote Icon - Compact size */}
+        <div className="mb-3 sm:mb-4">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600/30">
             <svg fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
               <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
             </svg>
           </div>
         </div>
 
-        {/* Testimonial Text */}
-        <blockquote className="text-lg lg:text-xl text-neutral-700 leading-relaxed mb-8 flex-grow">
+        {/* Testimonial Text - Compact sizing */}
+        <blockquote className="text-sm sm:text-base lg:text-lg text-neutral-700 leading-relaxed mb-4 sm:mb-6 flex-grow overflow-hidden">
           &ldquo;{testimonial.testimonial}&rdquo;
         </blockquote>
 
-        {/* Customer Info */}
-        <div className="flex items-center space-x-4">
-          {/* Avatar */}
-          <div className="w-16 h-16 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-xl">
-            {testimonial.name.split(' ').map(n => n[0]).join('')}
-          </div>
-
-          {/* Details */}
-          <div className="flex-grow">
-            <div className="flex items-center space-x-2 mb-1">
-              <h4 className="font-semibold text-neutral-800">
-                {testimonial.name}
-              </h4>
-              {testimonial.verified && (
-                <div className="w-5 h-5 bg-emerald-600 rounded-full flex items-center justify-center">
-                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+        {/* Customer Info - Compact layout */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-3">
+          {/* Avatar and Details - Combined on mobile */}
+          <div className="flex items-center gap-3 flex-grow">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-xs sm:text-base flex-shrink-0">
+              {testimonial.name.split(' ').map(n => n[0]).join('')}
             </div>
-            <p className="text-neutral-600 text-sm mb-2">{testimonial.location}</p>
-            <StarRating rating={testimonial.rating} size="sm" />
+            
+            <div className="flex-grow min-w-0">
+                             <div className="flex items-center gap-1.5 mb-1">
+                 <h4 className="font-semibold text-neutral-800 text-xs sm:text-sm truncate">
+                   {testimonial.name}
+                 </h4>
+                 {testimonial.verified && (
+                   <div className="w-3 h-3 sm:w-4 sm:h-4 bg-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                     <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+                             <p className="text-neutral-600 text-xs mb-1.5 truncate">{testimonial.location}</p>
+              <StarRating rating={testimonial.rating} size="sm" />
+            </div>
           </div>
 
-          {/* Savings */}
-          <div className="text-right">
-            <div className="text-2xl font-bold text-emerald-600">
+          {/* Savings - Compact display */}
+          <div className="text-left sm:text-right flex-shrink-0">
+            <div className="text-lg sm:text-xl font-bold text-emerald-600">
               ${testimonial.savings.toLocaleString()}
             </div>
-            <div className="text-neutral-600 text-sm">Saved</div>
+            <div className="text-neutral-600 text-xs">Saved</div>
           </div>
         </div>
 
-        {/* Vehicle Info */}
-        <div className="mt-6 pt-6 border-t border-neutral-200">
+        {/* Vehicle Info - Compact spacing */}
+        <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-neutral-200">
           <div className="text-center">
-            <span className="text-neutral-600 text-sm">Leased: </span>
-            <span className="font-semibold text-neutral-800">{testimonial.vehicle}</span>
+            <span className="text-neutral-600 text-xs">Leased: </span>
+            <span className="font-semibold text-neutral-800 text-xs">{testimonial.vehicle}</span>
           </div>
         </div>
       </div>
@@ -190,6 +199,13 @@ const Testimonials: React.FC = () => {
   const titleRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-200px' });
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Fix hydration issues by detecting client-side mounting
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     if (isInView && titleRef.current) {
@@ -228,7 +244,7 @@ const Testimonials: React.FC = () => {
     <section 
       id="testimonials" 
       ref={sectionRef} 
-      className="py-24 relative overflow-hidden"
+      className="py-16 sm:py-20 relative overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #FEF7ED 0%, #FEFCFA 50%, #FEF7ED 100%)',
       }}
@@ -237,63 +253,63 @@ const Testimonials: React.FC = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div ref={titleRef} className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+        <div ref={titleRef} className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
             <span className="text-neutral-800">Customer </span>
             <span className="text-emerald-600">Success Stories</span>
           </h2>
-          <p className="text-xl text-neutral-600 max-w-3xl mx-auto mb-8">
+          <p className="text-sm sm:text-base lg:text-lg text-neutral-600 max-w-2xl mx-auto mb-4 sm:mb-6 px-4">
             Don&apos;t just take our word for it. See how we&apos;ve helped thousands of customers 
             save money and get their dream vehicles.
           </p>
 
           {/* Trust Metrics */}
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-emerald-600">
+              <div className="text-xl sm:text-2xl font-bold text-emerald-600">
                 $15M+
               </div>
-              <div className="text-neutral-600">Total Savings</div>
+              <div className="text-neutral-600 text-xs sm:text-sm">Total Savings</div>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center space-x-1">
-                <span className="text-3xl font-bold text-orange-500">{averageRating}</span>
-                <StarRating rating={Math.floor(averageRating)} size="lg" />
+              <div className="flex items-center justify-center gap-1">
+                <span className="text-xl sm:text-2xl font-bold text-orange-500">{averageRating}</span>
+                <StarRating rating={Math.floor(averageRating)} size="md" />
               </div>
-              <div className="text-neutral-600">Average Rating</div>
+              <div className="text-neutral-600 text-xs sm:text-sm">Average Rating</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-emerald-600">2,500+</div>
-              <div className="text-neutral-600">Happy Customers</div>
+              <div className="text-xl sm:text-2xl font-bold text-emerald-600">2,500+</div>
+              <div className="text-neutral-600 text-xs sm:text-sm">Happy Customers</div>
             </div>
           </div>
         </div>
 
         {/* Testimonial Carousel */}
         <div className="max-w-6xl mx-auto relative">
-          {/* Navigation Arrows - Outside the card */}
+          {/* Navigation Arrows - Better mobile positioning */}
           <button
             onClick={prevTestimonial}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20 hover:scale-110"
+            className="absolute -left-2 sm:left-0 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20 hover:scale-110"
             style={{
               boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
             }}
           >
-            <ChevronLeftIcon className="w-6 h-6 text-neutral-600" />
+            <ChevronLeftIcon className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-600" />
           </button>
           <button
             onClick={nextTestimonial}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20 hover:scale-110"
+            className="absolute -right-2 sm:right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200 z-20 hover:scale-110"
             style={{
               boxShadow: '0 4px 20px rgba(139, 69, 19, 0.08), 0 8px 40px rgba(139, 69, 19, 0.04)',
             }}
           >
-            <ChevronRightIcon className="w-6 h-6 text-neutral-600" />
+            <ChevronRightIcon className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-600" />
           </button>
 
-          {/* Testimonial Card Container */}
-          <div className="max-w-4xl mx-auto">
-            <div className="relative h-96 lg:h-80 overflow-hidden rounded-[20px]">
+          {/* Testimonial Card Container - Compact height */}
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative min-h-[320px] sm:min-h-[300px] lg:min-h-[280px] overflow-hidden rounded-[12px] lg:rounded-[16px]">
               {testimonials.map((testimonial, index) => (
                 <TestimonialCard
                   key={testimonial.id}
@@ -305,28 +321,16 @@ const Testimonials: React.FC = () => {
             </div>
           </div>
 
-          {/* Testimonial Indicators */}
-          <div className="flex justify-center space-x-2 mt-8">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                  index === activeIndex 
-                    ? 'bg-emerald-600 scale-125' 
-                    : 'bg-neutral-300 hover:bg-neutral-400'
-                }`}
-              />
-            ))}
-          </div>
+
         </div>
 
         {/* CTA Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={isMounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-center mt-16"
+          className="text-center mt-10 sm:mt-12"
+          suppressHydrationWarning
         >
           <h3 className="text-2xl font-bold text-neutral-800 mb-4">
             Ready to Join Our Success Stories?

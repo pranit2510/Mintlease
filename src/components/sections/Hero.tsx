@@ -6,12 +6,15 @@ import { gsap } from 'gsap'
 import { ArrowRight, Play, Shield, Award, Users, DollarSign, Star } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { animationVariants } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { PremiumBadge } from '@/components/ui/PremiumBadge'
 
 /**
  * Hero Section - Interactive Luxury Auto Brokerage Landing
  * Features: Mouse-responsive parallax, Interactive particles, Dynamic depth
  */
 export const Hero: React.FC = () => {
+  const router = useRouter()
   const containerRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const subtitleRef = useRef<HTMLParagraphElement>(null)
@@ -21,6 +24,13 @@ export const Hero: React.FC = () => {
   const controls = useAnimation()
   const isInView = useInView(containerRef, { once: true, amount: 0.3 })
   const shouldReduceMotion = useReducedMotion()
+
+  // Fix hydration issues by detecting client-side mounting
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Interactive mouse tracking - 120fps optimized
   const mouseX = useMotionValue(0)
@@ -290,7 +300,7 @@ export const Hero: React.FC = () => {
   }, [])
 
   const handleScrollToDeals = () => {
-    window.location.href = '/inventory'
+    router.push('/inventory')
   }
 
   const handleWatchVideo = () => {
@@ -330,6 +340,7 @@ export const Hero: React.FC = () => {
             willChange: 'transform',
             transform: 'translate3d(0,0,0)', // Force GPU layer
           }}
+          suppressHydrationWarning
         />
         
         {/* Subtle accent glow - Optimized */}
@@ -346,6 +357,7 @@ export const Hero: React.FC = () => {
             willChange: 'transform, opacity',
             transform: 'translate3d(0,0,0)', // Force GPU layer
           }}
+          suppressHydrationWarning
         />
         
         {/* Minimal ambient light - Simplified */}
@@ -357,6 +369,7 @@ export const Hero: React.FC = () => {
             willChange: 'transform',
             transform: 'translate3d(0,0,0)', // Force GPU layer
           }}
+          suppressHydrationWarning
         />
       </div>
 
@@ -364,14 +377,16 @@ export const Hero: React.FC = () => {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 mobile-sm:px-5 mobile-md:px-5 mobile-lg:px-6 lg:px-8 py-12 mobile-sm:py-16 container-mobile">
         <motion.div
           className="text-center space-y-6 mobile-sm:space-y-8 mobile-md:space-y-10"
-          initial="initial"
+          initial={isMounted ? "initial" : false}
           animate={controls}
           variants={animationVariants.luxuryStagger}
+          suppressHydrationWarning
         >
           {/* Simplified Hero Title with Integrated Typewriter */}
           <motion.div 
             className="space-y-4 mobile-sm:space-y-6 mobile-md:space-y-8"
             variants={animationVariants.premiumSlideUp}
+            suppressHydrationWarning
           >
             <motion.div className="space-y-2">
               <motion.h1 
@@ -391,6 +406,7 @@ export const Hero: React.FC = () => {
               <motion.div 
                 className="relative flex items-center justify-center py-4 mobile-sm:py-6 min-h-[4rem] mobile-sm:min-h-[5rem] mobile-md:min-h-[6rem] md:min-h-[7rem] lg:min-h-[8rem]"
                 variants={animationVariants.premiumSlideUp}
+                suppressHydrationWarning
               >
                 <div className="relative inline-flex items-center justify-center">
                   {/* Enhanced container with 120fps text animation */}
@@ -400,6 +416,7 @@ export const Hero: React.FC = () => {
                       scale: textScale,
                       willChange: 'transform',
                     }}
+                    suppressHydrationWarning
                   >
                     <motion.span
                       className="text-xl mobile-sm:text-2xl mobile-md:text-3xl mobile-lg:text-4xl sm:text-5xl lg:text-6xl font-semibold whitespace-nowrap"
@@ -423,6 +440,7 @@ export const Hero: React.FC = () => {
                         damping: 30,
                         mass: 0.1,
                       }}
+                      suppressHydrationWarning
                     >
                       {displayText || '\u00A0'}
                       {/* Inline cursor positioned right after text - GPU accelerated */}
@@ -434,6 +452,7 @@ export const Hero: React.FC = () => {
                           willChange: 'opacity, transform',
                           transform: 'translate3d(0,0,0)', // Force GPU layer
                         }}
+                        suppressHydrationWarning
                       />
                     </motion.span>
                   </motion.div>
@@ -454,6 +473,7 @@ export const Hero: React.FC = () => {
             ref={ctaRef}
             className="flex justify-center"
             variants={animationVariants.premiumSlideUp}
+            suppressHydrationWarning
           >
             <motion.div
               whileHover={{ 
@@ -475,6 +495,7 @@ export const Hero: React.FC = () => {
                 boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3), 0 16px 40px -8px rgba(5, 150, 105, 0.2), 0 32px 64px -16px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.1)',
                 borderRadius: '9999px'
               }}
+              suppressHydrationWarning
             >
               <motion.button
                 className="bg-emerald-600 text-white border-0 rounded-full px-6 mobile-sm:px-8 mobile-md:px-10 py-3 mobile-sm:py-4 mobile-md:py-5 text-base mobile-sm:text-lg font-medium transition-all duration-300 group relative overflow-hidden"
@@ -500,11 +521,13 @@ export const Hero: React.FC = () => {
             ref={statsRef}
             className="flex flex-wrap items-center justify-center gap-x-4 mobile-sm:gap-x-6 mobile-md:gap-x-6 mobile-lg:gap-x-8 sm:gap-x-12 gap-y-3 mobile-sm:gap-y-4 mt-6 mobile-sm:mt-8 px-2 mobile-sm:px-4 trust-indicators-390"
             variants={animationVariants.premiumStagger}
+            suppressHydrationWarning
           >
             {/* Customers */}
             <motion.div
               variants={animationVariants.saasCardEntrance}
               className="flex items-center gap-1.5 mobile-sm:gap-2"
+              suppressHydrationWarning
             >
               <Users className="w-3.5 h-3.5 mobile-sm:w-4 mobile-sm:h-4 text-emerald-600/70" />
               <div className="flex items-baseline gap-1">
@@ -520,6 +543,7 @@ export const Hero: React.FC = () => {
             <motion.div
               variants={animationVariants.saasCardEntrance}
               className="flex items-center gap-1.5 mobile-sm:gap-2"
+              suppressHydrationWarning
             >
               <DollarSign className="w-3.5 h-3.5 mobile-sm:w-4 mobile-sm:h-4 text-amber-600/70" />
               <div className="flex items-baseline gap-1">
@@ -535,6 +559,7 @@ export const Hero: React.FC = () => {
             <motion.div
               variants={animationVariants.saasCardEntrance}
               className="flex items-center gap-1.5 mobile-sm:gap-2"
+              suppressHydrationWarning
             >
               <Star className="w-3.5 h-3.5 mobile-sm:w-4 mobile-sm:h-4 text-orange-500/70" />
               <div className="flex items-baseline gap-1">
@@ -547,16 +572,18 @@ export const Hero: React.FC = () => {
           {/* Subtle Brand Carousel */}
           <motion.div
             className="mt-12 mobile-sm:mt-16 mobile-md:mt-20 w-full relative"
-            initial={{ opacity: 0 }}
+            initial={isMounted ? { opacity: 0 } : { opacity: 1 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.0, duration: 1.0 }}
+            suppressHydrationWarning
           >
             {/* Minimal Header */}
             <motion.div 
               className="text-center mb-4 mobile-sm:mb-6"
-              initial={{ opacity: 0 }}
+              initial={isMounted ? { opacity: 0 } : { opacity: 1 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2.2, duration: 0.8 }}
+              suppressHydrationWarning
             >
               <p className="text-xs mobile-sm:text-sm text-neutral-300 tracking-wide font-normal px-2">
                 Delivering luxury brands & more
