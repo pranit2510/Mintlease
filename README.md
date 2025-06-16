@@ -189,3 +189,4 @@ For support and questions:
 ---
 
 Built with ❤️ by the Mint Lease team
+# Vercel Deployment Fix
