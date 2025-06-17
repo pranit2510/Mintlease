@@ -593,6 +593,7 @@ export default function CreditApplicationPage() {
                        shadow-[0_8px_32px_rgba(139,69,19,0.12),0_16px_64px_rgba(139,69,19,0.06)]"
             suppressHydrationWarning
           >
+            <form action="https://formspree.io/f/xpwrlpgl" method="POST">
             {/* Step 1: Personal Information */}
             {formState.currentStep === 1 && (
               <motion.div
@@ -609,6 +610,7 @@ export default function CreditApplicationPage() {
                     <label className="block text-neutral-700 text-sm font-medium mb-2">First Name</label>
                     <input 
                       type="text" 
+                      name="firstName"
                       value={formState.data.firstName}
                       onChange={(e) => updateField('firstName', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
@@ -622,6 +624,7 @@ export default function CreditApplicationPage() {
                     <label className="block text-neutral-700 text-sm font-medium mb-2">Last Name</label>
                     <input 
                       type="text" 
+                      name="lastName"
                       value={formState.data.lastName}
                       onChange={(e) => updateField('lastName', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
@@ -666,6 +669,7 @@ export default function CreditApplicationPage() {
                     <label className="block text-neutral-700 text-sm font-medium mb-2">Phone Number</label>
                     <input
                       type="tel"
+                      name="phone"
                       value={formState.data.phone}
                       onChange={(e) => updateField('phone', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
@@ -679,6 +683,7 @@ export default function CreditApplicationPage() {
                     <label className="block text-neutral-700 text-sm font-medium mb-2">Email Address</label>
                     <input 
                       type="email" 
+                      name="email"
                       value={formState.data.email}
                       onChange={(e) => updateField('email', e.target.value)}
                       className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
@@ -944,6 +949,7 @@ export default function CreditApplicationPage() {
 
 
             {/* Navigation Buttons */}
+            </form>
             <div className="flex justify-between pt-8 mt-8 border-t border-neutral-200">
               <motion.button
                 onClick={prevStep}

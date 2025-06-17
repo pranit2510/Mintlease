@@ -371,7 +371,7 @@ export default function LeadPage() {
               </p>
             </div>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form action="https://formspree.io/f/xpwrlpgl" method="POST" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-neutral-700 mb-2">
@@ -379,6 +379,7 @@ export default function LeadPage() {
                     </label>
                     <input
                       type="text"
+                      name="firstName"
                       required
                       value={formData.firstName}
                       onChange={(e) => handleInputChange('firstName', e.target.value)}
@@ -393,6 +394,7 @@ export default function LeadPage() {
                     </label>
                     <input
                       type="text"
+                      name="lastName"
                       required
                       value={formData.lastName}
                       onChange={(e) => handleInputChange('lastName', e.target.value)}
@@ -408,6 +410,7 @@ export default function LeadPage() {
                   </label>
                   <input
                     type="email"
+                    name="email"
                     required
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
@@ -422,6 +425,7 @@ export default function LeadPage() {
                   </label>
                   <input
                     type="tel"
+                    name="phone"
                     required
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
@@ -436,6 +440,7 @@ export default function LeadPage() {
                       Preferred Brand
                     </label>
                     <select
+                      name="carBrand"
                       value={formData.carBrand}
                       onChange={(e) => handleInputChange('carBrand', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
@@ -455,6 +460,7 @@ export default function LeadPage() {
                       Timeline
                     </label>
                     <select
+                      name="timeline"
                       value={formData.timeline}
                       onChange={(e) => handleInputChange('timeline', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
@@ -473,6 +479,7 @@ export default function LeadPage() {
                     Credit Score Range *
                   </label>
                   <select
+                    name="creditScore"
                     required
                     value={formData.creditScore}
                     onChange={(e) => handleInputChange('creditScore', e.target.value)}

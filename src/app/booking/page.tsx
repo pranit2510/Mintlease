@@ -412,7 +412,7 @@ export default function BookingPage() {
                   </div>
 
                   {/* Enhanced Contact Form */}
-                  <div className="space-y-6">
+                  <form action="https://formspree.io/f/xpwrlpgl" method="POST" className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <motion.div
                         whileHover={{ scale: 1.02 }}
@@ -420,6 +420,7 @@ export default function BookingPage() {
                       >
                         <input
                           type="text"
+                          name="firstName"
                           placeholder="First Name"
                           value={formData.firstName}
                           onChange={(e) => handleInputChange('firstName', e.target.value)}
@@ -432,6 +433,7 @@ export default function BookingPage() {
                       >
                         <input
                           type="text"
+                          name="lastName"
                           placeholder="Last Name"
                           value={formData.lastName}
                           onChange={(e) => handleInputChange('lastName', e.target.value)}
@@ -446,6 +448,7 @@ export default function BookingPage() {
                     >
                       <input
                         type="email"
+                        name="email"
                         placeholder="Email Address"
                         value={formData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
@@ -459,6 +462,7 @@ export default function BookingPage() {
                     >
                       <input
                         type="tel"
+                        name="phone"
                         placeholder="Phone Number"
                         value={formData.phone}
                         onChange={(e) => handleInputChange('phone', e.target.value)}
@@ -472,6 +476,7 @@ export default function BookingPage() {
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
                       >
                         <select 
+                          name="vehicleType"
                           value={formData.vehicleType}
                           onChange={(e) => handleInputChange('vehicleType', e.target.value)}
                           className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
@@ -490,6 +495,7 @@ export default function BookingPage() {
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
                       >
                         <select 
+                          name="budget"
                           value={formData.budget}
                           onChange={(e) => handleInputChange('budget', e.target.value)}
                           className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
@@ -509,6 +515,7 @@ export default function BookingPage() {
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     >
                       <select 
+                        name="timeline"
                         value={formData.timeline}
                         onChange={(e) => handleInputChange('timeline', e.target.value)}
                         className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
@@ -527,6 +534,7 @@ export default function BookingPage() {
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     >
                       <textarea
+                        name="message"
                         placeholder="Tell us about your dream vehicle and any specific requirements..."
                         rows={4}
                         value={formData.message}
@@ -537,7 +545,7 @@ export default function BookingPage() {
 
                     {/* Enhanced Payment Button */}
                     <motion.button
-                      onClick={handleBookConsultation}
+                      type="submit"
                       disabled={isSubmitting}
                       className="w-full bg-gradient-emerald text-white py-5 px-8 rounded-2xl font-bold text-xl shadow-luxury relative overflow-hidden"
                       whileHover={{ 
@@ -588,7 +596,7 @@ export default function BookingPage() {
                       <LockClosedIcon className="w-4 h-4 inline mr-1" />
                       Secure payment powered by Stripe • SSL encrypted • PCI compliant
                     </motion.p>
-                  </div>
+                  </form>
                 </div>
               </motion.div>
             </motion.div>
