@@ -144,6 +144,8 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://api.stripe.com" />
         <link rel="dns-prefetch" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://www.facebook.com" />
         
         {/* Viewport and mobile optimization */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
@@ -292,6 +294,54 @@ export default function RootLayout({
             `
           }}
         />
+
+        {/* Meta Pixel Code */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '1216448333007169');
+              fbq('track', 'PageView');
+            `
+          }}
+        />
+        <noscript>
+          <img 
+            height="1" 
+            width="1" 
+            style={{display: 'none'}}
+            src="https://www.facebook.com/tr?id=1216448333007169&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
+        {/* End Meta Pixel Code */}
+
+        {/* Signals Gateway Pixel Code */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(a,h,e,v,n,t,s)
+                {if(a.cbq)return;n=a.cbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!a._cbq)a._cbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=h.createElement(e);t.async=!0;
+                t.src=v;s=h.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://sgw.stape.im/sdk/680486402008299964/events.js');
+                cbq('setHost', 'https://sgw.stape.im/');
+                cbq('init', '680486402008299964');
+                cbq('track', 'PageView');
+            `
+          }}
+        />
+        {/* End Signals Gateway Pixel Code */}
       </head>
       <body className={`antialiased overflow-x-hidden max-w-full ${inter.variable} ${sourceSerif.variable} font-sans mint-background`}>
         {/* Skip to main content for accessibility */}

@@ -32,6 +32,12 @@ interface FeaturedVehicle {
   location: string
   available: boolean
   featured: boolean // Backend will mark vehicles as featured
+  lease?: {
+    monthlyPayment: number
+    dueAtSigning: number
+    termMonths: number
+    milesPerYear: number
+  }
 }
 
 interface VehicleCardProps {
@@ -122,42 +128,45 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, index, isFavorited, 
       suppressHydrationWarning
     >
       {/* Vehicle Image */}
-      <div className="relative h-56 bg-gradient-to-br from-neutral-200 to-neutral-300 overflow-hidden rounded-[20px] m-4 mb-3 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-5xl mb-2 opacity-30">🚗</div>
-            <span className="text-neutral-600 font-semibold text-sm">
-              {vehicle.year} {vehicle.make} {vehicle.model}
-            </span>
+      <div className="relative h-56 bg-white overflow-hidden rounded-[20px] m-4 mb-3">
+        {vehicle.image ? (
+          <img 
+            src={vehicle.image} 
+            alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+            className="w-full h-full object-contain"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-5xl mb-2 opacity-30">🚗</div>
+              <span className="text-neutral-600 font-semibold text-sm">
+                {vehicle.year} {vehicle.make} {vehicle.model}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
         
-        {/* Savings Badge */}
-        <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
-          Save ${vehicle.savings.toLocaleString()}
-        </div>
+        {/* Overlay badges only when needed */}
+        {vehicle.savings > 0 && (
+          <div className="absolute top-3 left-3 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-lg shadow-md">
+            Save ${vehicle.savings.toLocaleString()}
+          </div>
+        )}
         
-        {/* Favorite Button */}
         <motion.button
           onClick={handleFavoriteToggle}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center z-10"
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(8px)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-          }}
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
           {isFavorited ? (
             <HeartIconSolid className="w-4 h-4 text-red-500" />
           ) : (
-            <HeartIconOutline className="w-4 h-4 text-neutral-600 hover:text-red-500 transition-colors" />
+            <HeartIconOutline className="w-4 h-4 text-neutral-600" />
           )}
         </motion.button>
         
-        {/* Status Badge */}
-        <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
+        <div className="absolute bottom-3 left-3 px-2 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-md">
           Available
         </div>
       </div>
@@ -177,18 +186,38 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, index, isFavorited, 
             </p>
           </div>
 
-          {/* Pricing */}
-          <div className="mb-5 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 p-4 rounded-lg">
-            <div className="text-xs text-neutral-500 line-through mb-1">
-              MSRP: ${vehicle.msrp.toLocaleString()}
-            </div>
-            <div className="text-2xl font-bold gradient-text mb-1">
-              ${vehicle.price.toLocaleString()}
-            </div>
-            <div className="text-sm text-neutral-600">
-              From ${Math.round(vehicle.price / 60)}/mo*
-            </div>
-          </div>
+        {/* Pricing */}
+        <div className="mb-5 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 p-4 rounded-lg">
+          {vehicle.lease ? (
+            <>
+              <div className="text-xs text-neutral-500 line-through mb-1">
+                ${Math.round(vehicle.msrp / 60)}/month
+              </div>
+              <div className="text-2xl font-bold gradient-text mb-1">
+                ${vehicle.lease.monthlyPayment}/mo
+              </div>
+              <div className="text-sm text-neutral-600 mb-2">
+                ${vehicle.lease.dueAtSigning.toLocaleString()} due at signing
+              </div>
+              <div className="text-xs text-neutral-500 flex justify-between">
+                <span>{vehicle.lease.termMonths} months</span>
+                <span>{(vehicle.lease.milesPerYear / 1000).toFixed(0)}k mi/year</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-xs text-neutral-500 line-through mb-1">
+                MSRP: ${vehicle.msrp.toLocaleString()}
+              </div>
+              <div className="text-2xl font-bold gradient-text mb-1">
+                ${vehicle.price.toLocaleString()}
+              </div>
+              <div className="text-sm text-neutral-600">
+                From ${Math.round(vehicle.price / 60)}/mo*
+              </div>
+            </>
+          )}
+        </div>
 
           {/* Key Specs */}
           <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
@@ -321,122 +350,82 @@ export function VehicleShowcase() {
     })
   }, [])
 
-  // Featured vehicles data - In production, this would come from API with featured: true
-  // Backend will mark vehicles as featured, and only those will show here
+  // Top 3 featured vehicles from inventory - Real inventory data
   const featuredVehicles: FeaturedVehicle[] = [
     {
-      id: 1,
-      make: 'BMW',
-      model: 'X5 M50i',
-      year: 2024,
-      trim: 'xDrive M50i Premium Package',
-      price: 72900,
-      msrp: 85500,
-      savings: 12600,
-      mileage: 8500,
-      mpg: '18/24',
-      engine: '4.4L Twin-Turbo V8',
-      vehicleType: 'Luxury SUV',
-      image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop&crop=center',
-      features: ['M Performance Package', 'Harman Kardon Surround Sound', 'Panoramic Moonroof', 'Adaptive M Suspension', 'Head-Up Display', '22" M Wheels'],
-      location: 'Beverly Hills, CA',
-      available: true,
-      featured: true
-    },
-    {
       id: 2,
-      make: 'Mercedes-Benz',
-      model: 'GLE 450',
-      year: 2024,
-      trim: '4MATIC AMG Line',
-      price: 67800,
-      msrp: 76900,
-      savings: 9100,
-      mileage: 6200,
-      mpg: '20/26',
-      engine: '3.0L Turbo I6 + EQBoost',
-      vehicleType: 'Premium SUV',
-      image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&h=600&fit=crop&crop=center',
-      features: ['AMG Line Package', 'MBUX Hyperscreen', 'Burmester 3D Audio', 'Air Body Control', 'Night Package', 'Premium Leather'],
+      make: 'BMW',
+      model: 'X3',
+      year: 2025,
+      trim: '30xi',
+      price: 61500,
+      msrp: 66900,
+      savings: 5400,
+      mileage: 12,
+      mpg: '23/29',
+      engine: '2.0L Turbo I4',
+      vehicleType: 'Crossover',
+      image: '/vehicles/bmw-logo.svg?v=1',
+      features: ['iDrive 8.5', 'xDrive All-Wheel Drive', 'BMW Live Cockpit', 'Wireless Apple CarPlay', 'Panoramic Moonroof', 'Heated Seats'],
       location: 'Manhattan, NY',
       available: true,
-      featured: true
+      featured: true,
+      lease: {
+        monthlyPayment: 849,
+        dueAtSigning: 2500,
+        termMonths: 39,
+        milesPerYear: 10000
+      }
+    },
+    {
+      id: 1,
+      make: 'Nissan',
+      model: 'Murano',
+      year: 2025,
+      trim: 'SV',
+      price: 38900,
+      msrp: 42600,
+      savings: 3700,
+      mileage: 8,
+      mpg: '20/28',
+      engine: '3.5L V6',
+      vehicleType: 'Crossover',
+      image: '/vehicles/nissan-logo.svg?v=3',
+      features: ['NissanConnect Infotainment', 'Intelligent All-Wheel Drive', 'Zero Gravity Seats', 'Remote Engine Start', 'Blind Spot Warning', 'Rear Cross Traffic Alert'],
+      location: 'Available Nationwide',
+      available: true,
+      featured: true,
+      lease: {
+        monthlyPayment: 438,
+        dueAtSigning: 2500,
+        termMonths: 39,
+        milesPerYear: 10000
+      }
     },
     {
       id: 3,
-      make: 'Audi',
-      model: 'Q8 Prestige',
-      year: 2024,
-      trim: '55 TFSI Quattro Prestige',
-      price: 79200,
-      msrp: 89600,
-      savings: 10400,
-      mileage: 11200,
-      mpg: '17/23',
-      engine: '3.0L TFSI V6 Turbo',
-      vehicleType: 'Luxury Coupe SUV',
-      image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop&crop=center',
-      features: ['Virtual Cockpit Plus', 'Bang & Olufsen 3D Audio', 'Quattro Sport Differential', 'Matrix LED Headlights', 'Massage Seats', '22" Wheels'],
-      location: 'Austin, TX',
+      make: 'Mazda',
+      model: 'CX-50',
+      year: 2025,
+      trim: 'Premium',
+      price: 35800,
+      msrp: 39200,
+      savings: 3400,
+      mileage: 15,
+      mpg: '24/31',
+      engine: '2.5L I4',
+      vehicleType: 'Crossover',
+      image: '/vehicles/mazda-logo.svg?v=1',
+      features: ['MAZDA CONNECT Infotainment', 'i-ACTIV AWD', 'BOSE Audio', 'Wireless Apple CarPlay', 'Heated Seats', 'Power Liftgate'],
+      location: 'New York, NY',
       available: true,
-      featured: true
-    },
-    {
-      id: 4,
-      make: 'Porsche',
-      model: 'Macan S',
-      year: 2024,
-      trim: 'Sport Design Package',
-      price: 68500,
-      msrp: 76800,
-      savings: 8300,
-      mileage: 4800,
-      mpg: '19/25',
-      engine: '2.9L Twin-Turbo V6',
-      vehicleType: 'Sports SUV',
-      image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&h=600&fit=crop&crop=center',
-      features: ['Sport Chrono Package', 'Bose Premium Audio', 'Panoramic Roof', 'Adaptive Sports Seats', 'Sport Exhaust', '21" RS Spyder Wheels'],
-      location: 'Newport Beach, CA',
-      available: true,
-      featured: true
-    },
-    {
-      id: 5,
-      make: 'Tesla',
-      model: 'Model S Plaid',
-      year: 2024,
-      trim: 'Tri-Motor AWD',
-      price: 89900,
-      msrp: 109990,
-      savings: 20090,
-      mileage: 2100,
-      mpg: '120 MPGe',
-      engine: 'Tri-Motor Electric',
-      vehicleType: 'Electric Luxury',
-      image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=600&fit=crop&crop=center',
-      features: ['1020 HP', '0-60 in 1.99s', '17" Cinematic Display', 'Premium Interior', 'Full Self-Driving', 'Glass Roof'],
-      location: 'Palo Alto, CA',
-      available: true,
-      featured: true
-    },
-    {
-      id: 6,
-      make: 'Range Rover',
-      model: 'Sport HSE',
-      year: 2024,
-      trim: 'Dynamic HSE P400',
-      price: 94200,
-      msrp: 108500,
-      savings: 14300,
-      mileage: 7300,
-      mpg: '19/25',
-      engine: '3.0L Turbo I6 MHEV',
-      vehicleType: 'Luxury SUV',
-      image: 'https://images.unsplash.com/photo-1544378958-6d3c92d0c05d?w=800&h=600&fit=crop&crop=center',
-      features: ['Air Suspension', 'Meridian Audio', 'Panoramic Roof', 'Terrain Response 2', 'Premium Leather', '22" Alloy Wheels'],
-      location: 'Miami, FL',
-      available: true,
-      featured: true
+      featured: true,
+      lease: {
+        monthlyPayment: 407,
+        dueAtSigning: 2500,
+        termMonths: 39,
+        milesPerYear: 10000
+      }
     }
   ]
 

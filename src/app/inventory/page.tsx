@@ -106,7 +106,7 @@ const mockVehicles: MockVehicle[] = [
     mpg: '23/29',
     engine: '2.0L Turbo I4',
     vehicleType: 'Crossover',
-    image: '/vehicles/bmw-x3.jpg',
+    image: '/vehicles/bmw-logo.svg?v=1',
     features: ['iDrive 8.5', 'xDrive All-Wheel Drive', 'BMW Live Cockpit', 'Wireless Apple CarPlay', 'Panoramic Moonroof', 'Heated Seats'],
     location: 'Manhattan, NY',
     available: true,
@@ -130,7 +130,7 @@ const mockVehicles: MockVehicle[] = [
     mpg: '20/28',
     engine: '3.5L V6',
     vehicleType: 'Crossover',
-    image: '', // Placeholder - add actual image path when available
+    image: '/vehicles/nissan-logo.svg?v=3',
     features: ['NissanConnect Infotainment', 'Intelligent All-Wheel Drive', 'Zero Gravity Seats', 'Remote Engine Start', 'Blind Spot Warning', 'Rear Cross Traffic Alert'],
     location: 'Available Nationwide',
     available: true,
@@ -154,9 +154,9 @@ const mockVehicles: MockVehicle[] = [
     mpg: '24/31',
     engine: '2.5L I4',
     vehicleType: 'Crossover',
-    image: '/vehicles/mazda-cx50.jpg',
+    image: '/vehicles/mazda-logo.svg?v=1',
     features: ['MAZDA CONNECT Infotainment', 'i-ACTIV AWD', 'BOSE Audio', 'Wireless Apple CarPlay', 'Heated Seats', 'Power Liftgate'],
-    location: 'Austin, TX',
+    location: 'New York, NY',
     available: true,
     lease: {
       monthlyPayment: 407,
@@ -178,9 +178,9 @@ const mockVehicles: MockVehicle[] = [
     mpg: '27/35',
     engine: '2.5L I4',
     vehicleType: 'Crossover',
-    image: '/vehicles/toyota-rav4.jpg',
+    image: '/vehicles/toyota-logo.svg?v=1',
     features: ['Toyota Safety Sense 2.0', 'All-Wheel Drive', 'Entune 3.0 Audio', 'Wireless Apple CarPlay', 'Power Liftgate', 'Dual-Zone Climate Control'],
-    location: 'Seattle, WA',
+    location: 'New York, NY',
     available: true,
     lease: {
       monthlyPayment: 456,
@@ -202,9 +202,9 @@ const mockVehicles: MockVehicle[] = [
     mpg: '23/32',
     engine: '2.0L Turbo I4',
     vehicleType: 'Sedan',
-    image: '/vehicles/mercedes-c300.jpg',
+    image: '/vehicles/mercedes-logo.svg?v=1',
     features: ['MBUX Infotainment', 'Mercedes Me Connect', 'LED Headlights', 'Apple CarPlay', 'Blind Spot Assist', 'Active Brake Assist'],
-    location: 'Miami, FL',
+    location: 'New York, NY',
     available: true,
     lease: {
       monthlyPayment: 614,
@@ -226,9 +226,9 @@ const mockVehicles: MockVehicle[] = [
     mpg: '19/26',
     engine: '3.8L V6',
     vehicleType: 'SUV',
-    image: '/vehicles/hyundai-palisade.jpg',
+    image: '/vehicles/hyundai-logo.svg?v=1',
     features: ['Hyundai SmartSense', 'Wireless Apple CarPlay', 'Heated & Ventilated Seats', 'Panoramic Sunroof', 'Captain\'s Chairs', 'Surround View Monitor'],
-    location: 'Newport Beach, CA',
+    location: 'New York, NY',
     available: true,
     lease: {
       monthlyPayment: 567,
@@ -339,37 +339,40 @@ const VehicleCard: React.FC<{
     >
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Vehicle Image */}
-          <div className="w-full lg:w-96 h-56 bg-gradient-to-br from-neutral-200 to-neutral-300 rounded-[20px] overflow-hidden relative group-hover:shadow-lg transition-all duration-300 m-4 mb-3">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-6xl mb-2 opacity-30">🚗</div>
-                <span className="text-neutral-600 font-semibold text-lg">
-                  {vehicle.year} {vehicle.make} {vehicle.model}
-                </span>
+          <div className="w-full lg:w-96 h-56 bg-white rounded-[20px] overflow-hidden relative group-hover:shadow-lg transition-all duration-300 m-4 mb-3">
+            {vehicle.image ? (
+              <img 
+                src={vehicle.image} 
+                alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-2 opacity-30">🚗</div>
+                  <span className="text-neutral-600 font-semibold text-lg">
+                    {vehicle.year} {vehicle.make} {vehicle.model}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
             
-            {/* Savings Badge */}
-            <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
-              Save ${vehicle.savings.toLocaleString()}
-            </div>
+            {vehicle.savings > 0 && (
+              <div className="absolute top-3 left-3 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-lg shadow-md">
+                Save ${vehicle.savings.toLocaleString()}
+              </div>
+            )}
             
-            {/* Favorite Button */}
             <motion.button
               onClick={handleFavoriteToggle}
-              className="absolute top-4 right-4 w-11 h-11 rounded-full flex items-center justify-center z-10"
-              style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(8px)',
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.12)',
-              }}
+              className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
               {isFavorited ? (
                 <HeartIconSolid className="w-5 h-5 text-red-500" />
               ) : (
-                <HeartIconOutline className="w-5 h-5 text-neutral-600 hover:text-red-500 transition-colors" />
+                <HeartIconOutline className="w-5 h-5 text-neutral-600" />
               )}
             </motion.button>
           </div>
@@ -495,42 +498,45 @@ const VehicleCard: React.FC<{
       }}
     >
       {/* Vehicle Image */}
-      <div className="relative h-56 bg-gradient-to-br from-neutral-200 to-neutral-300 overflow-hidden rounded-[20px] m-4 mb-3 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-5xl mb-2 opacity-30">🚗</div>
-            <span className="text-neutral-600 font-semibold text-sm">
-              {vehicle.year} {vehicle.make} {vehicle.model}
-            </span>
+      <div className="relative h-56 bg-white overflow-hidden rounded-[20px] m-4 mb-3">
+        {vehicle.image ? (
+          <img 
+            src={vehicle.image} 
+            alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+            className="w-full h-full object-contain"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-5xl mb-2 opacity-30">🚗</div>
+              <span className="text-neutral-600 font-semibold text-sm">
+                {vehicle.year} {vehicle.make} {vehicle.model}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
         
-        {/* Savings Badge */}
-        <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
-          Save ${vehicle.savings.toLocaleString()}
-        </div>
+        {/* Overlay badges only when needed */}
+        {vehicle.savings > 0 && (
+          <div className="absolute top-3 left-3 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-lg shadow-md">
+            Save ${vehicle.savings.toLocaleString()}
+          </div>
+        )}
         
-        {/* Favorite Button */}
         <motion.button
           onClick={handleFavoriteToggle}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center z-10"
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(8px)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-          }}
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
           {isFavorited ? (
             <HeartIconSolid className="w-4 h-4 text-red-500" />
           ) : (
-            <HeartIconOutline className="w-4 h-4 text-neutral-600 hover:text-red-500 transition-colors" />
+            <HeartIconOutline className="w-4 h-4 text-neutral-600" />
           )}
         </motion.button>
         
-        {/* Status Badge */}
-        <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-[10px] shadow-lg z-10">
+        <div className="absolute bottom-3 left-3 px-2 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-md">
           Available
         </div>
       </div>
