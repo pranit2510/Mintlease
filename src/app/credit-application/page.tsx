@@ -593,7 +593,7 @@ export default function CreditApplicationPage() {
                        shadow-[0_8px_32px_rgba(139,69,19,0.12),0_16px_64px_rgba(139,69,19,0.06)]"
             suppressHydrationWarning
           >
-            <form action="https://formspree.io/f/xpwrlpgl" method="POST">
+            <form action="https://formspree.io/f/mgvyzagy" method="POST">
             {/* Step 1: Personal Information */}
             {formState.currentStep === 1 && (
               <motion.div
