@@ -381,8 +381,6 @@ export default function LeadPage() {
                       type="text"
                       name="firstName"
                       required
-                      value={formData.firstName}
-                      onChange={(e) => handleInputChange('firstName', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                       placeholder="John"
                     />
@@ -396,8 +394,6 @@ export default function LeadPage() {
                       type="text"
                       name="lastName"
                       required
-                      value={formData.lastName}
-                      onChange={(e) => handleInputChange('lastName', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                       placeholder="Doe"
                     />
@@ -412,8 +408,6 @@ export default function LeadPage() {
                     type="email"
                     name="email"
                     required
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                     placeholder="john@example.com"
                   />
@@ -427,8 +421,6 @@ export default function LeadPage() {
                     type="tel"
                     name="phone"
                     required
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                     placeholder="(555) 123-4567"
                   />
@@ -441,8 +433,6 @@ export default function LeadPage() {
                     </label>
                     <select
                       name="carBrand"
-                      value={formData.carBrand}
-                      onChange={(e) => handleInputChange('carBrand', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                     >
                       <option value="">Select Brand</option>
@@ -461,8 +451,6 @@ export default function LeadPage() {
                     </label>
                     <select
                       name="timeline"
-                      value={formData.timeline}
-                      onChange={(e) => handleInputChange('timeline', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                     >
                       <option value="">Select Timeline</option>
@@ -481,13 +469,7 @@ export default function LeadPage() {
                   <select
                     name="creditScore"
                     required
-                    value={formData.creditScore}
-                    onChange={(e) => handleInputChange('creditScore', e.target.value)}
-                    className={`w-full px-4 py-3 rounded-xl border transition-all duration-200 ${
-                      formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good'
-                        ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20' 
-                        : 'border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
-                    }`}
+                    className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200"
                   >
                     <option value="">Select Credit Score Range</option>
                     <option value="Excellent">Excellent (750+)</option>
@@ -495,48 +477,17 @@ export default function LeadPage() {
                     <option value="Fair">Fair (650-699)</option>
                     <option value="Poor">Poor (Below 650)</option>
                   </select>
-                  {formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
-                    >
-                      <p className="text-sm text-red-700 font-medium">
-                        ⚠️ Premium Service Requirement
-                      </p>
-                      <p className="text-sm text-red-600 mt-1">
-                        Our exclusive luxury vehicle program is currently available only to clients with good credit (700+). 
-                        This ensures the best financing terms and premium vehicle access.
-                      </p>
-                    </motion.div>
-                  )}
                 </div>
 
                 <motion.button
                   type="submit"
-                  disabled={isSubmitting || (!!formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good')}
-                  className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 disabled:cursor-not-allowed flex items-center justify-center space-x-2 ${
-                    formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good'
-                      ? 'bg-gray-400 text-gray-600 opacity-50'
-                      : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-xl disabled:opacity-50'
-                  }`}
-                  whileHover={(formData.creditScore === 'Excellent' || formData.creditScore === 'Good' || !formData.creditScore) ? { scale: 1.02, y: -2 } : undefined}
-                  whileTap={(formData.creditScore === 'Excellent' || formData.creditScore === 'Good' || !formData.creditScore) ? { scale: 0.98 } : undefined}
+                  className="w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-xl flex items-center justify-center space-x-2"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   suppressHydrationWarning
                 >
-                  {isSubmitting ? (
-                    <span>Submitting...</span>
-                  ) : formData.creditScore && formData.creditScore !== 'Excellent' && formData.creditScore !== 'Good' ? (
-                    <>
-                      <span>Good Credit Required</span>
-                      <Shield className="w-5 h-5" />
-                    </>
-                  ) : (
-                    <>
-                      <span>Get My Free Quote</span>
-                      <ArrowRight className="w-5 h-5" />
-                    </>
-                  )}
+                  <span>Get My Free Quote</span>
+                  <ArrowRight className="w-5 h-5" />
                 </motion.button>
               </form>
             </div>

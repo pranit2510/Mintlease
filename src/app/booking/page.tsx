@@ -422,8 +422,6 @@ export default function BookingPage() {
                           type="text"
                           name="firstName"
                           placeholder="First Name"
-                          value={formData.firstName}
-                          onChange={(e) => handleInputChange('firstName', e.target.value)}
                           className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
                         />
                       </motion.div>
@@ -435,8 +433,6 @@ export default function BookingPage() {
                           type="text"
                           name="lastName"
                           placeholder="Last Name"
-                          value={formData.lastName}
-                          onChange={(e) => handleInputChange('lastName', e.target.value)}
                           className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
                         />
                       </motion.div>
@@ -450,8 +446,6 @@ export default function BookingPage() {
                         type="email"
                         name="email"
                         placeholder="Email Address"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
                         className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
                       />
                     </motion.div>
@@ -464,8 +458,6 @@ export default function BookingPage() {
                         type="tel"
                         name="phone"
                         placeholder="Phone Number"
-                        value={formData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
                         className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
                       />
                     </motion.div>
@@ -477,8 +469,6 @@ export default function BookingPage() {
                       >
                         <select 
                           name="vehicleType"
-                          value={formData.vehicleType}
-                          onChange={(e) => handleInputChange('vehicleType', e.target.value)}
                           className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
                         >
                           <option value="">Vehicle Type</option>
@@ -496,8 +486,6 @@ export default function BookingPage() {
                       >
                         <select 
                           name="budget"
-                          value={formData.budget}
-                          onChange={(e) => handleInputChange('budget', e.target.value)}
                           className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
                         >
                           <option value="">Budget Range</option>
@@ -516,8 +504,6 @@ export default function BookingPage() {
                     >
                       <select 
                         name="timeline"
-                        value={formData.timeline}
-                        onChange={(e) => handleInputChange('timeline', e.target.value)}
                         className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm"
                       >
                         <option value="">Purchase Timeline</option>
@@ -537,8 +523,6 @@ export default function BookingPage() {
                         name="message"
                         placeholder="Tell us about your dream vehicle and any specific requirements..."
                         rows={4}
-                        value={formData.message}
-                        onChange={(e) => handleInputChange('message', e.target.value)}
                         className="w-full px-4 py-4 border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all duration-300 text-lg font-medium bg-white/90 backdrop-blur-sm resize-none"
                       />
                     </motion.div>
@@ -546,7 +530,6 @@ export default function BookingPage() {
                     {/* Enhanced Payment Button */}
                     <motion.button
                       type="submit"
-                      disabled={isSubmitting}
                       className="w-full bg-gradient-emerald text-white py-5 px-8 rounded-2xl font-bold text-xl shadow-luxury relative overflow-hidden"
                       whileHover={{ 
                         scale: 1.02, 
@@ -556,25 +539,10 @@ export default function BookingPage() {
                       whileTap={{ scale: 0.98 }}
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     >
-                      {isSubmitting ? (
-                        <motion.div 
-                          className="flex items-center justify-center space-x-3"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                        >
-                          <motion.div
-                            className="w-6 h-6 border-2 border-white border-t-transparent rounded-full"
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          />
-                          <span>Processing...</span>
-                        </motion.div>
-                      ) : (
-                        <div className="flex items-center justify-center space-x-3">
-                          <LockClosedIcon className="w-6 h-6" />
-                          <span>Secure My Consultation - $499</span>
-                        </div>
-                      )}
+                      <div className="flex items-center justify-center space-x-3">
+                        <LockClosedIcon className="w-6 h-6" />
+                        <span>Secure My Consultation - $499</span>
+                      </div>
                       
                       <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
