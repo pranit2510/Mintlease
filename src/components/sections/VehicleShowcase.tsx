@@ -327,65 +327,122 @@ export function VehicleShowcase() {
     {
       id: 1,
       make: 'BMW',
-      model: 'X5',
+      model: 'X5 M50i',
       year: 2024,
-      trim: 'xDrive40i',
-      price: 68500,
-      msrp: 75200,
-      savings: 6700,
-      mileage: 12000,
-      mpg: '21/26',
-      engine: '3.0L Turbo I6',
-      vehicleType: 'SUV',
-      image: '/vehicles/bmw-x5.jpg',
-      features: ['Premium Package', 'Harman Kardon Audio', 'Panoramic Roof'],
+      trim: 'xDrive M50i Premium Package',
+      price: 72900,
+      msrp: 85500,
+      savings: 12600,
+      mileage: 8500,
+      mpg: '18/24',
+      engine: '4.4L Twin-Turbo V8',
+      vehicleType: 'Luxury SUV',
+      image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop&crop=center',
+      features: ['M Performance Package', 'Harman Kardon Surround Sound', 'Panoramic Moonroof', 'Adaptive M Suspension', 'Head-Up Display', '22" M Wheels'],
       location: 'Beverly Hills, CA',
       available: true,
-      featured: true // Backend marks this as featured
+      featured: true
     },
     {
       id: 2,
       make: 'Mercedes-Benz',
-      model: 'GLC 300',
+      model: 'GLE 450',
       year: 2024,
-      trim: '4MATIC',
-      price: 52800,
-      msrp: 58900,
-      savings: 6100,
-      mileage: 9500,
-      mpg: '22/29',
-      engine: '2.0L Turbo I4',
-      vehicleType: 'Crossover',
-      image: '/vehicles/mercedes-glc.jpg',
-      features: ['MBUX Infotainment', 'LED Headlights', 'Apple CarPlay'],
+      trim: '4MATIC AMG Line',
+      price: 67800,
+      msrp: 76900,
+      savings: 9100,
+      mileage: 6200,
+      mpg: '20/26',
+      engine: '3.0L Turbo I6 + EQBoost',
+      vehicleType: 'Premium SUV',
+      image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&h=600&fit=crop&crop=center',
+      features: ['AMG Line Package', 'MBUX Hyperscreen', 'Burmester 3D Audio', 'Air Body Control', 'Night Package', 'Premium Leather'],
       location: 'Manhattan, NY',
       available: true,
-      featured: true // Backend marks this as featured
+      featured: true
     },
     {
       id: 3,
       make: 'Audi',
-      model: 'Q7',
+      model: 'Q8 Prestige',
       year: 2024,
-      trim: 'Premium Plus',
-      price: 71200,
-      msrp: 79600,
-      savings: 8400,
-      mileage: 15000,
-      mpg: '19/25',
-      engine: '3.0L Turbo V6',
-      vehicleType: 'SUV',
-      image: '/vehicles/audi-q7.jpg',
-      features: ['Virtual Cockpit', 'Bang & Olufsen Audio', 'Quattro AWD'],
+      trim: '55 TFSI Quattro Prestige',
+      price: 79200,
+      msrp: 89600,
+      savings: 10400,
+      mileage: 11200,
+      mpg: '17/23',
+      engine: '3.0L TFSI V6 Turbo',
+      vehicleType: 'Luxury Coupe SUV',
+      image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop&crop=center',
+      features: ['Virtual Cockpit Plus', 'Bang & Olufsen 3D Audio', 'Quattro Sport Differential', 'Matrix LED Headlights', 'Massage Seats', '22" Wheels'],
       location: 'Austin, TX',
       available: true,
-      featured: true // Backend marks this as featured
+      featured: true
+    },
+    {
+      id: 4,
+      make: 'Porsche',
+      model: 'Macan S',
+      year: 2024,
+      trim: 'Sport Design Package',
+      price: 68500,
+      msrp: 76800,
+      savings: 8300,
+      mileage: 4800,
+      mpg: '19/25',
+      engine: '2.9L Twin-Turbo V6',
+      vehicleType: 'Sports SUV',
+      image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&h=600&fit=crop&crop=center',
+      features: ['Sport Chrono Package', 'Bose Premium Audio', 'Panoramic Roof', 'Adaptive Sports Seats', 'Sport Exhaust', '21" RS Spyder Wheels'],
+      location: 'Newport Beach, CA',
+      available: true,
+      featured: true
+    },
+    {
+      id: 5,
+      make: 'Tesla',
+      model: 'Model S Plaid',
+      year: 2024,
+      trim: 'Tri-Motor AWD',
+      price: 89900,
+      msrp: 109990,
+      savings: 20090,
+      mileage: 2100,
+      mpg: '120 MPGe',
+      engine: 'Tri-Motor Electric',
+      vehicleType: 'Electric Luxury',
+      image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=600&fit=crop&crop=center',
+      features: ['1020 HP', '0-60 in 1.99s', '17" Cinematic Display', 'Premium Interior', 'Full Self-Driving', 'Glass Roof'],
+      location: 'Palo Alto, CA',
+      available: true,
+      featured: true
+    },
+    {
+      id: 6,
+      make: 'Range Rover',
+      model: 'Sport HSE',
+      year: 2024,
+      trim: 'Dynamic HSE P400',
+      price: 94200,
+      msrp: 108500,
+      savings: 14300,
+      mileage: 7300,
+      mpg: '19/25',
+      engine: '3.0L Turbo I6 MHEV',
+      vehicleType: 'Luxury SUV',
+      image: 'https://images.unsplash.com/photo-1544378958-6d3c92d0c05d?w=800&h=600&fit=crop&crop=center',
+      features: ['Air Suspension', 'Meridian Audio', 'Panoramic Roof', 'Terrain Response 2', 'Premium Leather', '22" Alloy Wheels'],
+      location: 'Miami, FL',
+      available: true,
+      featured: true
     }
   ]
 
   // Animation variants
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 1 },
     visible: {
       opacity: 1,
       transition: {
@@ -398,10 +455,10 @@ export function VehicleShowcase() {
 
   const itemVariants = {
     hidden: { 
-      opacity: 0, 
-      y: 30,
-      rotateX: -15,
-      scale: 0.95
+      opacity: 1, 
+      y: 0,
+      rotateX: 0,
+      scale: 1
     },
     visible: { 
       opacity: 1, 
@@ -425,12 +482,13 @@ export function VehicleShowcase() {
         backgroundColor: '#FEF7ED',
         overflowX: 'hidden',
         maxWidth: '100vw',
-        position: 'relative'
+        position: 'relative',
+        opacity: 1
       }}
       onMouseMove={handleMouseMove}
       variants={containerVariants}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
+      initial="visible"
+      animate="visible"
       suppressHydrationWarning
     >
       {/* 120fps Optimized Luxury Background - Matching Hero Section */}
@@ -477,14 +535,16 @@ export function VehicleShowcase() {
         {/* Section Header */}
         <motion.div
           className="text-center mb-16"
-          variants={itemVariants}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
           suppressHydrationWarning
         >
           <PremiumBadge>Featured Vehicles</PremiumBadge>
           
           <motion.h2 
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 heading-luxury text-neutral-800"
-            variants={itemVariants}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
             suppressHydrationWarning
           >
             Premium Selection
@@ -492,7 +552,8 @@ export function VehicleShowcase() {
           
           <motion.p 
             className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed"
-            variants={itemVariants}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
             suppressHydrationWarning
           >
             Discover our curated collection of luxury vehicles, each one carefully selected 
@@ -505,18 +566,22 @@ export function VehicleShowcase() {
           className="grid gap-6 lg:gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mb-16"
           style={{
             minHeight: '600px', // Ensure proper height
-            width: '100%' // Ensure full width usage
+            width: '100%', // Ensure full width usage
+            opacity: 1
           }}
-          variants={containerVariants}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
           suppressHydrationWarning
         >
           {featuredVehicles.map((vehicle, index) => (
             <motion.div
               key={vehicle.id}
-              variants={itemVariants}
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
               style={{
                 minWidth: '300px', // Ensure minimum card width
-                width: '100%' // Use full available width
+                width: '100%', // Use full available width
+                opacity: 1
               }}
               suppressHydrationWarning
             >

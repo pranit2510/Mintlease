@@ -84,116 +84,158 @@ interface MockVehicle {
   features: string[]
   location: string
   available: boolean
+  lease?: {
+    monthlyPayment: number
+    dueAtSigning: number
+    termMonths: number
+    milesPerYear: number
+  }
 }
 
 const mockVehicles: MockVehicle[] = [
   {
-    id: 1,
-    make: 'BMW',
-    model: 'X5',
-    year: 2024,
-    trim: 'xDrive40i',
-    price: 68500,
-    msrp: 75200,
-    savings: 6700,
-    mileage: 12000,
-    mpg: '21/26',
-    engine: '3.0L Turbo I6',
-    vehicleType: 'SUV',
-    image: '/vehicles/bmw-x5.jpg',
-    features: ['Premium Package', 'Harman Kardon Audio', 'Panoramic Roof'],
-    location: 'Beverly Hills, CA',
-    available: true
-  },
-  {
     id: 2,
-    make: 'Mercedes-Benz',
-    model: 'GLC 300',
-    year: 2024,
-    trim: '4MATIC',
-    price: 52800,
-    msrp: 58900,
-    savings: 6100,
-    mileage: 9500,
-    mpg: '22/29',
+    make: 'BMW',
+    model: 'X3',
+    year: 2025,
+    trim: '30xi',
+    price: 61500, // Estimated purchase price based on lease terms
+    msrp: 66900,
+    savings: 5400,
+    mileage: 12, // New vehicle with delivery miles
+    mpg: '23/29',
     engine: '2.0L Turbo I4',
     vehicleType: 'Crossover',
-    image: '/vehicles/mercedes-glc.jpg',
-    features: ['MBUX Infotainment', 'LED Headlights', 'Apple CarPlay'],
+    image: '/vehicles/bmw-x3.jpg',
+    features: ['iDrive 8.5', 'xDrive All-Wheel Drive', 'BMW Live Cockpit', 'Wireless Apple CarPlay', 'Panoramic Moonroof', 'Heated Seats'],
     location: 'Manhattan, NY',
-    available: true
+    available: true,
+    lease: {
+      monthlyPayment: 849,
+      dueAtSigning: 2500,
+      termMonths: 39,
+      milesPerYear: 10000
+    }
+  },
+  {
+    id: 1,
+    make: 'Nissan',
+    model: 'Murano',
+    year: 2025,
+    trim: 'SV',
+    price: 38900, // Estimated purchase price based on lease terms
+    msrp: 42600,
+    savings: 3700,
+    mileage: 8, // New vehicle with delivery miles
+    mpg: '20/28',
+    engine: '3.5L V6',
+    vehicleType: 'Crossover',
+    image: '', // Placeholder - add actual image path when available
+    features: ['NissanConnect Infotainment', 'Intelligent All-Wheel Drive', 'Zero Gravity Seats', 'Remote Engine Start', 'Blind Spot Warning', 'Rear Cross Traffic Alert'],
+    location: 'Available Nationwide',
+    available: true,
+    lease: {
+      monthlyPayment: 438,
+      dueAtSigning: 2500,
+      termMonths: 39,
+      milesPerYear: 10000
+    }
   },
   {
     id: 3,
-    make: 'Audi',
-    model: 'Q7',
-    year: 2024,
-    trim: 'Premium Plus',
-    price: 71200,
-    msrp: 79600,
-    savings: 8400,
-    mileage: 15000,
-    mpg: '19/25',
-    engine: '3.0L Turbo V6',
-    vehicleType: 'SUV',
-    image: '/vehicles/audi-q7.jpg',
-    features: ['Virtual Cockpit', 'Bang & Olufsen Audio', 'Quattro AWD'],
+    make: 'Mazda',
+    model: 'CX-50',
+    year: 2025,
+    trim: 'Premium',
+    price: 35800, // Estimated purchase price based on lease terms
+    msrp: 39200,
+    savings: 3400,
+    mileage: 15, // New vehicle with delivery miles
+    mpg: '24/31',
+    engine: '2.5L I4',
+    vehicleType: 'Crossover',
+    image: '/vehicles/mazda-cx50.jpg',
+    features: ['MAZDA CONNECT Infotainment', 'i-ACTIV AWD', 'BOSE Audio', 'Wireless Apple CarPlay', 'Heated Seats', 'Power Liftgate'],
     location: 'Austin, TX',
-    available: true
+    available: true,
+    lease: {
+      monthlyPayment: 407,
+      dueAtSigning: 2500,
+      termMonths: 39,
+      milesPerYear: 10000
+    }
   },
   {
     id: 4,
-    make: 'Tesla',
-    model: 'Model Y',
-    year: 2024,
-    trim: 'Long Range',
-    price: 51200,
-    msrp: 55700,
-    savings: 4500,
-    mileage: 6000,
-    mpg: '131 MPGe',
-    engine: 'Dual Motor AWD',
+    make: 'Toyota',
+    model: 'RAV4',
+    year: 2025,
+    trim: 'XLE',
+    price: 36800, // Estimated purchase price based on lease terms
+    msrp: 40200,
+    savings: 3400,
+    mileage: 18, // New vehicle with delivery miles
+    mpg: '27/35',
+    engine: '2.5L I4',
     vehicleType: 'Crossover',
-    image: '/vehicles/tesla-model-y.jpg',
-    features: ['Autopilot', '15" Touchscreen', 'Supercharging'],
+    image: '/vehicles/toyota-rav4.jpg',
+    features: ['Toyota Safety Sense 2.0', 'All-Wheel Drive', 'Entune 3.0 Audio', 'Wireless Apple CarPlay', 'Power Liftgate', 'Dual-Zone Climate Control'],
     location: 'Seattle, WA',
-    available: true
+    available: true,
+    lease: {
+      monthlyPayment: 456,
+      dueAtSigning: 2500,
+      termMonths: 39,
+      milesPerYear: 10000
+    }
   },
   {
     id: 5,
-    make: 'Lexus',
-    model: 'RX 350',
-    year: 2024,
-    trim: 'Luxury',
-    price: 56300,
-    msrp: 62600,
-    savings: 6300,
-    mileage: 14800,
-    mpg: '20/27',
-    engine: '3.5L V6',
-    vehicleType: 'SUV',
-    image: '/vehicles/lexus-rx.jpg',
-    features: ['Mark Levinson Audio', 'Safety System+', 'Heated Seats'],
+    make: 'Mercedes-Benz',
+    model: 'C300',
+    year: 2025,
+    trim: 'Demo',
+    price: 45800, // Estimated purchase price based on lease terms
+    msrp: 49900,
+    savings: 4100,
+    mileage: 2500, // Demo vehicle with low miles
+    mpg: '23/32',
+    engine: '2.0L Turbo I4',
+    vehicleType: 'Sedan',
+    image: '/vehicles/mercedes-c300.jpg',
+    features: ['MBUX Infotainment', 'Mercedes Me Connect', 'LED Headlights', 'Apple CarPlay', 'Blind Spot Assist', 'Active Brake Assist'],
     location: 'Miami, FL',
-    available: true
+    available: true,
+    lease: {
+      monthlyPayment: 614,
+      dueAtSigning: 2500,
+      termMonths: 36,
+      milesPerYear: 10000
+    }
   },
   {
     id: 6,
-    make: 'Porsche',
-    model: 'Macan',
-    year: 2024,
-    trim: 'S',
-    price: 72900,
-    msrp: 81400,
-    savings: 8500,
-    mileage: 5200,
-    mpg: '19/25',
-    engine: '2.9L Twin-Turbo V6',
-    vehicleType: 'Crossover',
-    image: '/vehicles/porsche-macan.jpg',
-    features: ['Sport Chrono', 'BOSE Audio', 'Air Suspension'],
+    make: 'Hyundai',
+    model: 'Palisade',
+    year: 2025,
+    trim: 'SEL',
+    price: 42800, // Estimated purchase price based on lease terms
+    msrp: 46700,
+    savings: 3900,
+    mileage: 22, // New vehicle with delivery miles
+    mpg: '19/26',
+    engine: '3.8L V6',
+    vehicleType: 'SUV',
+    image: '/vehicles/hyundai-palisade.jpg',
+    features: ['Hyundai SmartSense', 'Wireless Apple CarPlay', 'Heated & Ventilated Seats', 'Panoramic Sunroof', 'Captain\'s Chairs', 'Surround View Monitor'],
     location: 'Newport Beach, CA',
-    available: true
+    available: true,
+    lease: {
+      monthlyPayment: 567,
+      dueAtSigning: 2500,
+      termMonths: 36,
+      milesPerYear: 10000
+    }
   }
 ]
 
@@ -278,7 +320,7 @@ const VehicleCard: React.FC<{
     return (
           <motion.div
       layoutId={`vehicle-${vehicle.id}-list`}
-      initial={{ opacity: 1, y: 20 }}
+      initial={{ opacity: 1, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ 
         y: -8,
@@ -435,7 +477,7 @@ const VehicleCard: React.FC<{
   return (
     <motion.div
       layoutId={`vehicle-${vehicle.id}-grid`}
-      initial={{ opacity: 1, y: 20 }}
+      initial={{ opacity: 1, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ 
         y: -8,
@@ -508,15 +550,35 @@ const VehicleCard: React.FC<{
 
         {/* Pricing */}
         <div className="mb-5 bg-gradient-to-br from-primary-emerald/5 to-primary-emerald-light/5 p-4 rounded-lg">
-          <div className="text-xs text-neutral-500 line-through mb-1">
-            MSRP: ${vehicle.msrp.toLocaleString()}
-          </div>
-          <div className="text-2xl font-bold gradient-text mb-1">
-            ${vehicle.price.toLocaleString()}
-          </div>
-          <div className="text-sm text-neutral-600">
-            From ${Math.round(vehicle.price / 60)}/mo*
-          </div>
+          {vehicle.lease ? (
+            <>
+              <div className="text-xs text-neutral-500 line-through mb-1">
+                ${Math.round(vehicle.msrp / 60)}/month
+              </div>
+              <div className="text-2xl font-bold gradient-text mb-1">
+                ${vehicle.lease.monthlyPayment}/mo
+              </div>
+              <div className="text-sm text-neutral-600 mb-2">
+                ${vehicle.lease.dueAtSigning.toLocaleString()} due at signing
+              </div>
+              <div className="text-xs text-neutral-500 flex justify-between">
+                <span>{vehicle.lease.termMonths} months</span>
+                <span>{(vehicle.lease.milesPerYear / 1000).toFixed(0)}k mi/year</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-xs text-neutral-500 line-through mb-1">
+                MSRP: ${vehicle.msrp.toLocaleString()}
+              </div>
+              <div className="text-2xl font-bold gradient-text mb-1">
+                ${vehicle.price.toLocaleString()}
+              </div>
+              <div className="text-sm text-neutral-600">
+                From ${Math.round(vehicle.price / 60)}/mo*
+              </div>
+            </>
+          )}
         </div>
 
         {/* Key Specs */}
@@ -960,13 +1022,13 @@ const FilterSidebar: React.FC<{
         {/* Mileage Range Slider */}
         <RangeSlider
           label="Mileage"
-          min={5000}
+          min={0}
           max={20000}
           value={filters.mileageRange}
           onChange={(value) => updateFilter('mileageRange', value)}
           suffix=" mi"
-          step={5000}
-          formatLabel={(value) => `${(value / 1000).toFixed(0)}k mi`}
+          step={1000}
+          formatLabel={(value) => value === 0 ? '0 mi' : `${(value / 1000).toFixed(0)}k mi`}
         />
 
         {/* Make/Brand */}
@@ -1120,14 +1182,18 @@ function InventoryPageContent() {
     yearRange: [2024, 2025],
     makes: [],
     models: [],
-    mileageRange: [5000, 20000],
+    mileageRange: [0, 20000],
     locations: [],
     features: [],
     availableOnly: false
   })
 
   // Extract unique values for filter options
-  const uniqueMakes = useMemo(() => [...new Set(mockVehicles.map(v => v.make))].sort(), [])
+  const uniqueMakes = useMemo(() => {
+    const makes = [...new Set(mockVehicles.map(v => v.make))].sort()
+    console.log('uniqueMakes:', makes)
+    return makes
+  }, [])
   const uniqueModels = useMemo(() => [...new Set(mockVehicles.map(v => v.model))].sort(), [])
   const uniqueLocations = useMemo(() => [...new Set(mockVehicles.map(v => v.location))].sort(), [])
   const allFeatures = useMemo(() => [...new Set(mockVehicles.flatMap(v => v.features))].sort(), [])
@@ -1144,7 +1210,7 @@ function InventoryPageContent() {
       yearRange: [2024, 2025],
       makes: [],
       models: [],
-      mileageRange: [5000, 20000],
+      mileageRange: [0, 20000],
       locations: [],
       features: [],
       availableOnly: false
@@ -1167,28 +1233,93 @@ function InventoryPageContent() {
   useEffect(() => {
     let filtered = [...mockVehicles]
     
+    console.log('Starting filter process. Total vehicles:', filtered.length)
+    console.log('Current filters:', filters)
+    console.log('Search query:', searchQuery)
+    
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(vehicle =>
         `${vehicle.make} ${vehicle.model} ${vehicle.year}`.toLowerCase().includes(searchQuery.toLowerCase())
       )
+      console.log('After search filter:', filtered.length, 'vehicles')
     }
 
     // Apply all filters
     filtered = filtered.filter(vehicle => {
+      console.log(`\n--- Filtering vehicle: ${vehicle.make} ${vehicle.model} ---`)
+      
       // Convert price to monthly lease estimate for price range filter
       const monthlyLease = Math.round(vehicle.price / 60) // Rough estimate: price / 60 months
-      if (monthlyLease < filters.priceRange[0] || monthlyLease > filters.priceRange[1]) return false
-      if (vehicle.msrp < filters.msrpRange[0] || vehicle.msrp > filters.msrpRange[1]) return false
-      if (vehicle.year < filters.yearRange[0] || vehicle.year > filters.yearRange[1]) return false
-      if (vehicle.mileage < filters.mileageRange[0] || vehicle.mileage > filters.mileageRange[1]) return false
-      if (filters.makes.length > 0 && !filters.makes.includes(vehicle.make)) return false
-      if (filters.models.length > 0 && !filters.models.includes(vehicle.model)) return false
-      if (filters.locations.length > 0 && !filters.locations.includes(vehicle.location)) return false
-      if (filters.features.length > 0 && !filters.features.some(f => vehicle.features.includes(f))) return false
-      if (filters.availableOnly && !vehicle.available) return false
+      console.log(`Monthly lease estimate: ${monthlyLease}, range: [${filters.priceRange[0]}, ${filters.priceRange[1]}]`)
+      if (monthlyLease < filters.priceRange[0] || monthlyLease > filters.priceRange[1]) {
+        console.log('❌ Filtered out by price range')
+        return false
+      }
+      
+      console.log(`MSRP: ${vehicle.msrp}, range: [${filters.msrpRange[0]}, ${filters.msrpRange[1]}]`)
+      if (vehicle.msrp < filters.msrpRange[0] || vehicle.msrp > filters.msrpRange[1]) {
+        console.log('❌ Filtered out by MSRP range')
+        return false
+      }
+      
+      console.log(`Year: ${vehicle.year}, range: [${filters.yearRange[0]}, ${filters.yearRange[1]}]`)
+      if (vehicle.year < filters.yearRange[0] || vehicle.year > filters.yearRange[1]) {
+        console.log('❌ Filtered out by year range')
+        return false
+      }
+      
+      console.log(`Mileage: ${vehicle.mileage}, range: [${filters.mileageRange[0]}, ${filters.mileageRange[1]}]`)
+      if (vehicle.mileage < filters.mileageRange[0] || vehicle.mileage > filters.mileageRange[1]) {
+        console.log('❌ Filtered out by mileage range')
+        return false
+      }
+      
+      // Debug make filtering
+      if (filters.makes.length > 0) {
+        console.log(`Make filtering: vehicle.make="${vehicle.make}", selected makes:`, filters.makes)
+        console.log(`Includes check:`, filters.makes.includes(vehicle.make))
+        if (!filters.makes.includes(vehicle.make)) {
+          console.log('❌ Filtered out by make')
+          return false
+        }
+      }
+      
+      if (filters.models.length > 0) {
+        console.log(`Model filtering: vehicle.model="${vehicle.model}", selected models:`, filters.models)
+        if (!filters.models.includes(vehicle.model)) {
+          console.log('❌ Filtered out by model')
+          return false
+        }
+      }
+      
+      if (filters.locations.length > 0) {
+        console.log(`Location filtering: vehicle.location="${vehicle.location}", selected locations:`, filters.locations)
+        if (!filters.locations.includes(vehicle.location)) {
+          console.log('❌ Filtered out by location')
+          return false
+        }
+      }
+      
+      if (filters.features.length > 0) {
+        console.log(`Feature filtering: vehicle.features=`, vehicle.features, 'selected features:', filters.features)
+        if (!filters.features.some(f => vehicle.features.includes(f))) {
+          console.log('❌ Filtered out by features')
+          return false
+        }
+      }
+      
+      if (filters.availableOnly && !vehicle.available) {
+        console.log('❌ Filtered out by availability')
+        return false
+      }
+      
+      console.log('✅ Vehicle passed all filters')
       return true
     })
+
+    console.log('Final filtered vehicles:', filtered.length)
+    console.log('Final filtered vehicles list:', filtered.map(v => `${v.make} ${v.model}`))
 
     // Sort
     switch (sortBy) {
@@ -1218,7 +1349,7 @@ function InventoryPageContent() {
     if (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 2000) count++
     if (filters.msrpRange[0] !== 20000 || filters.msrpRange[1] !== 150000) count++
     if (filters.yearRange[0] !== 2024 || filters.yearRange[1] !== 2025) count++
-    if (filters.mileageRange[0] !== 5000 || filters.mileageRange[1] !== 20000) count++
+    if (filters.mileageRange[0] !== 0 || filters.mileageRange[1] !== 20000) count++
     if (filters.makes.length > 0) count++
     if (filters.models.length > 0) count++
     if (filters.locations.length > 0) count++
@@ -1562,47 +1693,30 @@ function InventoryPageContent() {
               </motion.div>
 
               {/* Vehicle Grid - Right below search bar */}
-              <motion.div
-                initial={{ opacity: 1 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className={`grid gap-6 lg:gap-10 ${
-                  viewMode === 'grid' 
-                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
-                    : 'grid-cols-1'
-                }`}
+              <div className="grid gap-6 lg:gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3"
                 style={{
                   transform: 'translateZ(0)',
                   willChange: 'opacity',
+                  opacity: 1
                 }}
               >
                 {filteredVehicles.map((vehicle, index) => (
-                                      <motion.div
-                      key={`${vehicle.id}-${viewMode}`}
-                      initial={{ opacity: 1, y: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: Math.min(index * 0.05, 0.5),
-                      ease: "easeOut",
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 20
-                    }}
+                  <div key={vehicle.id}
                     style={{
-                      transform: 'translateZ(0)',
+                      transform: 'none',
                       willChange: 'transform, opacity',
+                      opacity: 1
                     }}
                   >
-                    <VehicleCard 
-                      vehicle={vehicle} 
+                    <VehicleCard
+                      vehicle={vehicle}
                       viewMode={viewMode}
                       isFavorited={favoriteVehicles.has(vehicle.id)}
                       onFavoriteToggle={toggleFavorite}
                     />
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
 
               {filteredVehicles.length === 0 && (
                 <motion.div
