@@ -215,7 +215,7 @@ export default function BookingPage() {
   const handleBookConsultation = async () => {
     setIsSubmitting(true)
     // TODO: Integrate with Stripe for payment processing
-    console.log('Book consultation clicked', formData)
+    // Book consultation clicked
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))

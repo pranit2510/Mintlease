@@ -305,7 +305,7 @@ export const Hero: React.FC = () => {
 
   const handleWatchVideo = () => {
     // TODO: Implement video modal
-    console.log('Watch video clicked')
+    // Watch video clicked
   }
 
   // Company names for infinite carousel

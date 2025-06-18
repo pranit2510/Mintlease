@@ -258,7 +258,7 @@ export default function RootLayout({
                     }
                   });
                   
-                  console.log('Forced visibility fix applied');
+                  // Visibility fix applied
                 });
                 
                 // Also run after a short delay in case of late rendering
@@ -277,8 +277,8 @@ export default function RootLayout({
           async
           dangerouslySetInnerHTML={{
             __html: `
-              // Critical performance monitoring
-              if ('performance' in window && 'PerformanceObserver' in window) {
+              // Critical performance monitoring (development only)
+              if ('performance' in window && 'PerformanceObserver' in window && window.location.hostname === 'localhost') {
                 const observer = new PerformanceObserver((list) => {
                   for (const entry of list.getEntries()) {
                     if (entry.entryType === 'largest-contentful-paint') {

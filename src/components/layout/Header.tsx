@@ -162,7 +162,7 @@ export function Header() {
       userAgent: typeof navigator !== 'undefined' ? (navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop') : 'SSR'
     }
     
-    console.log('🚀 Navigation initiated:', debugInfo)
+    // Navigation initiated
 
     try {
       // Close mobile menu first
@@ -176,7 +176,7 @@ export function Header() {
             behavior: 'smooth',
             block: 'start'
           })
-          console.log('✅ Hash navigation successful:', href)
+          // Hash navigation successful
           return
         } else {
           console.warn('⚠️ Element not found:', href)
@@ -186,14 +186,13 @@ export function Header() {
       // Handle external links
       if (href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) {
         window.open(href, '_blank', 'noopener,noreferrer')
-        console.log('✅ External navigation successful:', href)
+        // External navigation successful
         return
       }
 
       // Use Next.js router for internal navigation
-      console.log('🎯 Using Next.js router for:', href)
+      // Using Next.js router for internal navigation
       router.push(href)
-      console.log('✅ Router navigation initiated')
       
     } catch (error) {
       console.error('❌ Navigation failed:', error)
@@ -216,7 +215,7 @@ export function Header() {
       userAgent: typeof navigator !== 'undefined' ? (navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop') : 'SSR'
     }
     
-    console.log('📱 Mobile menu toggle:', debugInfo)
+    // Mobile menu toggle
     
     // Force visibility for debugging
     if (newState) {
@@ -226,7 +225,7 @@ export function Header() {
           mobileMenu.style.display = 'block'
           mobileMenu.style.visibility = 'visible'
           mobileMenu.style.opacity = '1'
-          console.log('🔧 Forced mobile menu visibility')
+          // Mobile menu visibility forced
         }
       }, 100)
     }

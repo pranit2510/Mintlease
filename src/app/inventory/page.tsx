@@ -1138,7 +1138,7 @@ FilterSidebar.displayName = 'FilterSidebar'
 
 function InventoryPageContent() {
   // Test Tailwind
-  console.log('Testing Tailwind CSS...');
+      // Testing Tailwind CSS styles
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState('newest')
@@ -1197,7 +1197,7 @@ function InventoryPageContent() {
   // Extract unique values for filter options
   const uniqueMakes = useMemo(() => {
     const makes = [...new Set(mockVehicles.map(v => v.make))].sort()
-    console.log('uniqueMakes:', makes)
+    // Unique makes calculated
     return makes
   }, [])
   const uniqueModels = useMemo(() => [...new Set(mockVehicles.map(v => v.model))].sort(), [])
@@ -1239,93 +1239,66 @@ function InventoryPageContent() {
   useEffect(() => {
     let filtered = [...mockVehicles]
     
-    console.log('Starting filter process. Total vehicles:', filtered.length)
-    console.log('Current filters:', filters)
-    console.log('Search query:', searchQuery)
+          // Filtering vehicles based on current criteria
     
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(vehicle =>
         `${vehicle.make} ${vehicle.model} ${vehicle.year}`.toLowerCase().includes(searchQuery.toLowerCase())
       )
-      console.log('After search filter:', filtered.length, 'vehicles')
+      // Search filter applied
     }
 
     // Apply all filters
     filtered = filtered.filter(vehicle => {
-      console.log(`\n--- Filtering vehicle: ${vehicle.make} ${vehicle.model} ---`)
-      
       // Convert price to monthly lease estimate for price range filter
       const monthlyLease = Math.round(vehicle.price / 60) // Rough estimate: price / 60 months
-      console.log(`Monthly lease estimate: ${monthlyLease}, range: [${filters.priceRange[0]}, ${filters.priceRange[1]}]`)
       if (monthlyLease < filters.priceRange[0] || monthlyLease > filters.priceRange[1]) {
-        console.log('❌ Filtered out by price range')
         return false
       }
       
-      console.log(`MSRP: ${vehicle.msrp}, range: [${filters.msrpRange[0]}, ${filters.msrpRange[1]}]`)
       if (vehicle.msrp < filters.msrpRange[0] || vehicle.msrp > filters.msrpRange[1]) {
-        console.log('❌ Filtered out by MSRP range')
         return false
       }
       
-      console.log(`Year: ${vehicle.year}, range: [${filters.yearRange[0]}, ${filters.yearRange[1]}]`)
       if (vehicle.year < filters.yearRange[0] || vehicle.year > filters.yearRange[1]) {
-        console.log('❌ Filtered out by year range')
         return false
       }
       
-      console.log(`Mileage: ${vehicle.mileage}, range: [${filters.mileageRange[0]}, ${filters.mileageRange[1]}]`)
       if (vehicle.mileage < filters.mileageRange[0] || vehicle.mileage > filters.mileageRange[1]) {
-        console.log('❌ Filtered out by mileage range')
         return false
       }
       
-      // Debug make filtering
       if (filters.makes.length > 0) {
-        console.log(`Make filtering: vehicle.make="${vehicle.make}", selected makes:`, filters.makes)
-        console.log(`Includes check:`, filters.makes.includes(vehicle.make))
         if (!filters.makes.includes(vehicle.make)) {
-          console.log('❌ Filtered out by make')
           return false
         }
       }
       
       if (filters.models.length > 0) {
-        console.log(`Model filtering: vehicle.model="${vehicle.model}", selected models:`, filters.models)
         if (!filters.models.includes(vehicle.model)) {
-          console.log('❌ Filtered out by model')
           return false
         }
       }
       
       if (filters.locations.length > 0) {
-        console.log(`Location filtering: vehicle.location="${vehicle.location}", selected locations:`, filters.locations)
         if (!filters.locations.includes(vehicle.location)) {
-          console.log('❌ Filtered out by location')
           return false
         }
       }
       
       if (filters.features.length > 0) {
-        console.log(`Feature filtering: vehicle.features=`, vehicle.features, 'selected features:', filters.features)
         if (!filters.features.some(f => vehicle.features.includes(f))) {
-          console.log('❌ Filtered out by features')
           return false
         }
       }
       
       if (filters.availableOnly && !vehicle.available) {
-        console.log('❌ Filtered out by availability')
         return false
       }
       
-      console.log('✅ Vehicle passed all filters')
       return true
     })
-
-    console.log('Final filtered vehicles:', filtered.length)
-    console.log('Final filtered vehicles list:', filtered.map(v => `${v.make} ${v.model}`))
 
     // Sort
     switch (sortBy) {

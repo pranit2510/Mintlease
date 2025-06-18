@@ -47,7 +47,7 @@ export default function OfflinePage() {
         window.location.href = '/'
       }
     } catch (error) {
-      console.log('Still offline')
+              // Still offline
     }
   }
 
