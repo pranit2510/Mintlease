@@ -32,6 +32,7 @@ interface FormState {
     email: string
     maritalStatus: string
     dependents: string
+    creditScore: string
     
     // Address Information
     address: string
@@ -82,6 +83,7 @@ const initialState: FormState = {
     email: '',
     maritalStatus: '',
     dependents: '',
+    creditScore: '',
     address: '',
     city: '',
     state: '',
@@ -175,6 +177,10 @@ export default function CreditApplicationPage() {
     setIsMounted(true)
   }, [])
 
+
+
+
+
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return
     
@@ -194,6 +200,14 @@ export default function CreditApplicationPage() {
   }
 
   const nextStep = () => {
+    // Prevent moving to next step if on Step 1 and credit score is below 700
+    if (formState.currentStep === 1) {
+      const isBelowMinimum = formState.data.creditScore === 'Fair' || formState.data.creditScore === 'Poor'
+      if (isBelowMinimum) {
+        return // Do nothing if credit score is below minimum
+      }
+    }
+    
     dispatch({ type: 'NEXT_STEP' })
   }
 
@@ -201,15 +215,70 @@ export default function CreditApplicationPage() {
     dispatch({ type: 'PREV_STEP' })
   }
 
+  // Helper function to check if credit score is below minimum
+  const isCreditScoreBelowMinimum = () => {
+    return formState.data.creditScore === 'Fair' || formState.data.creditScore === 'Poor'
+  }
+
   const handleSubmit = async () => {
+    // Prevent submission if credit score is below 700
+    const isBelowMinimum = formState.data.creditScore === 'Fair' || formState.data.creditScore === 'Poor'
+    if (isBelowMinimum) {
+      return // Do nothing if credit score is below minimum
+    }
+
+    // Validate required fields before submission
+    if (!formState.data.firstName || !formState.data.lastName || !formState.data.email) {
+      alert('Please fill in all required fields (First Name, Last Name, Email)')
+      return
+    }
+
     setIsSubmitting(true)
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const response = await fetch('/api/submit-credit-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState.data),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to submit application')
+      }
+
+      // Track successful credit application submission with valid data
+      if (typeof window !== 'undefined') {
+        // Facebook Pixel tracking
+        if ((window as any).fbq) {
+          (window as any).fbq('track', 'Lead', {
+            content_name: 'Credit Application',
+            value: 0,
+            currency: 'USD'
+          })
+        }
+        
+        // Signals Gateway tracking with validated data
+        if ((window as any).cbq) {
+          (window as any).cbq('track', 'Lead', {
+            email: formState.data.email,
+            first_name: formState.data.firstName,
+            last_name: formState.data.lastName,
+            phone: formState.data.phone,
+            content_name: 'Credit Application'
+          })
+        }
+      }
+
+      console.log('Credit application submitted successfully:', result)
       setShowSuccess(true)
     } catch (error) {
       console.error('Credit application error:', error)
+      // You might want to show an error message to the user here
+      alert('Failed to submit application. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -593,7 +662,7 @@ export default function CreditApplicationPage() {
                        shadow-[0_8px_32px_rgba(139,69,19,0.12),0_16px_64px_rgba(139,69,19,0.06)]"
             suppressHydrationWarning
           >
-            <form action="https://formspree.io/f/mgvyzagy" method="POST">
+            <div>
             {/* Step 1: Personal Information */}
             {formState.currentStep === 1 && (
               <motion.div
@@ -693,6 +762,78 @@ export default function CreditApplicationPage() {
                       required
                     />
                   </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-neutral-700 text-sm font-medium mb-2">Marital Status</label>
+                    <select
+                      value={formState.data.maritalStatus}
+                      onChange={(e) => updateField('maritalStatus', e.target.value)}
+                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                               text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                               focus:border-emerald-500 transition-all duration-300"
+                      required
+                    >
+                      <option value="">Select Status</option>
+                      <option value="single">Single</option>
+                      <option value="married">Married</option>
+                      <option value="divorced">Divorced</option>
+                      <option value="widowed">Widowed</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-neutral-700 text-sm font-medium mb-2">Number of Dependents</label>
+                    <select
+                      value={formState.data.dependents}
+                      onChange={(e) => updateField('dependents', e.target.value)}
+                      className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                               text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                               focus:border-emerald-500 transition-all duration-300"
+                      required
+                    >
+                      <option value="">Select Number</option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4+">4+</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-neutral-700 text-sm font-medium mb-2">Credit Score Range *</label>
+                  <select
+                    value={formState.data.creditScore}
+                    onChange={(e) => updateField('creditScore', e.target.value)}
+                    className="w-full px-4 py-3 rounded-[12px] bg-white border border-neutral-200
+                             text-neutral-900 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                             focus:border-emerald-500 transition-all duration-300"
+                    required
+                  >
+                    <option value="">Select Credit Score Range</option>
+                    <option value="Excellent">Excellent (750+)</option>
+                    <option value="Good">Good (700-749)</option>
+                    <option value="Fair">Fair (650-699)</option>
+                    <option value="Poor">Poor (Below 650)</option>
+                  </select>
+                  
+                  {/* Credit Score Warning Message - Below the dropdown */}
+                  {isCreditScoreBelowMinimum() && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3"
+                    >
+                      <p className="leading-relaxed">
+                        We appreciate your interest in Mint Lease. At this time, we work with clients who have a credit score of 700 or above to ensure the best financing options and rates. We encourage you to work on improving your credit score and apply again in the future.
+                      </p>
+                      <p className="mt-2 font-medium">
+                        Thank you for understanding, and we wish you the best on your credit journey.
+                      </p>
+                    </motion.div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -949,7 +1090,7 @@ export default function CreditApplicationPage() {
 
 
             {/* Navigation Buttons */}
-            </form>
+            </div>
             <div className="flex justify-between pt-8 mt-8 border-t border-neutral-200">
               <motion.button
                 onClick={prevStep}
@@ -967,69 +1108,92 @@ export default function CreditApplicationPage() {
               {formState.currentStep < 4 ? (
                 <motion.button
                   onClick={nextStep}
-                  whileHover={{ 
+                  disabled={isCreditScoreBelowMinimum()}
+                  whileHover={!isCreditScoreBelowMinimum() ? { 
                     scale: shouldReduceMotion ? 1 : 1.02, 
                     y: shouldReduceMotion ? 0 : -3 
-                  }}
-                  whileTap={{ 
+                  } : {}}
+                  whileTap={!isCreditScoreBelowMinimum() ? { 
                     scale: shouldReduceMotion ? 1 : 0.98,
                     y: 0
-                  }}
+                  } : {}}
                   transition={{ 
                     type: "spring",
                     stiffness: 400,
                     damping: 25,
                     mass: 0.1
                   }}
-                  className="flex items-center bg-emerald-600 text-white border-0 rounded-full px-8 py-3 font-medium 
-                           transition-all duration-300 group"
+                  className={`flex items-center border-0 rounded-full px-8 py-3 font-medium 
+                           transition-all duration-300 group ${
+                             isCreditScoreBelowMinimum() 
+                               ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed' 
+                               : 'bg-emerald-600 text-white'
+                           }`}
                   suppressHydrationWarning
                   style={{
-                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                    boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3)',
+                    background: isCreditScoreBelowMinimum() 
+                      ? '#d1d5db' 
+                      : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                    boxShadow: isCreditScoreBelowMinimum() 
+                      ? 'none' 
+                      : '0 8px 20px -4px rgba(5, 150, 105, 0.3)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)'
-                  }}
-                >
-                  Next Step
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
-                </motion.button>
-              ) : (
-                <motion.button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  whileHover={{ 
-                    scale: shouldReduceMotion ? 1 : 1.02, 
-                    y: shouldReduceMotion ? 0 : -3 
-                  }}
-                  whileTap={{ 
-                    scale: shouldReduceMotion ? 1 : 0.98,
-                    y: 0
-                  }}
-                  transition={{ 
-                    type: "spring",
-                    stiffness: 400,
-                    damping: 25,
-                    mass: 0.1
-                  }}
-                  className="flex items-center bg-emerald-600 text-white border-0 rounded-full px-8 py-3 font-medium 
-                           transition-all duration-300 group"
-                  suppressHydrationWarning
-                  style={{
-                    background: isSubmitting ? '#6b7280' : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                    boxShadow: '0 8px 20px -4px rgba(5, 150, 105, 0.3)',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSubmitting) {
+                    if (!isCreditScoreBelowMinimum()) {
                       e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)'
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isSubmitting) {
+                    if (!isCreditScoreBelowMinimum()) {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)'
+                    }
+                  }}
+                >
+                  Next Step
+                  <ArrowRight className={`ml-2 h-4 w-4 transition-transform duration-200 ${
+                    !isCreditScoreBelowMinimum() ? 'group-hover:translate-x-1' : ''
+                  }`} />
+                </motion.button>
+              ) : (
+                <motion.button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || isCreditScoreBelowMinimum()}
+                  whileHover={!isSubmitting && !isCreditScoreBelowMinimum() ? { 
+                    scale: shouldReduceMotion ? 1 : 1.02, 
+                    y: shouldReduceMotion ? 0 : -3 
+                  } : {}}
+                  whileTap={!isSubmitting && !isCreditScoreBelowMinimum() ? { 
+                    scale: shouldReduceMotion ? 1 : 0.98,
+                    y: 0
+                  } : {}}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 25,
+                    mass: 0.1
+                  }}
+                  className={`flex items-center border-0 rounded-full px-8 py-3 font-medium 
+                           transition-all duration-300 group ${
+                             isSubmitting || isCreditScoreBelowMinimum()
+                               ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed' 
+                               : 'bg-emerald-600 text-white'
+                           }`}
+                  suppressHydrationWarning
+                  style={{
+                    background: (isSubmitting || isCreditScoreBelowMinimum()) 
+                      ? '#d1d5db' 
+                      : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                    boxShadow: (isSubmitting || isCreditScoreBelowMinimum()) 
+                      ? 'none' 
+                      : '0 8px 20px -4px rgba(5, 150, 105, 0.3)',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSubmitting && !isCreditScoreBelowMinimum()) {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 30%, #f97316 70%, #ea580c 100%)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSubmitting && !isCreditScoreBelowMinimum()) {
                       e.currentTarget.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)'
                     }
                   }}

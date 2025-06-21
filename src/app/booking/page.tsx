@@ -224,6 +224,45 @@ export default function BookingPage() {
     // TODO: Redirect to payment or success page
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/submit-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        alert('Booking consultation request submitted successfully! We\'ll contact you within 24 hours.')
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          vehicleType: '',
+          budget: '',
+          timeline: '',
+          message: ''
+        })
+      } else {
+        alert(data.message || 'Failed to submit booking request. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error submitting booking:', error)
+      alert('Failed to submit booking request. Please check your connection and try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   useEffect(() => {
     if (isInView) {
       controls.start("visible")
@@ -412,7 +451,7 @@ export default function BookingPage() {
                   </div>
 
                   {/* Enhanced Contact Form */}
-                  <form action="https://formspree.io/f/xpwrlpgl" method="POST" className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <motion.div
                         whileHover={{ scale: 1.02 }}

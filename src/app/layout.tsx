@@ -338,6 +338,25 @@ export default function RootLayout({
                 cbq('setHost', 'https://sgw.stape.im/');
                 cbq('init', '680486402008299964');
                 cbq('track', 'PageView');
+                
+                // Override cbq to validate data before tracking
+                const originalCbq = window.cbq;
+                window.cbq = function() {
+                  const args = Array.from(arguments);
+                  if (args[0] === 'track' && args[1] === 'Lead' && args[2]) {
+                    const data = args[2];
+                    // Only track if we have valid first_name and last_name
+                    if (data.first_name && data.last_name && 
+                        typeof data.first_name === 'string' && data.first_name.length > 0 &&
+                        typeof data.last_name === 'string' && data.last_name.length > 0) {
+                      return originalCbq.apply(this, arguments);
+                    } else {
+                      console.log('Skipping analytics tracking - invalid name data');
+                      return;
+                    }
+                  }
+                  return originalCbq.apply(this, arguments);
+                };
             `
           }}
         />
